@@ -13,7 +13,9 @@ require (
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/gofiber/fiber/v2 v2.52.10 // indirect
-	github.com/gofiber/template/handlebars/v3 v3.0.0 // indirect
+	github.com/gofiber/template v1.8.3 // indirect
+	github.com/gofiber/template/handlebars/v2 v2.1.12 // indirect
+	github.com/gofiber/template/handlebars/v3 v3.0.1 // indirect
 	github.com/gofiber/template/v2 v2.0.0 // indirect
 	github.com/gofiber/utils v1.1.0 // indirect
 	github.com/gohugoio/hugo v0.149.1 // indirect

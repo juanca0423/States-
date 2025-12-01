@@ -11,13 +11,13 @@ func GetIndex(c *fiber.Ctx) error {
 }
 
 func GetLoguin(c *fiber.Ctx) error {
-	return c.Render("loguin", fiber.Map{
+	return c.Render("index", fiber.Map{
 		"Title": "Loguin",
 	})
 }
 
 func GetRejistro(c *fiber.Ctx) error {
-	return c.Render("registro", fiber.Map{
+	return c.Render("index", fiber.Map{
 		"Title": "registro de usuarios",
 	})
 }
