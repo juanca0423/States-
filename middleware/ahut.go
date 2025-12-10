@@ -1,48 +1,98 @@
-package auth
+// middleware/auth.go
+package middleware
 
 import (
+	"errors"
+	"fmt"
+	"os"
+	"strings"
+	"time"
+
 	"github.com/gofiber/fiber/v2"
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v5"
 )
 
-func AuthMiddleware(c *fiber.Ctx) error {
-	// Check for authentication credentials
-	// If credentials are valid, proceed to the next middleware or route
-	// If credentials are invalid, return an unauthorized response
-	return
+// Claims personalizados
+type Claims struct {
+	UserID uint   `json:"uid"`
+	Role   string `json:"role"`
+	jwt.RegisteredClaims
 }
 
-func AdminMiddleware(c *fiber.Ctx) error {
-	userRole := getRolUserFromContext(c)
-	if userRole != AdminRole {
-		return c.Status(fiber.StatusForbidden).SendString("Permission Denied")
-  }
-  return c.Next()
-}
+var jwtSecret = []byte(os.Getenv("JWT_SECRET"))
 
-// GenerateJWT generates a JWT for the user
-func GenerateJWT(user User) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"id":    user.ID,
-    "email": user.Email,
-    "role":  user.Role,
-	})
-	signedToken, err := token.SignedString([]byte("secret-key"))
-	if err != nil {
-		return "", err
+// GenerateToken crea un JWT firmado (úsalo en tu handler de login)
+func GenerateToken(userID uint, role string) (string, error) {
+	claims := Claims{
+		UserID: userID,
+		Role:   role,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+		},
 	}
-	return signedToken, nil
+	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(jwtSecret)
 }
 
-func AuthMiddle(c *fiber.Ctx) error {
-	tokenString := c.Get("Authorization")
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		// Verify the token signing method and return the secret key
+// Require verifica que el usuario tenga *exactamente* el rol indicado
+func Require(allowedRole string) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		role, err := extractRole(c)
+		if err != nil {
+			return fiber.ErrUnauthorized
+		}
+		if role != allowedRole {
+			return fiber.NewError(fiber.StatusForbidden,
+				fmt.Sprintf("se requiere rol %s", allowedRole))
+		}
+		return c.Next()
+	}
+}
+
+// Any verifica que el usuario tenga *alguno* de los roles listados
+func Any(roles ...string) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		userRole, err := extractRole(c)
+		if err != nil {
+			return fiber.ErrUnauthorized
+		}
+		for _, r := range roles {
+			if userRole == r {
+				return c.Next()
+			}
+		}
+		return fiber.NewError(fiber.StatusForbidden,
+			"sin permisos suficientes")
+	}
+}
+
+// extractRole valida el JWT y devuelve el rol
+func extractRole(c *fiber.Ctx) (string, error) {
+	auth := c.Get("Authorization")
+	if auth == "" {
+		return "", errors.New("falta header Authorization")
+	}
+	parts := strings.Split(auth, " ")
+	if len(parts) != 2 || parts[0] != "Bearer" {
+		return "", errors.New("formato Authorization inválido")
+	}
+	tokenStr := parts[1]
+
+	token, err := jwt.ParseWithClaims(tokenStr, &Claims{}, func(t *jwt.Token) (interface{}, error) {
+		if t.Method.Alg() != jwt.SigningMethodHS256.Name {
+			return nil, errors.New("método inesperado")
+		}
+		return jwtSecret, nil
 	})
 	if err != nil || !token.Valid {
-		return c.Status(fiber.StatusUnauthorized).SendString("Invalid Token")
+		return "", errors.New("token inválido")
 	}
-	// Extract user information from the token and store it in the context
-	c.Locals("user", getUserFromToken(token))
-	return c.Next()
+	claims, ok := token.Claims.(*Claims)
+	if !ok {
+		return "", errors.New("claims inválidos")
+	}
+	// Guardamos datos útiles para handlers posteriores
+	c.Locals("uid", claims.UserID)
+	c.Locals("role", claims.Role)
+	return claims.Role, nil
 }
