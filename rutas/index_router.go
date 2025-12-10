@@ -1,29 +1,18 @@
 package rutas
 
 import (
+	"ef/ctrl"
+
 	"github.com/gofiber/fiber/v2"
 )
 
-func GetIndex(c *fiber.Ctx) error {
-	return c.Render("index", fiber.Map{
-		"Title": "Index",
-	})
-}
+func SetUpRutas(app *fiber.App) {
+	app.Get("/", ctrl.GetIndex)
+	app.Get("/loguin", ctrl.GetLoguin)
+	app.Get("/register", ctrl.GetRejistro)
+	app.Get("/about", ctrl.GetAbout)
 
-func GetLoguin(c *fiber.Ctx) error {
-	return c.Render("index", fiber.Map{
-		"Title": "Loguin",
-	})
-}
+	app.Post("/register", ctrl.PostRegistro)
 
-func GetRejistro(c *fiber.Ctx) error {
-	return c.Render("index", fiber.Map{
-		"Title": "registro de usuarios",
-	})
-}
-
-func PostRegistro(c *fiber.Ctx) error {
-	return c.Render("index", fiber.Map{
-		"Title": "usuario registrado",
-	})
+	app.Get("/layout", ctrl.GetLayout)
 }

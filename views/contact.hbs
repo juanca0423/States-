@@ -1,0 +1,30 @@
+{{> 'partials/header' }}
+{{> 'partials/nav' }}
+<h1>{{Title}}</h1>
+<section>
+<form class="form-control" method="POST" action="/ register">
+  <div class="col-8">
+    <label for="nombre" class="form-label"> 
+      Tu Correo Electronico
+    </label> 
+    <input type="text" class="form-control" id="nombre" placeholder="Ingresa tu Nombre">
+  </div>
+  <div class="col-8">
+    <label for="apellido" class="form-label">
+      Asunto
+    </label>
+    <input type="text" class="form-control" id="apellido" placeholder="Ingresa tu Apellido">
+  </div>
+  <div class="col-8">
+     <label for="email" class="form-label">
+      Contenido
+    </label>
+    <input type="textarea" class="form-control" id="contenido" placeholder="">
+  </div>
+  <hr>
+  <div class="col-8">
+    <button type="submit">Enviar</button>
+  </div>
+</form>
+</section>
+{{> 'partials/footer' }}

@@ -1,17 +1,18 @@
 package models
 
 import (
+	"time"
+
 	"gorm.io/gorm"
-	"ef/roles"
 )
 
-type User struct{
+type User struct {
 	gorm.Model
 
-	First_Name string `gorm:"not null" json:"first_name"`
-	Last_Name string `gorm:"not null" json:"last_name"`
-	Email string `gorm:"not null; uniqueIndex" json:"email"`
-	Password string `gorm:"not null" json:"password"`
-	Role roles.RolUser `gorm:"not null" json:"role"`
+	Nombre    string    `gorm:"not null" json:"nombre"`
+	Apellido  string    `gorm:"not null" json:"apellido"`
+	Email     string    `gorm:"not null; uniqueIndex" json:"email"`
+	Password  string    `gorm:"not null" json:"password"`
+	FechaPago time.Time `gorm: json:"fechapago"`
+	Role      string    `gorm:"not null" json:"role"`
 }
-

@@ -1,0 +1,23 @@
+{{> "partials/header" }}
+{{> "partials/nav"}}
+
+<h1>Inicio de seción</h1>
+
+<form class="form-control" method="POST" action="/register">
+  <div class="col-8">
+
+    <label for="email" class="form-label">Email</label>
+    <input type="email" class="form-control" id="email" placeholder="email@ejemplo.com">
+
+  </div>
+  <div class="col-8">
+    <label for="password" class="form-label">Password</label>
+    <input type="password" class="form-control" id="password" placeholder="Password">
+  </div>
+  <hr>
+  <div class="col-8"> 
+    <button type="submit" class="btn btn-primary justifi-content-center mb-3" >Confirme identidad</button>                             
+  </div>
+</form>
+
+{{> "partials/footer"}}
