@@ -14,7 +14,7 @@ func SetUpRutas(app *fiber.App) {
 	app.Get("/register", ctrl.GetRejistro)
 	app.Get("/about", ctrl.GetAbout)
 
-	app.Post("/register", ctrl.PostRegistro)
+	app.Post("/register", ctrl.RegisterHandler)
 	app.Post("loguin", ctrl.PostHandleLogin)
 	app.Get("/layout", ctrl.GetLayout)
 
@@ -24,7 +24,7 @@ func SetUpRutas(app *fiber.App) {
 
 	// cliente o admin
 	cliente := api.Group("/cliente", middleware.Any("cliente", "admin"))
-	cliente.Get("/pedidos", ctrl.GetPedCli)
+	cliente.Get("/pedidos", ctrl.PostRegistro)
 
 	// solo administradores
 	admin := api.Group("/admin", middleware.Require("admin"))

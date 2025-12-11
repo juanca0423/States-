@@ -1,0 +1,136 @@
+\h
+\h UPDATE
+\h table
+\d
+\q
+\?
+/d
+\d
+\ help
+\h
+\?
+\dt
+\d users
+\d users
+exit
+quit
+\q
+\d
+\dh
+\dt
+\q
+\d
+\? table
+\? drop
+\? drop table
+\dt
+tabla users
+\d
+help
+\?
+\dT
+\dt
+\? TABLE
+\help
+\help DROP TABLE
+\help DELITE TABLE
+\help DELITE
+\help DELETE
+\help DELETE TABLE
+DROP TABLE USERS
+\dt
+DROP TABLE users
+\dt
+\dt users
+\help ALTER TABLE
+DROP TABLE users
+\dt
+clo
+CLOSE TABLE
+DROP TABLE users
+\dt
+TABLE STRUC
+DROP TABLESPACE
+\dt
+\help TABLE
+\help DROP
+DROP TABLE *8
+\dt
+DROP TABLE IF EXISTS users
+\dt
+DROP TABLE IF EXISTS users ×
+\dt
+\q
+DROP TABLE [IF EXISTS] users
+[CASCADE | RESTRICT];
+DROP TABLE IF EXISTS users
+CASCADE;
+\dt
+\q
+\dt
+\?
+\dt[S+]
+\dt[S+]
+\dT[S+]
+\dT structur
+\?
+\d
+\d[+]
+\dT
+\? table stru
+\dtw
+\w
+\q
+\d
+\dt users
+\dt users
+\d users
+\d users
+\dt users
+\d users
+select * from users
+SELECT * FROM users
+a=SELECT * FROM users
+a
+hecho a
+\a
+\?
+\v
+\dt
+\dt users
+\q
+\dt users
+\d users
+\l
+\l
+\du
+\du+
+\du+
+\du+
+\du users
+\du+
+SELECT * FROM users
+\q
+SELECT * FROM users
+\du+
+\du+ users
+drop table users
+\du+
+\ drop table
+drop table users
+\du+
+\L
+\l
+DROP TABLE users
+\du+
+\l
+\?
+help
+\? drop
+\? DROP TABLE
+?
+DROP \.
+?
+DROP\?
+\l users
+\s users

@@ -8,7 +8,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 
 	"ef/db"
-	"ef/models" // cambia por tu paquete
+	"ef/models"
 )
 
 var emailRegex = regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
@@ -29,12 +29,12 @@ func RegisterHandler(c *fiber.Ctx) error {
 			"error": "JSON inválido",
 		})
 	}
-
 	// sanitización básica
 	in.Email = strings.TrimSpace(strings.ToLower(in.Email))
 	if !emailRegex.MatchString(in.Email) {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "Email no válido",
+			"err":   in.Email,
 		})
 	}
 	if len(in.Pase) < 6 {
@@ -79,7 +79,11 @@ func RegisterHandler(c *fiber.Ctx) error {
 	}
 	if err := db.DB.Create(&user).Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "No se pudo crear el usuario",
+			"error":    "No se pudo crear el usuario",
+			"nombre":   user.Nombre,
+			"apellido": user.Apellido,
+			"email":    user.Email,
+			"role":     user.Role,
 		})
 	}
 

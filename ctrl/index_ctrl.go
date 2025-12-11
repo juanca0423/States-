@@ -50,14 +50,22 @@ func PostHandleLogin(c *fiber.Ctx) error {
 		Pase  string `json:"pase"`
 	}
 	var in input
-	if err := c.BodyParser(&in); err != nil {
-		return fiber.ErrBadRequest
+	in.Email = c.FormValue("email")
+	in.Pase = c.FormValue("pase")
+	if in.Email == "" {
+		return c.Render("index", fiber.Map{
+			"Title": "el email esta vasio",
+		})
 	}
+	/*
+		if err := c.BodyParser(&in); err != nil {
+			return fiber.ErrBadRequest
+		}*/
 	var u models.User
 	if err := db.DB.Where("email = ?", in.Email).First(&u).Error; err != nil {
 		return fiber.ErrUnauthorized
 	}
-	if err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(in.Pase)); err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(u.Pase), []byte(in.Pase)); err != nil {
 		return fiber.ErrUnauthorized
 	}
 	tok, _ := middleware.GenerateToken(u.ID, u.Role)

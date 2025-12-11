@@ -19,9 +19,7 @@
     # o si tu red bloquea el puerto 22:
     ssh -T -p 443 git@ssh.github.com
 
-curl -X POST http://localhost:3000/register \
-  -H "Content-Type: application/json" \
-    -d '{"email":"juanca0423@gmai.com","password":"mi@pase","role":"Admin","nombre":"Juan Carlos","apellido":"Perez Castro"}'
+curl -X POST http://127.0.0.1:3000/register -H "Content-Type:aplication/json" -d '{"nombre":"Juan Carlos","apellido":"Perez Castro","email":"juanca0423@yahoo.com","pase":"654321","role":"admin"}'
 
 
     users
