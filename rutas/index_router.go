@@ -8,7 +8,6 @@ import (
 )
 
 func SetUpRutas(app *fiber.App) {
-	api := app.Group("/api")
 	app.Get("/", ctrl.GetIndex)
 	app.Get("/loguin", ctrl.GetLoguin)
 	app.Get("/register", ctrl.GetRejistro)
@@ -17,7 +16,10 @@ func SetUpRutas(app *fiber.App) {
 	app.Post("/register", ctrl.RegisterHandler)
 	app.Post("loguin", ctrl.PostHandleLogin)
 	app.Get("/layout", ctrl.GetLayout)
+	app.Get("/eeff", ctrl.HojaTrabajo)
+	app.Post("/estados", ctrl.GenEstados)
 
+	api := app.Group("/api")
 	// cualquier usuario autenticado
 	user := api.Group("/user", middleware.Any("usuario", "cliente", "admin"))
 	user.Get("/perfil", ctrl.GetPerfil)

@@ -205,3 +205,9 @@ func Setup(app *fiber.App) {
 	tok, _ := middleware.GenerateToken(u.ID, u.Role)
 	return c.JSON(fiber.Map{"token": tok})
 }
+
+app.Use(func(c *fiber.Ctx) error {
+    fmt.Printf("Method=%s Path=%s Content-Type=%s\n", c.Method(), c.Path(), c.Get("Content-Type"))
+    fmt.Println("Raw body --->", string(c.Body()))
+    return c.Next()
+})

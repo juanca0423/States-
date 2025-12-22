@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 
 	"ef/db"
 	"ef/models"
@@ -20,10 +20,10 @@ func main() {
 	app := fiber.New(fiber.Config{
 		Views: engine,
 	})
+
 	app.Static("/", "./estaticos")
 	app.Use(logger.New())
 	rutas.SetUpRutas(app)
-
 	app.Listen(":3000")
-	fmt.Println("Serbidor corriemdo en el puerto: 3000")
+	log.Println("Serbidor corriemdo en el puerto: 3000")
 }

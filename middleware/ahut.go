@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"slices"
 	"strings"
 	"time"
 
@@ -56,10 +57,9 @@ func Any(roles ...string) fiber.Handler {
 		if err != nil {
 			return fiber.ErrUnauthorized
 		}
-		for _, r := range roles {
-			if userRole == r {
-				return c.Next()
-			}
+		siExiste := slices.Contains(roles, userRole)
+		if siExiste{
+			return c.Next()
 		}
 		return fiber.NewError(fiber.StatusForbidden,
 			"sin permisos suficientes")
@@ -78,7 +78,7 @@ func extractRole(c *fiber.Ctx) (string, error) {
 	}
 	tokenStr := parts[1]
 
-	token, err := jwt.ParseWithClaims(tokenStr, &Claims{}, func(t *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(tokenStr, &Claims{}, func(t *jwt.Token) (any, error) {
 		if t.Method.Alg() != jwt.SigningMethodHS256.Name {
 			return nil, errors.New("método inesperado")
 		}
