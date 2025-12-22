@@ -1,0 +1,27 @@
+{{>'partials/header'}}  
+{{>'partials/nav'}}
+<section>
+<form class="form-control" id="balance" method="POST" action="/estados" enctype="multipart/form-data" >
+  <div class="">
+  {{#each datos}}
+    <div class="col-8">
+      <label for="{{this.codigo}}">
+        <strong>
+          {{this.nombre}}
+        </strong>
+      </label>
+    </div>
+    <div class="col-4">
+      <input type="number" name="{{this.codigo}}" value="{{this.valor}}">
+    </div>
+  {{/each}}
+    </div>
+    <hr>
+  <div>
+    <div class="col-8">
+      <button type="submit">Enviar</button>
+    </div>
+  </div>
+</form>
+</section>
+{{>'partials/footer'}}

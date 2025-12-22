@@ -1,0 +1,124 @@
+{{> 'partials/header'}}
+{{> 'partials/nav'}}
+<h1>{{Title}}</h1>
+<section>
+<div class="table-container">
+<table class="table table-dark table-hover table-bordered" >
+  <thead>
+    <tr class="col-12">
+      <th 
+        scope="row" 
+        class="col-3 text-center">
+      </th>
+      <th 
+        scope="col" 
+        colspan="2" 
+        class="col-3 
+        text-center">
+          Saldos
+      </th>
+      <th 
+        scope="col" 
+        colspan="2" 
+        class="col-3 
+        text-center">
+          Resultados
+      </th>
+      <th 
+        scope="col" 
+        colspan="2"
+        class="col-3 
+        text-center">
+          Balance
+        </th>
+    </tr>
+    <tr class="col-12">
+      <th 
+        scope="row" 
+        class="col-3 
+        text-center">
+          Nombre
+      </th>
+      <th 
+        scope="col" 
+        class="col-1.5 
+        text-center">
+          Debe
+      </th>
+      <th 
+        scope="col" 
+        class="col-1.5 
+        text-center">
+          Haber
+      </th>
+      <th 
+        scope="col" 
+        class="col-1.5 
+        text-center">
+          Perdidas
+      </th>
+      <th 
+        scope="col" 
+        class="col-1.5 
+        text-center">
+          Ganancias
+      </th>
+      <th 
+        scope="col" 
+        class="col-1.5 
+        text-center">
+          Activo
+      </th>
+      <th 
+        scope="col" 
+        class="col-1.5 
+        text-center">
+          Pasivo
+      </th>
+    </tr>
+  </thead>
+  {{#each keys}}
+  <tbody>
+    <tr class="col-12" id="">
+      <th 
+      scope="row" 
+      class="col-3">
+        {{this.value.Nombre}}
+      </th>
+      <td 
+        class="col-1.5" 
+        style="text-align: right;">
+          {{this.value.Debe}}
+      </td>
+      <td 
+        class="col-1.5" 
+        style="text-align: right;">
+          {{this.value.Haber}}
+      </td/>
+      <td 
+        class="col-1.5" 
+        style="text-align: right;">
+          {{this.value.Perdidas}}
+      </td>
+      <td 
+        class="col-1.5" 
+        style="text-align: right;">
+          {{this.value.Ganancias}}
+      </td>
+      <td 
+        class="col-1.5" 
+        style="text-align: right;">
+          {{this.value.Activo}}
+      </td>
+      <td 
+        class="col-1.5" 
+        style="text-align: right;">
+          {{this.value.Pasivo}}
+      </td>
+    </tr>
+  </tbody>
+  {{/each}}
+</table>
+</div>
+</section>
+{{> 'partials/footer'}}

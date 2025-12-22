@@ -1,0 +1,450 @@
+[
+  {
+    "Balance": {
+      "balan": [
+        {
+          "activo": [
+            {
+              "Corriente": [
+                {
+                  "Disponible": [
+                    {
+                      "codigo": "111101",
+                      "nombre": "Efectivo",
+                      "saldo": "activo",
+                      "clases": "",
+                      "valor": "6510"
+                    },
+                    {
+                      "codigo": "111102",
+                      "nombre": "Bancos",
+                      "saldo": "activo",
+                      "clases": "",
+                      "valor": "197650"
+                    }
+                  ]
+                },
+                {
+                  "exigble": [
+                    {
+                      "codigo": "111201",
+                      "nombre": "Deudores no Comerciales",
+                      "saldo": "activo",
+                      "clases": "",
+                      "valor": "3000"
+                    },
+                    {
+                      "codigo": "111202",
+                      "nombre": "Documentos por Cobrar",
+                      "saldo": "activo",
+                      "clases": "",
+                      "valor": ""
+                    },
+                    {
+                      "codigo": "111203",
+                      "nombre": "Clientes",
+                      "saldo": "activo",
+                      "clases": "",
+                      "valor": "40700"
+                    },
+                    {
+                      "codigo": "111204",
+                      "nombre": "(-)Reserva para Cuentas Incobrables",
+                      "saldo": "pasivo",
+                      "clases": "",
+                      "valor": "1221"
+                    }
+                  ]
+                },
+                {
+                  "realizable": [
+                    {
+                      "codigo": "111301",
+                      "nombre": "Mercaderías",
+                      "saldo": "activo",
+                      "clases": "",
+                      "valor": "44000"
+                    },
+                    {
+                      "codigo": "111302",
+                      "nombre": "Papelería y útiles",
+                      "saldo": "activo",
+                      "clases": "",
+                      "valor": "1320"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "nocorriente": [
+                {
+                  "proplanequi": [
+                    {
+                      "codigo": "112101",
+                      "nombre": "Mobiliario y Equipo",
+                      "saldo": "activo",
+                      "clases": "",
+                      "valor": "10750"
+                    },
+                    {
+                      "codigo": "112102",
+                      "nombre": "(-) Depreciación Acumulada Mobiliario y Equipo",
+                      "saldo": "pasivo",
+                      "clases": "",
+                      "valor": "2050"
+                    },
+                    {
+                      "codigo": "112103",
+                      "nombre": "Equipo de Computación",
+                      "saldo": "activo",
+                      "clases": "",
+                      "valor": "28700"
+                    },
+                    {
+                      "codigo": "112104",
+                      "nombre": "(-) Depreciación Acumulada de Equipo de Computación",
+                      "saldo": "pasivo",
+                      "clases": "",
+                      "valor": "9232.41"
+                    }
+                  ]
+                },
+                {
+                  "gtointa": [
+                    {
+                      "codigo": "112201",
+                      "nombre": "Gastos de Organización",
+                      "saldo": "activo",
+                      "clases": "",
+                      "valor": "752"
+                    },
+                    {
+                      "codigo": "112202",
+                      "nombre": "(-) Amortización Acumulada de Gastos de Organización",
+                      "saldo": "pasivo",
+                      "clases": "",
+                      "valor": "150.4"
+                    }
+                  ]
+                },
+                {
+                  "gtodif": [
+                    {
+                      "codigo": "112301",
+                      "nombre": "Inversiones en Valores a Largo Plazo",
+                      "saldo": "activo",
+                      "clases": "",
+                      "valor": "100000"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "pasivo": [
+            {
+              "corriente": [
+                {
+                  "codigo": "121001",
+                  "nombre": "Proveedores",
+                  "saldo": "pasivo",
+                  "clases": "",
+                  "valor": "38800"
+                },
+                {
+                  "codigo": "121002",
+                  "nombre": "IVA",
+                  "saldo": "pasivo",
+                  "clases": "",
+                  "valor": "5140"
+                },
+                {
+                  "codigo": "121003",
+                  "nombre": "Documentos por Pagar a Corto Plazo",
+                  "saldo": "pasivo",
+                  "clases": "",
+                  "valor": "14000"
+                },
+                {
+                  "codigo": "121004",
+                  "nombre": "Préstamos Bancarios a Corto Plazo",
+                  "saldo": "pasivo",
+                  "clases": "",
+                  "valor": "80000"
+                },
+                {
+                  "codigo": "121005",
+                  "nombre": "IGSS por Pagar",
+                  "saldo": "pasivo",
+                  "clases": "",
+                  "valor": "2117.5"
+                },
+                {
+                  "codigo": "121006",
+                  "nombre": "Comisiones Percibidas no Devengadas",
+                  "saldo": "pasivo",
+                  "clases": "",
+                  "valor": "2040"
+                },
+                {
+                  "codigo": "121007",
+                  "nombre": "ISR por Pagar",
+                  "saldo": "pasivo",
+                  "clases": "",
+                  "valor": ""
+                },
+                {
+                  "codigo": "121008",
+                  "nombre": "(-) ISR Trimestral",
+                  "saldo": "activo",
+                  "clases": "",
+                  "valor": "10800"
+                }
+              ]
+            },
+            {
+              "nocorriente": [
+                {
+                  "codigo": "122001",
+                  "nombre": "Documentos por Pagar a Largo Plazo",
+                  "saldo": "pasivo",
+                  "clases": "",
+                  "valor": "10000"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "patneto": [
+            {
+              "codigo": "131001",
+              "nombre": "Capital",
+              "saldo": "pasivo",
+              "clases": "",
+              "valor": "109409.8"
+            },
+            {
+              "codigo": "131002",
+              "nombre": "Ganancia después del ISR",
+              "saldo": "pasivo",
+              "clases": "",
+              "valor": ""
+            },
+            {
+              "codigo": "131003",
+              "nombre": "(-)Cuenta Personal",
+              "saldo": "activo",
+              "clases": "",
+              "valor": "60000"
+            }
+          ]
+        }
+      ]
+    },
+    "Resultados": {
+      "resul": [
+        {
+          "ingresos": [
+            {
+              "codigo": "210001",
+              "nombre": "Ventas Brutas",
+              "saldo": "ganancia",
+              "clases": "",
+              "valor": "539069.54"
+            },
+            {
+              "codigo": "210002",
+              "nombre": "(-)Devoluciones y Rebajas Sobre Ventas",
+              "saldo": "perdida",
+              "clases": "",
+              "valor": "3750"
+            }
+          ]
+        },
+        {
+          "cosven": [
+            {
+              "codigo": "220001",
+              "nombre": "Inventario Inicial de Mercaderías",
+              "saldo": "perdida",
+              "clases": "",
+              "valor": "44000"
+            },
+            {
+              "codigo": "220002",
+              "nombre": "Compras",
+              "saldo": "perdida",
+              "clases": "",
+              "valor": "95800"
+            },
+            {
+              "codigo": "220003",
+              "nombre": "Gastos sobre Compras",
+              "saldo": "perdida",
+              "clases": "",
+              "valor": "5640"
+            },
+            {
+              "codigo": "220004",
+              "nombre": "Devoluciones y Rebajas sobre Compras",
+              "saldo": "ganancia",
+              "clases": "",
+              "valor": "2740"
+            },
+            {
+              "codigo": "220005",
+              "nombre": "Inventario Final de Mercaderías",
+              "saldo": "ganancia",
+              "clases": "",
+              "valor": "63740"
+            }
+          ]
+        },
+        {
+          "gtooper": [
+            {
+              "gtodist": [
+                {
+                  "codigo": "231001",
+                  "nombre": "Sueldos Sala de Ventas",
+                  "saldo": "perdida",
+                  "clases": "",
+                  "valor": "70800"
+                },
+                {
+                  "codigo": "231002",
+                  "nombre": "Bonificación Incentivo Sala de Ventas",
+                  "saldo": "perdida",
+                  "clases": "",
+                  "valor": "9000"
+                },
+                {
+                  "codigo": "231003",
+                  "nombre": "Cuotas Patronales Sala de Ventas",
+                  "saldo": "perdida",
+                  "clases": "",
+                  "valor": "8970.36"
+                },
+                {
+                  "codigo": "231004",
+                  "nombre": "Depreciación Mobiliario y Equipo Sala de Ventas",
+                  "saldo": "perdida",
+                  "clases": "",
+                  "valor": "1230"
+                }
+              ]
+            },
+            {
+              "gtoadmin": [
+                {
+                  "codigo": "232001",
+                  "nombre": "Sueldos de Administración",
+                  "saldo": "perdida",
+                  "clases": "",
+                  "valor": "74400"
+                },
+                {
+                  "codigo": "232002",
+                  "nombre": "Bonificación Incentivo de Administración",
+                  "saldo": "perdida",
+                  "clases": "",
+                  "valor": "12000"
+                },
+                {
+                  "codigo": "232003",
+                  "nombre": "Cuotas Patronales de Administración",
+                  "saldo": "perdida",
+                  "clases": "",
+                  "valor": "9426.48"
+                },
+                {
+                  "codigo": "232004",
+                  "nombre": "Depreciación Mobiliario y Equipo de Oficina",
+                  "saldo": "perdida",
+                  "clases": "",
+                  "valor": "820"
+                },
+                {
+                  "codigo": "232005",
+                  "nombre": "Depreciación Equipo de Computación",
+                  "saldo": "perdida",
+                  "clases": "",
+                  "valor": "9232.41"
+                },
+                {
+                  "codigo": "232006",
+                  "nombre": "Amortización Gastos de Organización",
+                  "saldo": "perdida",
+                  "clases": "",
+                  "valor": "155.4"
+                },
+                {
+                  "codigo": "232007",
+                  "nombre": "Papelería y Utiles Consumidos",
+                  "saldo": "perdida",
+                  "clases": "",
+                  "valor": "1838"
+                },
+                {
+                  "codigo": "232008",
+                  "nombre": "Cuentas Incobrables",
+                  "saldo": "perdida",
+                  "clases": "",
+                  "valor": "1221"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "ingfina": [
+            {
+              "codigo": "240001",
+              "nombre": "Intereses Percibidos",
+              "saldo": "ganancia",
+              "clases": "",
+              "valor": "9780"
+            }
+          ]
+        },
+        {
+          "gtofina": [
+            {
+              "codigo": "250001",
+              "nombre": "Intereses Gastos",
+              "saldo": "perdida",
+              "clases": "",
+              "valor": "8650"
+            }
+          ]
+        },
+        {
+          "otrgto": [
+            {
+              "codigo": "260001",
+              "nombre": "Donativos",
+              "saldo": "perdida",
+              "clases": "",
+              "valor": "10000"
+            }
+          ]
+        },
+        {
+          "otring": [
+            {
+              "codigo": "270001",
+              "nombre": "Comisiones Percibidas",
+              "saldo": "ganancia",
+              "clases": "",
+              "valor": "1360"
+            }
+          ]
+        }
+      ]
+    }
+  }
+]

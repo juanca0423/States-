@@ -1,0 +1,77 @@
+/* 1. EL CONTENEDOR DEBE TENER ALTURA Y ANCHO DEFINIDOS */
+.table-container {
+  overflow: auto;
+  width: 100%;
+  max-height: 500px; /* Obligatorio para que el header pegue arriba */
+  border: 1px solid #ddd;
+}
+
+/* Estilos base para la tabla */
+table {
+  width: 100%; /* O un ancho grande si es necesario */
+  overflow-x: auto; /* Permite el scroll horizontal */
+  border-collapse: separate;
+  border-spacing: 0;
+  display: block; /* Para manejo de desbordamiento */
+}
+
+th,
+td {
+  padding: 10px;
+  border: 1px solid #ccc;
+  white-space: nowrap; /* Evita que el texto se rompa */
+}
+
+/* Encabezados de columna (header principal) */
+thead th[scope="col"] {
+  /*background-color: #f2f2f2;*/
+  position: sticky;
+  top: 0; /* Fija el encabezado superior */
+  z-index: 10; /* Asegura que esté encima de los datos */
+}
+
+/* Primera columna (si es encabezado de fila) */
+tbody th[scope="row"] {
+  /*background-color: #f9f9f9;*/
+  position: sticky;
+  left: 0; /* Fija la primera columna a la izquierda */
+  z-index: 5; /* Debajo del encabezado principal */
+}
+
+/* 3. FIJAR PRIMERA COLUMNA */
+th:first-child,
+td:first-child {
+  position: sticky;
+  left: 0; /* Se pega al borde izquierdo del .table-container */
+  z-index: 5;
+  /*background-color: #f8f9fa;*/
+}
+
+/* 4. ESQUINA SUPERIOR IZQUIERDA (Cruce de ambos) */
+thead th:first-child {
+  z-index: 15; /* El más alto para que nada pase por encima */
+  top: 0;
+  left: 0;
+}
+
+/* Para pantallas pequeñas (móviles) */
+@media (max-width: 768px) {
+  thead th {
+    /* Asegúrate de que el z-index sea mayor si se superponen */
+    z-index: 10;
+  }
+  thead th[scope="row"] {
+    position: sticky;
+    left: 0;
+    z-index: 15;
+  }
+  tbody th[scope="row"] {
+    /* Si necesitas que la primera columna se fije */
+    /*background-color: #f9f9f9;*/
+    position: sticky;
+    left: 0;
+    z-index: 5;
+  }
+  /* Opcional: si quieres que la tabla no desborde, puedes cambiar a display: block */
+  /* table { display: block; overflow-x: auto; } */
+}
