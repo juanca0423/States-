@@ -2,8 +2,10 @@
 {{> 'partials/nav'}}
 <h1>{{Title}}</h1>
 <section>
+<hr>
 <div class="table-container">
-<table class="table table-dark table-hover table-bordered" >
+<table id="hojaTrabajo" class="print-table table table-dark table-hover table-bordered" >
+  <caption>Hoja de Trabajo</caption>
   <thead>
     <tr class="col-12">
       <th 
@@ -79,7 +81,7 @@
   </thead>
   {{#each keys}}
   <tbody>
-    <tr class="col-12" id="">
+    <tr class="col-12" >
       <th 
       scope="row" 
       class="col-3">
@@ -120,5 +122,24 @@
   {{/each}}
 </table>
 </div>
+<div>
+  <table id="resultados">
+    <thead></thead>
+    <tbody></tbody>
+  </table>
+</div>
+<div>
+  <table id="balance">
+    <thead>
+
+    </thead>
+    <tbody>
+
+    </tbody>
+  </table>
+</div>
 </section>
-{{> 'partials/footer'}}
+
+<button id="botonpdf">Descargar las tablas</button>
+<script src="/js/myscript.js"></script>
+{{>'partials/footer'}}
