@@ -1,0 +1,20 @@
+<?xml version="1.0" standalone="no"?>
+<svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+     width="1024.000000pt" height="1024.000000pt" viewBox="0 0 1024.000000 1024.000000"
+     preserveAspectRatio="xMidYMid meet">
+<style>
+    /* Color por defecto (Modo Claro) */
+    .logo-path { fill: #28a745; transition: fill 0.3s ease; }
+
+    /* Color para Modo Oscuro */
+    @media (prefers-color-scheme: dark) {
+        .logo-path { fill: #ffffff; }
+    }
+</style>
+<g transform="translate(0.000000,1024.000000) scale(0.100000,-0.100000)" class="logo-path" stroke="none">
+    <path d="M4805 9284 c-16 -2 -93 -11 -170 -19 ... "/> <path d="M3160 5484 l0 -236 -89 -91 ... "/>
+    <path d="M4280 5480 c0 -193 -3 -242 -14 -246 ... "/>
+    <path d="M5372 5113 l3 -608 135 0 ... "/>
+    <path d="M6420 5110 l0 -611 138 3 137 3 ... "/>
+</g>
+</svg>

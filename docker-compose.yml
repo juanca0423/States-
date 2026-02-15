@@ -1,0 +1,21 @@
+services:
+   go_web_app:
+    build: .
+    container_name: go_web_app
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/app
+    command: air 
+    environment:
+      DB_HOST: "aws-0-us-west-2.pooler.supabase.com"
+      DB_PORT: 6543
+      DB_USER: "postgres.rmxmcnygzqranlcoinbr"
+      DB_PASSWORD: "#bEAqJBwne-7Ak7"
+      DB_NAME: "postgres"
+      DB_SSL: "require"
+      JWT_SECRET: "RPKk4nn5snKRwvO1Gg84vehDa6PjQem9sshOJmXcZ3"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    restart: always # Esto evitará que tengas que dar --build cada vez

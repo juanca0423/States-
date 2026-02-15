@@ -1,0 +1,103 @@
+{{> "partials/header" }}
+{{> "partials/nav"}}
+
+<span
+  class="badge {{#if (eq Usuario.Role 'admin')}}bg-dark{{else}}{{#if Usuario.SuscripcionActiva}}bg-success{{else}}bg-warning{{/if}}{{/if}}">
+  {{#if (eq Usuario.Role 'admin')}}
+  Acceso Total Administrador
+  {{else}}
+  {{#if Usuario.SuscripcionActiva}}Suscripción PRO{{else}}Periodo de Prueba{{/if}}
+  {{/if}}
+</span>
+<div class="container mt-5" style="font-family: 'Courier New', Courier, monospace;">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card bg-[#3d5245] text-white shadow">
+        <div class="card-body text-center">
+          <div class="mb-3">
+            <i class="fas fa-user-tie fa-4x text-success"></i>
+          </div>
+          <h4 class="mb-0">{{Usuario.Nombre}} {{Usuario.Apellido}}</h4>
+          <p class="text-muted">{{Usuario.Email}}</p>
+          <span class="badge {{#if Usuario.SuscripcionActiva}}bg-success{{else}}bg-warning text-dark{{/if}}">
+            {{#if Usuario.SuscripcionActiva}}Suscripción PRO{{else}}Periodo de Prueba{{/if}}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-8">
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white">
+          <h5 class="mb-0 text-success"><i class="fas fa-id-card"></i> Estado de Cuenta</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-6">
+              <p class="mb-1 text-muted">Días restantes:</p>
+              <h3>{{DiasRestantes}} días</h3>
+            </div>
+            <div class="col-6 text-end">
+              <p class="mb-1 text-muted">Vence el:</p>
+              <h5 class="text-dark">{{FechaVencimiento}}</h5>
+            </div>
+          </div>
+
+          <hr>
+
+          {{#if Usuario.SuscripcionActiva}}
+          <div class="alert alert-info py-2">
+            <i class="fas fa-info-circle"></i> Su suscripción anual está activa y se procesa a través de G&T/Pagalo.
+          </div>
+          <form action="/pago/cancelar" method="POST"
+            onsubmit="return confirm('¿Está seguro de cancelar su suscripción?');">
+            <button type="submit" class="btn btn-outline-danger btn-sm">Cancelar renovación automática</button>
+          </form>
+          {{else}}
+          <div class="alert alert-warning py-2">
+            <i class="fas fa-clock"></i> Está usando la versión de prueba. Evite interrupciones adquiriendo el plan
+            anual.
+          </div>
+          <a href="/planes" class="btn btn-success">Actualizar a PRO - $25/año</a>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="card shadow-sm mt-4">
+  <div class="card-header bg-white">
+    <h5 class="mb-0 text-success"><i class="fas fa-history"></i> Historial de Pagos</h5>
+  </div>
+  <div class="card-body p-0">
+    <table class="table table-hover mb-0" style="font-size: 0.9rem;">
+      <thead class="table-light">
+        <tr>
+          <th>Fecha</th>
+          <th>Referencia G&T</th>
+          <th>Monto</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each Historial}}
+        <tr>
+          <td>{{this.CreatedAt}}</td>
+          <td><code>{{this.Referencia}}</code></td>
+          <td>${{this.Monto}} USD</td>
+          <td>
+            <span class="badge bg-success-soft text-success border border-success">
+              <i class="fas fa-check-circle"></i> {{this.Estado}}
+            </span>
+          </td>
+        </tr>
+        {{else}}
+        <tr>
+          <td colspan="4" class="text-center text-muted py-4">No se han encontrado transacciones.</td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</div>
+{{> "partials/footer"}}

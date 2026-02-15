@@ -1,0 +1,9 @@
+./texto.md
+./tmp
+./tmp/main
+./tmp/build-errors.log
+.env
+Dockerfile
+docker-compose.yml
+texto.md
+./estaticos/js/@popperjs

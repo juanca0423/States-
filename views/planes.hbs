@@ -1,0 +1,24 @@
+{{> "partials/header" }}
+{{> "partials/nav"}}
+
+
+{{#if Error}}
+<div class="alert alert-danger d-flex align-items-center mb-4" role="alert"
+  style="background-color: #fdf2f2; border-left: 5px solid #d32f2f; color: #7f1d1d;">
+  <i class="fas {{Icono}} me-3" style="font-size: 1.5rem;"></i>
+  <div>
+    <strong>Atención:</strong> {{Error}}
+    <br>
+    <small>Si el problema persiste, contacte a su banco o use el chat de consultoría.</small>
+  </div>
+</div>
+{{/if}}
+
+<input type="text" name="nombre_tarjeta" value="{{Datos.Nombre}}" class="form-control...">
+
+<!-- Código Pagalo,Mensaje para el Usuario -->
+<!-- ERR_01,La tarjeta no tiene fondos suficientes. -->
+<!-- ERR_02,"La tarjeta ha expirado. Por favor, use otra." -->
+<!-- ERR_03,Transacción declinada por seguridad del banco (llame a su banco). -->
+<!-- ERR_04,El código CVV es incorrecto. -->
+{{> "partials/footer"}}

@@ -1,0 +1,139 @@
+{{> 'partials/header'}}
+{{> 'partials/nav'}}
+
+<div class="table-responsive shadow-lg mt-4">
+  <table class="table table-dark table-bordered table-hover text-center align-middle" style="font-size: 0.85rem;">
+    <thead class="bg-success text-white">
+      <tr>
+        <th rowspan="2" class="align-middle">Cuentas</th>
+        <th colspan="2">Saldos</th>
+        <th colspan="2" class="bg-info text-dark">Costo Prod.</th>
+        <th colspan="2" class="bg-danger">Resultados</th>
+        <th colspan="2" class="bg-primary">Balance Gral.</th>
+      </tr>
+      <tr>
+        <th>Debe</th>
+        <th>Haber</th>
+        <th class="bg-info text-dark">Debe</th>
+        <th class="bg-info text-dark">Haber</th>
+        <th class="bg-danger">Pérdida</th>
+        <th class="bg-danger">Ganancia</th>
+        <th class="bg-primary">Activo</th>
+        <th class="bg-primary">Pasivo</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each filasHoja}}
+      <tr>
+        <td class="text-start fw-bold">{{this.Nombre}}</td>
+        <td class="text-end">{{format this.Debe}}</td>
+        <td class="text-end">{{format this.Haber}}</td>
+        <td class="text-end table-info text-dark">{{format this.CostoDebe}}</td>
+        <td class="text-end table-info text-dark">{{format this.CostoHaber}}</td>
+        <td class="text-end table-danger">{{format this.Perdida}}</td>
+        <td class="text-end table-danger">{{format this.Ganancia}}</td>
+        <td class="text-end table-primary">{{format this.Activo}}</td>
+        <td class="text-end table-primary">{{format this.Pasivo}}</td>
+      </tr>
+      {{/each}}
+    </tbody>
+    <tfoot class="fw-bold bg-dark text-white">
+      <tr>
+        <td class="text-start">SUMAS IGUALES</td>
+        <td class="text-end">{{tot.Debe}}</td>
+        <td class="text-end">{{tot.Haber}}</td>
+
+        {{!-- Columnas de Costo --}}
+        <td class="text-end table-info text-dark">{{tot.CostoDebe}}</td>
+        <td class="text-end table-info text-dark">{{tot.CostoHaber}}</td>
+
+        {{!-- Columnas de Resultados --}}
+        <td class="text-end table-danger text-dark">{{tot.Perdidas}}</td>
+        <td class="text-end table-danger text-dark">{{tot.Ganancias}}</td>
+
+        {{!-- Columnas de Balance --}}
+        <td class="text-end table-primary text-dark">{{tot.Activo}}</td>
+        <td class="text-end table-primary text-dark">{{tot.Pasivo}}</td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
+
+
+<div class="container mt-5">
+  <div class="table-responsive bg-white p-4 shadow-sm">
+    <h2 class="text-center font-monospace">ESTADO DE COSTO DE PRODUCCIÓN</h2>
+    <p class="text-center text-muted small">Cifras expresadas en Quetzales / Dólares</p>
+
+    <table class="table table-sm table-borderless mt-4">
+      <tbody>
+        <tr class="table-light">
+          <td colspan="3"><strong>1. MATERIA PRIMA</strong></td>
+        </tr>
+        <tr>
+          <td>Inventario Inicial de Materia Prima</td>
+          <td class="text-end border-bottom">{{res.InvInicialMP}}</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>(+) Compras y Gastos de Importación</td>
+          <td class="text-end border-bottom">{{res.ComprasNetasMP}}</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>(=) Materia Prima Disponible</td>
+          <td></td>
+          <td class="text-end">{{res.MPDisponible}}</td>
+        </tr>
+        <tr>
+          <td>(-) Inventario Final Materia Prima</td>
+          <td></td>
+          <td class="text-end border-bottom">({{res.InvFinalMP}})</td>
+        </tr>
+        <tr class="fw-bold">
+          <td>MATERIA PRIMA CONSUMIDA</td>
+          <td></td>
+          <td class="text-end">{{res.MPConsumida}}</td>
+        </tr>
+
+        <tr class="table-light">
+          <td colspan="3"><strong>2. MANO DE OBRA</strong></td>
+        </tr>
+        <tr>
+          <td>Mano de Obra Directa (Planillas)</td>
+          <td></td>
+          <td class="text-end border-bottom">{{res.MOD}}</td>
+        </tr>
+        <tr class="fw-bold text-primary">
+          <td>COSTO PRIMO</td>
+          <td></td>
+          <td class="text-end">{{res.CostoPrimo}}</td>
+        </tr>
+
+        <tr class="table-light">
+          <td colspan="3"><strong>3. GASTOS INDIRECTOS (CIF)</strong></td>
+        </tr>
+        <tr>
+          <td>Gastos de Fábrica y Otros Indirectos</td>
+          <td></td>
+          <td class="text-end border-bottom">{{res.CIF}}</td>
+        </tr>
+
+        <tr class="bg-dark text-white">
+          <td class="py-2">COSTO TOTAL DE PRODUCCIÓN</td>
+          <td></td>
+          <td class="text-end py-2" style="border-bottom: 3px double white;">{{res.CostoProduccion}}</td>
+        </tr>
+      </tbody>
+
+    </table>
+
+    <div class="mt-4 d-print-none text-end">
+      <button class="btn btn-primary" onclick="window.print()">Imprimir Reporte</button>
+      <a href="/eeff" class="btn btn-success">Ir al Balance General</a>
+    </div>
+  </div>
+</div>
+
+{{> 'partials/footer'}}

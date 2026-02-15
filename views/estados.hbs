@@ -1,0 +1,183 @@
+{{> 'partials/header'}}
+{{>'partials/nav'}}
+
+<h1>{{Title}}</h1>
+<section>
+  <hr>
+  <div class="table-container tabla-contable">
+    <table id="hojaTrabajo" class="print-table table table-dark table-hover table-bordered">
+      <caption>Hoja de Trabajo</caption>
+      <thead>
+        <tr class="col-12">
+          <th scope="row" class="col-3 text-center"> </th>
+          <th scope="col" colspan="2" class="col-3 border-top text-center">Saldos</th>
+          <th scope="col" colspan="2" class="col-3 border-top text-center">Resultados</th>
+          <th scope="col" colspan="2" class="col-3 border-top text-center">Balance</th>
+        </tr>
+        <tr class="col-12">
+          <th scope="row" class="col-3 border-bottom  text-center">Nombre</th>
+          <th scope="col" class="col-1.5 border-bottom text-center">Debe</th>
+          <th scope="col" class="col-1.5 border-bottom text-center">Haber</th>
+          <th scope="col" class="col-1.5 border-bottom text-center">Perdidas</th>
+          <th scope="col" class="col-1.5 border-bottom text-center">Ganancias</th>
+          <th scope="col" class="col-1.5 border-bottom text-center">Activo</th>
+          <th scope="col" class="col-1.5 border-bottom text-center">Pasivo</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each keys}}
+        <tr class="col-12 {{this.value.ClaTotal}}">
+          <td scope="row" style="text-align: left;" class="col-3">{{this.value.Nombre}}</td>
+          <td class="col-1.5" style="text-align: right;">{{this.value.Debe}}</td>
+          <td class="col-1.5" style="text-align: right;">{{this.value.Haber}}</td>
+          <td class="col-1.5" style="text-align: right;">{{this.value.Perdidas}}</td>
+          <td class="col-1.5" style="text-align: right;">{{this.value.Ganancias}}</td>
+          <td class="col-1.5" style="text-align: right;">{{this.value.Activo}}</td>
+          <td class="col-1.5" style="text-align: right;">{{this.value.Pasivo}}</td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+  <div class="tabla-contable">
+    <table id="resultados" class="table table-dark table-hover table-bordered">
+      <caption>Estado de Resultados</caption>
+      <thead>
+        <tr>
+          <th colspan="4" style="text-align: center;">
+            Estado de Resultados
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each resultados}}
+        <tr>
+          <td style="text-align: left;" class="{{this.value.ClasNombre}}">{{this.value.Nombre}}</td>
+          <td style="text-align: right;" class="{{this.value.Cla1}}">{{this.value.Col1}}</td>
+          <td style="text-align: right;" class="{{this.value.Cla2}}">{{this.value.Col2}}</td>
+          <td style="text-align: right;" class="{{this.value.Cla3}}" {{#if this.value.EsResultado}}id="baseContable"
+            {{/if}}>{{this.value.Col3}}
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+
+  <div id="contenedorSimulador" class="table table-dark table-hover table-bordered container mt-4 p-4 d-print-none">
+    <h4 id="tituloSimulador" class="">Simulador Fiscal Internacional</h4>
+    </p>
+    <div id="camposCalculo">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label text-dark">ISR (%)</label>
+          <input type="number" id="inputISR" class="form-control" value="25">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label text-dark">Reserva Legal (%)</label>
+          <input type="number" id="inputReserva" class="form-control" value="5">
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+          <button class="btn btn-success w-100" onclick="calcularFiscal(event)">Calcular</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="table table-dark table-hover table-bordered mt-3 p-3 border ">
+    <p>Impuesto: <strong id="txtISR">0.00</strong></p>
+    <p>Reserva: <strong id="txtReserva">0.00</strong></p>
+    <hr>
+    <p><strong>Utilidad Neta Disponible: <span id="txtNeto">0.00</span></strong></p>
+  </div>
+  </div>
+  <div>
+    <table id="balance" class="table table-dark table-bordered table-sm table-borderless">
+      <thead>
+        <tr class="border-bottom">
+          <th style="width: 40%;">Descripción</th>
+          <th style="width: 15%;" class="text-end">Detalle</th>
+          <th style="width: 15%;" class="text-end">Subtotal</th>
+          <th style="width: 15%;" class="text-end">NIIF</th>
+          <th style="width: 15%;" class="text-end">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each BalanceRows}}
+        <tr>
+          <td class="{{this.ClasNombre}}">{{this.Nombre}}</td>
+          <td class="text-end font-monospace {{this.Cla1}}">{{this.Col1}}</td>
+          <td class="text-end font-monospace {{this.Cla2}}">{{this.Col2}}</td>
+          <td class="text-end font-monospace {{this.Cla3}}">{{this.Col3}}</td>
+          <td class="text-end font-monospace fw-bold {{this.Cla4}}">{{this.Col4}}</td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+  <div class="container-fluid table table-dark table-hover table-bordered mt-5 mb-5 p-4 border rounded shadow-sm">
+    <div class="row border-bottom mb-4">
+      <div class="col-12">
+        <h4 class="text-secondary"><i class="bi bi-graph-up-arrow"></i> Análisis de Salud Financiera</h4>
+        <p class="text-muted small">Indicadores calculados en base a saldos actuales y costo de ventas.</p>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      {{#each indices}}
+      <div class="col-md-3">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body text-center">
+            <h6 class="card-subtitle mb-2 text-muted fw-bold text-uppercase" style="font-size: 0.75rem;">
+              {{this.Nombre}}
+            </h6>
+            <h2 class="card-title my-3 {{this.Clase}}">
+              {{this.Valor}}
+            </h2>
+            <hr>
+            <p class="card-text small text-secondary italic">
+              {{this.Interpretacion}}
+            </p>
+          </div>
+          <div class="card-body text-center">
+            <button type="button" class="btn btn-sm btn-outline-secondary mt-2"
+              onclick="verAuditoria('{{this.Nombre}}', '{{this.DetalleCuenta}}', '{{this.Interpretacion}}')">
+              <i class="bi bi-search"></i> Ver Auditoría
+            </button>
+          </div>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+</section>
+<div class="text-center mt-4">
+  <button class="btn btn-success px-5 shadow-sm d-flex align-items-center justify-content-center mx-auto" id="botonpdf">
+    <span id="pdfSpinner" class="spinner-border spinner-border-sm d-none me-2" role="status">
+    </span>
+    <i class="fas fa-file-pdf me-2" id="pdfIcon"></i>
+    <span id="pdfBtnText">Descargar Los Estados PDF</span>
+  </button>
+</div>
+<div class="modal fade" id="modalAuditoria" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title" id="tituloAuditoria">Detalle de Cálculo</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p id="descAuditoria" class="fw-bold"></p>
+        <div class="alert alert-info border-0">
+          <small>Fórmula aplicada:</small>
+          <div id="formulaAuditoria" class="font-monospace mt-1"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+
+<script src="/static/js/myscript.js"></script>
+{{>'partials/footer'}}

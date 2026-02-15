@@ -1,0 +1,21 @@
+{{> "partials/header" }}
+{{> "partials/nav"}}
+
+<h1>Inicio de seción</h1>
+
+<form class="form-control" method="POST" action="/loguin">
+  <div class="form-floating mb-3">
+    <input type="email" class="form-control" name="email" id="email" placeholder="email@ejemplo.com">
+    <label for="email" class="form-label">Email</label>
+  </div>
+  <div class="form-floating mb-3">
+    <input type="password" class="form-control" name="pase" id="pase" placeholder="">
+    <label for="pase" class="form-label">Password</label>
+  </div>
+  <hr>
+  <div class="col-8">
+    <button type="submit" class="btn btn-primary justifi-content-center mb-3">Confirme identidad</button>
+  </div>
+</form>
+
+{{> "partials/footer"}}

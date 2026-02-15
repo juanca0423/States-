@@ -1,0 +1,14 @@
+root = "."
+tmp_dir = "tmp"
+
+[build]
+  cmd = "go build -o ./tmp/main ."
+  full_bin = "./tmp/main"
+  # Agrega esta línea para incluir tus estáticos y vistas:
+  include_ext = ["go", "tpl", "tmpl", "html", "hbs", "css", "js"]
+  # Mantén tus opciones de poll para Docker
+  poll = true
+  poll_interval = 500 
+
+[log]
+  time = true

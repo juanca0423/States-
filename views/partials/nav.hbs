@@ -1,0 +1,119 @@
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm" style="background-color: #2c3e50;">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">
+      <img src="/static/images/logo.jpg" class="rounded border border-light" width="35px" alt="logo">
+      <span class="ms-2 fw-bold">EE FF</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto align-items-center">
+        {{#if IsLogged}}
+        {{#if EsTrial}}
+        <li class="nav-item me-3">
+          <span class="badge rounded-pill {{ClaseAlerta}} shadow-sm">
+            <i class="fas fa-clock me-1"></i> {{TextoDias}}
+          </span>
+        </li>
+        {{else}}
+        <li class="nav-item me-3">
+          <span class="badge rounded-pill bg-success shadow-sm">
+            <i class="fas fa-check-circle me-1"></i> Cuenta Pro
+          </span>
+        </li>
+        {{/if}}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle fw-bold" href="#" data-bs-toggle="dropdown">
+            <i class="fas fa-user-circle me-1"></i> {{UserName}}
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+            <li>
+              <a class="dropdown-item" href="/perfil"><i class="fas fa-cog me-2"></i> Ajustes</a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <a class="dropdown-item text-danger" href="/logout"><i class="fas fa-sign-out-alt me-2"></i> Salir</a>
+            </li>
+          </ul>
+        </li>
+        {{else}}
+        <li class="nav-item">
+          <a class="btn btn-success ms-2" href="/register">Probar Gratis</a>
+        </li>
+        {{/if}}
+      </ul>
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="/"><i class="fas fa-home me-1"></i> Inicio</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="/about"><i class="fas fa-info-circle me-1"></i> Info</a>
+        </li>
+
+        {{#if IsLogged}}
+        {{#if (eq role "admin")}}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle text-warning fw-bold" href="#" id="adminMenu" data-bs-toggle="dropdown">
+            <i class="fas fa-user-shield me-1"></i> Gestión Admin
+          </a>
+          <ul class="dropdown-menu shadow">
+            <li>
+              <a class="dropdown-item" href="/api/admin/dashboard"><i class="fas fa-chart-line me-2"></i> Dashboard</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/api/admin/crearcuenta"><i class="fas fa-list-ol me-2"></i> Config.
+                Nomenclatura</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/api/admin/soporte"><i class="fas fa-headset me-2"></i> Consultas
+                Técnicas</a>
+            </li>
+          </ul>
+        </li>
+
+        {{/if}}
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+            <i class="fas fa-calculator me-1"></i> Herramientas
+          </a>
+          <ul class="dropdown-menu shadow">
+            <li>
+              <a class="dropdown-item" href="/eeff"><i class="fas fa-store me-2"></i>EE.FF. Comercio</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/costosform"><i class="fas fa-industry me-2"></i>EE.FF. Industria</a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <a class="dropdown-item" href="/soport"><i class="fas fa-life-ring me-2"></i>Soporte</a>
+            </li>
+          </ul>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="/perfil"><i class="fas fa-user-circle me-1"></i> Mi Perfil</a>
+        </li>
+        <li class="nav-item ms-lg-2">
+          <a class="nav-link btn btn-outline-danger btn-sm px-3 fw-bold text-white border-2" href="/logout"
+            style="border-color: #dc3545 !important; transition: 0.3s;">
+            <i class="fas fa-sign-out-alt me-1"></i>
+            Cerrar Sesión
+          </a>
+        </li>
+
+        {{else}}
+        <li class="nav-item">
+          <a class="nav-link" href="/loguin"><i class="fas fa-key me-1"></i> Acceso</a>
+        </li>
+        {{/if}}
+      </ul>
+    </div>
+  </div>
+</nav>
