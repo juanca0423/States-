@@ -14,9 +14,9 @@ func GenerarPatrimonioVista(plantilla []models.Cue, titulo string, acumPat *floa
 
 	for _, c := range plantilla {
 		valorReal := 0.0
-
+		codigo := c.Codigo
 		// Si es la cuenta de Ganancia, usamos el valor que calculamos en Resultados
-		if c.Codigo == 131002 {
+		if codigo == 131002 {
 			valorReal = utilidadNeta
 		} else {
 			// Si no, buscamos en el mapa normal
@@ -35,6 +35,7 @@ func GenerarPatrimonioVista(plantilla []models.Cue, titulo string, acumPat *floa
 
 		if valorReal != 0 {
 			filas = append(filas, models.BaString{
+				Codigo: strconv.Itoa(codigo),
 				Nombre: c.Nombre,
 				Col1:   config.FCont(valorReal),
 			})
@@ -63,12 +64,15 @@ func GenerarBalanceVista(plantilla []models.Cue, tituloGrupo string, acumuladorT
 		}
 
 		// --- CORRECCIÓN DE LA LÓGICA DE INTERCEPCIÓN ---
-		// Si es la cuenta de Mercaderías, sobreescribimos con el Inventario Final
+		// --- CORRECCIÓN DE LA LÓGICA DE INTERCEPCIÓN ---
 		if c.Codigo == 111301 {
-			// Buscamos en saldosReales el código del inventario final
+			// 1. Guardamos el valor que venía de saldos reales como INICIAL
+			t.InventarioInicial = valorReal
+
+			// 2. Buscamos el inventario final para el Balance General
 			if invFin, existe := saldosReales["220005"]; existe {
-				valorReal = invFin.Saldo // Aquí tomamos los 63,740
-				t.Inventario = valorReal
+				valorReal = invFin.Saldo
+				t.Inventario = valorReal // Este es el FINAL
 			}
 		}
 
@@ -89,6 +93,7 @@ func GenerarBalanceVista(plantilla []models.Cue, tituloGrupo string, acumuladorT
 
 		if valorReal != 0 {
 			filas = append(filas, models.BaString{
+				Codigo: strconv.Itoa(c.Codigo),
 				Nombre: c.Nombre,
 				Col1:   config.FCont(valorReal),
 			})

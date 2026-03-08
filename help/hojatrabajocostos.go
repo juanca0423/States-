@@ -9,37 +9,50 @@ import (
 func HojaDeTrabajoIndustrial(balanceRaw map[string]float64) []models.KV {
 	var t models.Ht
 	var listaKV []models.KV
-	// Importante: Asegúrate de tener CreaMapCo en tu config
 	catalogo := config.CreaMap(true)
-
 	for codigoStr, valor := range balanceRaw {
 		cuenta, existe := catalogo[codigoStr]
 		if !existe || valor == 0 {
 			continue
 		}
-
 		var ht models.HtString
 		ht.Nombre = cuenta.Nombre
-
 		switch cuenta.Saldo {
 		case "activo":
 			switch codigoStr {
 			case "111301": // Mercaderías
-				invFinal := balanceRaw["220005"]
-				ht.Debe, ht.Activo = config.FCont(valor), config.FCont(invFinal)
-				ht.Perdidas, ht.Ganancias = config.FCont(valor), config.FCont(invFinal)
+				invFinalMerc := balanceRaw["220005"]
+				ht.Debe, ht.Activo = config.FCont(valor), config.FCont(invFinalMerc)
+				ht.Perdidas, ht.Ganancias = config.FCont(valor), config.FCont(invFinalMerc)
 				t.Debe += valor
-				t.Activo += invFinal
+				t.Activo += invFinalMerc
 				t.Perdidas += valor
-				t.Ganancias += invFinal
-
-			case "111303", "111304": // MP y Proceso
-				ht.Debe, ht.Activo = config.FCont(valor), config.FCont(valor)
-				ht.CostoHaber = config.FCont(valor)
+				t.Ganancias += invFinalMerc
+			case "111303": // MP
+				invFinalMP := balanceRaw["310800"]
+				ht.Debe, ht.Activo = config.FCont(valor), config.FCont(invFinalMP)
+				ht.CostoHaber, ht.CostoDebe = config.FCont(invFinalMP), config.FCont(valor)
 				t.Debe += valor
-				t.Activo += valor
+				t.Activo += invFinalMP
 				t.CostoHaber += valor
-
+				t.CostoDebe += invFinalMP
+			case "111304": // Proceso
+				invFinalProceso := balanceRaw["340201"]
+				ht.Debe, ht.Activo = config.FCont(valor), config.FCont(invFinalProceso)
+				ht.CostoDebe, ht.CostoHaber = config.FCont(invFinalProceso), config.FCont(valor)
+				t.Debe += valor
+				t.Activo += invFinalProceso
+				t.CostoHaber += valor
+				t.CostoDebe += invFinalProceso
+			case "111305": // PRODUCTOS TERMINADOS (La clave)
+				invFinalPT := balanceRaw["340202"] // Nueva cuenta
+				ht.Debe, ht.Activo = config.FCont(valor), config.FCont(invFinalPT)
+				// VAN A RESULTADOS, NO A COSTO
+				ht.Perdidas, ht.Ganancias = config.FCont(valor), config.FCont(invFinalPT)
+				t.Perdidas += valor
+				t.Ganancias += invFinalPT
+				t.Activo += invFinalPT
+				t.Debe += valor
 			default:
 				ht.Debe, ht.Activo = config.FCont(valor), config.FCont(valor)
 				t.Debe += valor

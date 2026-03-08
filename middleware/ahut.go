@@ -103,11 +103,21 @@ func AuthStatus(c *fiber.Ctx) error {
 	}
 	c.Locals("IsLogged", true)
 	c.Locals("UserName", user.Nombre)
-	c.Locals("UserRole", user.Role)
+	c.Locals("role", user.Role)
 	c.Locals("uid", claims.UserID)
 	// En AuthStatus guarda esto:
 	c.Locals("Suscrito", user.SuscripcionActiva)
 	c.Locals("FinPrueba", user.FechaFinPrueba)
+	// Dentro de AuthStatus, después de obtener el usuario de la DB:
+	dias := int(time.Until(user.FechaFinPrueba).Hours() / 24)
+	c.Locals("EsTrial", !user.SuscripcionActiva)
+	c.Locals("TextoDias", fmt.Sprintf("%d días restantes", dias))
+
+	if dias < 5 {
+		c.Locals("ClaseAlerta", "bg-danger")
+	} else {
+		c.Locals("ClaseAlerta", "bg-warning text-dark")
+	}
 	return c.Next()
 }
 

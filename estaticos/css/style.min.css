@@ -1,0 +1,59 @@
+.table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: #1a1a1a !important;
+  border-bottom: 2px solid #28a745 !important;
+  will-change: transform
+}
+
+input::-webkit-inner-spin-button,
+input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0
+}
+
+input[type=number] {
+  appearance: textfield
+}
+
+.cuadre-flotante {
+  position: fixed !important;
+  bottom: 20px !important;
+  right: 20px !important;
+  left: auto !important;
+  width: 180px !important;
+  height: 100px !important;
+  z-index: 999 !important;
+  background-color: #2d2d2d !important;
+  color: #00ff00 !important;
+  border: 2px solid #28a745 !important;
+  border-radius: 15px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.cuadre-monto {
+  font-size: 1.6rem !important;
+  font-family: 'Courier New', monospace !important;
+  font-weight: 800 !important;
+  white-space: nowrap !important;
+  line-height: 1.2 !important
+}
+
+.monto-contable {
+  text-align: right !important;
+  font-family: 'Courier New', monospace !important;
+  letter-spacing: .5px
+}
+
+#balanceForm .row.g-3>div {
+  border-bottom: 1px solid rgba(40, 167, 69, .15);
+  transition: background-color .2s
+}
+
+#balanceForm .row.g-3:hover {
+  background-color: rgba(40, 167, 69, .05)
+}

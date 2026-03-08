@@ -1,5 +1,5 @@
 // ==========================================
-// 1. VARIABLES GLOBALES Y CONFIGURACIÓN
+// 1. VARIABLES GLOBALES (Siempre al inicio)
 // ==========================================
 let currentInput = '0';
 let subtotal = 0;
@@ -11,8 +11,125 @@ const sonidoExito = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/
 sonidoExito.volume = 0.3;
 
 // ==========================================
-// 2. FUNCIONES DE CÁLCULO Y FORMATEO (GLOBALES)
+// 2. EXPORTACIÓN DE FUNCIONES AL ÁMBITO GLOBAL (window)
 // ==========================================
+
+window.updateDisplay = function() {
+  const display = document.getElementById('displayCalc');
+  if (display) display.value = currentInput;
+};
+
+window.addNum = function(num) {
+  if (currentInput === '0') currentInput = num;
+  else currentInput += num;
+  window.updateDisplay();
+};
+
+window.addDecimal = function() {
+  if (!currentInput.includes('.')) {
+    currentInput += (currentInput === '' ? '0.' : '.');
+    window.updateDisplay();
+  }
+};
+
+window.backspace = function() {
+  if (currentInput.length > 1) {
+    currentInput = currentInput.slice(0, -1);
+  } else {
+    currentInput = '0';
+  }
+  window.updateDisplay();
+};
+
+window.clearCalc = function() {
+  currentInput = '0';
+  subtotal = 0;
+  pendingOp = null;
+  const cinta = document.getElementById('cintaContable');
+  if (cinta) cinta.innerHTML = '<div class="text-muted small text-center border-bottom mb-1">REGISTRO</div>';
+  window.updateDisplay();
+};
+
+window.setOp = function(op) {
+  const valorActual = parseFloat(currentInput);
+  if (pendingOp !== null) window.ejecutarOperacion(valorActual);
+  else subtotal = valorActual;
+  pendingOp = op;
+  window.addToCinta(currentInput + ' ' + op);
+  currentInput = '0';
+  window.updateDisplay();
+};
+
+window.ejecutarOperacion = function(nuevoValor) {
+  if (pendingOp === '+') subtotal += nuevoValor;
+  else if (pendingOp === '-') subtotal -= nuevoValor;
+  else if (pendingOp === '*') subtotal *= nuevoValor;
+  else if (pendingOp === '/') subtotal = nuevoValor !== 0 ? subtotal / nuevoValor : 0;
+};
+
+window.calcular = function() {
+  if (pendingOp === null) return;
+  const valorFinal = parseFloat(currentInput);
+  window.ejecutarOperacion(valorFinal);
+  window.addToCinta(currentInput);
+  window.addToCinta("----------");
+  window.addToCinta("* " + subtotal.toLocaleString('en-US', { minimumFractionDigits: 2 }));
+  currentInput = subtotal.toString();
+  pendingOp = null;
+  window.updateDisplay();
+};
+
+window.toggleCalc = function() {
+  const calc = document.getElementById('calculadoraContable');
+  const btnFlotante = document.getElementById('btnSumadora');
+  if (!calc) return;
+
+  if (calc.classList.contains('d-none')) {
+    calc.classList.remove('d-none');
+    if (btnFlotante) btnFlotante.style.display = 'none';
+    document.querySelectorAll('.input-contable').forEach(i => {
+      if (i.id !== 'input-220001') i.style.backgroundColor = "#1e1e1e";
+    });
+  } else {
+    calc.classList.add('d-none');
+    if (btnFlotante) btnFlotante.style.display = 'block';
+  }
+};
+
+window.pegarResultado = function() {
+  const display = document.getElementById('displayCalc');
+  if (display && ultimoInputEnfocado) {
+    ultimoInputEnfocado.value = display.value;
+    ultimoInputEnfocado.dispatchEvent(new Event('input'));
+    window.addToCinta("-> Trasladado");
+    ultimoInputEnfocado.focus();
+  } else {
+    window.mostrarAviso("Primero selecciona una celda");
+  }
+};
+
+window.addToCinta = function(text) {
+  const cinta = document.getElementById('cintaContable');
+  if (!cinta) return;
+  const line = document.createElement('div');
+  line.style.color = text.includes('-') ? "#ff4444" : "inherit";
+  line.style.fontSize = "0.75rem";
+  line.innerText = text;
+  cinta.appendChild(line);
+  cinta.scrollTop = cinta.scrollHeight;
+};
+
+window.mostrarAviso = function(mensaje) {
+  const toastEl = document.getElementById('toastAtajo');
+  if (!toastEl) { console.log(mensaje); return; }
+  document.getElementById('toastMensaje').innerHTML = `<i class="fas fa-keyboard me-2"></i> ${mensaje}`;
+  new bootstrap.Toast(toastEl, { delay: 2000 }).show();
+};
+
+// ==========================================
+// 3. LÓGICA DE NEGOCIO Y CÁLCULOS
+// ==========================================
+
 const formatearVisual = (input) => {
   let val = parseFloat(input.value.replace(/,/g, ''));
   if (!isNaN(val)) {
@@ -47,134 +164,34 @@ const calcularDiferencia = () => {
   });
 
   const diff = Math.abs(totalDebe - totalHaber);
-
   if (diffValue && cuadro) {
     diffValue.innerText = diff.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    diffValue.style.fontSize = (diff > 999999) ? "1.2rem" : "1.5rem";
-
     if (diff < 0.01 && llenados > 0) {
       diffValue.style.color = "#00ff00";
       diffValue.innerHTML = '<i class="fas fa-check-circle"></i> CUADRADO';
-      cuadro.style.borderColor = "#00ff00";
-      cuadro.style.boxShadow = "0 0 20px rgba(0, 255, 0, 0.5)";
-      if (!yaSonó) {
-        sonidoExito.play().catch(() => { });
-        yaSonó = true;
-      }
+      if (!yaSonó) { sonidoExito.play().catch(() => { }); yaSonó = true; }
     } else {
       diffValue.style.color = "#ff4444";
-      cuadro.style.borderColor = "#ff4444";
-      cuadro.style.boxShadow = "0 4px 15px rgba(0,0,0,0.5)";
       yaSonó = false;
     }
   }
 };
 
 // ==========================================
-// 3. LÓGICA DE LA CALCULADORA
+// 4. EVENTOS Y DOM
 // ==========================================
-function toggleCalc() {
-  const calc = document.getElementById('calculadoraContable');
-  const btnFlotante = document.getElementById('btnSumadora');
-  if (!calc) return;
 
-  if (calc.classList.contains('d-none')) {
-    calc.classList.remove('d-none');
-    if (btnFlotante) btnFlotante.style.display = 'none';
-    document.querySelectorAll('.input-contable').forEach(i => {
-      if (i.id !== 'input-220001') i.style.backgroundColor = "#1e1e1e";
-    });
-  } else {
-    calc.classList.add('d-none');
-    if (btnFlotante) btnFlotante.style.display = 'block';
-  }
-}
-
-function updateDisplay() {
-  const display = document.getElementById('displayCalc');
-  if (display) display.value = currentInput;
-}
-
-function addNum(num) {
-  if (currentInput === '0') currentInput = num;
-  else currentInput += num;
-  updateDisplay();
-}
-
-function ejecutarOperacion(nuevoValor) {
-  if (pendingOp === '+') subtotal += nuevoValor;
-  else if (pendingOp === '-') subtotal -= nuevoValor;
-  else if (pendingOp === '*') subtotal *= nuevoValor;
-  else if (pendingOp === '/') subtotal = nuevoValor !== 0 ? subtotal / nuevoValor : 0;
-}
-
-function setOp(op) {
-  const valorActual = parseFloat(currentInput);
-  if (pendingOp !== null) ejecutarOperacion(valorActual);
-  else subtotal = valorActual;
-  pendingOp = op;
-  addToCinta(currentInput + ' ' + op);
-  currentInput = '0';
-  updateDisplay();
-}
-
-function calcular() {
-  if (pendingOp === null) return;
-  const valorFinal = parseFloat(currentInput);
-  ejecutarOperacion(valorFinal);
-  addToCinta(currentInput);
-  addToCinta("----------");
-  addToCinta("* " + subtotal.toLocaleString('en-US', { minimumFractionDigits: 2 }));
-  currentInput = subtotal.toString();
-  pendingOp = null;
-  updateDisplay();
-}
-
-function pegarResultado() {
-  const display = document.getElementById('displayCalc');
-  if (display && ultimoInputEnfocado) {
-    ultimoInputEnfocado.value = display.value;
-    ultimoInputEnfocado.dispatchEvent(new Event('input'));
-    addToCinta("-> Trasladado");
-    ultimoInputEnfocado.focus();
-  } else {
-    mostrarAviso("Primero selecciona una celda");
-  }
-}
-
-function addToCinta(text) {
-  const cinta = document.getElementById('cintaContable');
-  if (!cinta) return;
-  const line = document.createElement('div');
-  line.style.color = text.includes('-') ? "#ff4444" : "inherit";
-  line.style.fontSize = "0.75rem";
-  line.innerText = text;
-  cinta.appendChild(line);
-  cinta.scrollTop = cinta.scrollHeight;
-}
-
-function mostrarAviso(mensaje) {
-  const toastEl = document.getElementById('toastAtajo');
-  if (!toastEl) { console.log(mensaje); return; }
-  document.getElementById('toastMensaje').innerHTML = `<i class="fas fa-keyboard me-2"></i> ${mensaje}`;
-  new bootstrap.Toast(toastEl, { delay: 2000 }).show();
-}
-
-// ==========================================
-// 4. INICIALIZACIÓN Y EVENTOS
-// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
   const cuadro = document.getElementById('cuadroCuadre');
-  const form = document.getElementById('balanceForm');
-  document.getElementById('inputISR')?.addEventListener('input', calcularFiscal);
-  document.getElementById('inputReserva')?.addEventListener('input', calcularFiscal);
-  if (cuadro) document.body.appendChild(cuadro);
+  if (cuadro) {
+    document.body.appendChild(cuadro);
+    cuadro.style.setProperty("right", "10px", "important");
+    cuadro.style.setProperty("left", "auto", "important");
+  }
 
-  // Sincronización de cuentas automáticas
   document.addEventListener('input', (e) => {
     if (e.target.classList.contains('input-contable')) {
       calcularDiferencia();
-      // Lógica de espejos (111301 -> 220001, etc)
       const mappings = { '111301': '220001', '111303': '311001', '111304': '311002', '111305': '311001' };
       if (mappings[e.target.name]) {
         const target = document.getElementsByName(mappings[e.target.name])[0];
@@ -195,85 +212,74 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.target.classList.contains('input-contable')) formatearVisual(e.target);
   });
 
-  if (form) {
-    form.addEventListener('submit', () => {
-      document.querySelectorAll('.input-contable').forEach(i => i.value = i.value.replace(/,/g, ''));
-    });
-  }
-  // Resaltar campos automáticos para no confundirlos con manuales
-  const automaticos = ['220005', '311002'];
-  automaticos.forEach(name => {
-    const el = document.getElementsByName(name)[0];
-    if (el) {
-      el.style.borderLeft = "4px solid #00ff00";
-      el.title = "Calculado automáticamente por el módulo fiscal";
-    }
-  });
   calcularDiferencia();
 });
 
-// Atajos de teclado (High Priority)
 // ==========================================
-// 2. ATAJOS DE TECLADO (VERSIÓN BLINDADA)
+// 5. ATAJOS DE TECLADO
 // ==========================================
-document.addEventListener('keydown', (e) => {
-  // 1. Validación de seguridad: Si no hay tecla, ignorar
-  if (!e || !e.key) return;
 
+document.addEventListener('keydown', (e) => {
+  const isS = (e.key === 's' || e.key === 'S' || e.code === 'KeiS');
+  if (!e || !e.key) return;
   const key = e.key.toLowerCase();
   const isCtrl = e.ctrlKey || e.metaKey;
+  const enInputTabla = e.target.classList.contains('input-contable');
+  const calc = document.getElementById('calculadoraContable');
+  const estaVisible = calc && !calc.classList.contains('d-none');
 
-  // --- A. EL ATAJO MAESTRO: CTRL + S ---
-  if (isCtrl && key === 's') {
-    e.preventDefault();
-    e.stopPropagation(); // Evita que otros scripts interfieran
-
-    console.log("💾 Guardado rápido activado...");
-
-    // Limpiar comas antes de enviar
+  if (isCtrl && isS) {
+    e.preventDefault(); // DETIENE el "Guardar como" del navegador
+    e.stopPropagation(); // EVITA que otros scripts lo vean
+    console.log("💾 Iniciando guardado contable...");
+    // 1. Limpiar comas de todos los inputs antes de enviar
     document.querySelectorAll('.input-contable').forEach(input => {
       input.value = input.value.replace(/,/g, '');
     });
-
-    const form = document.getElementById('balanceForm') || document.querySelector('form');
+    // 2. Localizar el formulario
+    const form = document.getElementById('balanceForm');
     const diffValue = document.getElementById('diffValue');
     const estaCuadrado = diffValue && diffValue.innerText.includes("CUADRADO");
 
     if (form) {
       if (estaCuadrado) {
-        mostrarAviso("¡Cuadrado! Guardando...");
+        window.mostrarAviso("¡Cuadrado! Guardando datos...");
         form.submit();
       } else {
         if (confirm("⚠️ La hoja NO está cuadrada. ¿Deseas guardar de todas formas?")) {
-          mostrarAviso("Guardando con descuadre...");
           form.submit();
         }
       }
+    } else {
+      console.error("No se encontró el formulario #balanceForm");
     }
-    return;
+    return false;
   }
 
-  // --- B. LÓGICA DE CALCULADORA ---
-  const calc = document.getElementById('calculadoraContable');
-  const estaVisible = calc && !calc.classList.contains('d-none');
-
-  // Alt + C: Abrir/Cerrar
-  if (e.altKey && key === 'c') {
+  // Enter en tabla
+  if (key === 'enter' && enInputTabla) {
     e.preventDefault();
-    toggleCalc();
+    const inputs = Array.from(document.querySelectorAll('.input-contable'));
+    const index = inputs.indexOf(e.target);
+    if (index > -1 && index < inputs.length - 1) inputs[index + 1].focus();
     return;
   }
 
-  if (estaVisible) {
-    if (/[0-9]/.test(key)) { e.preventDefault(); addNum(key); }
-    if (['+', '-', '*', '/'].includes(key)) { e.preventDefault(); setOp(key); }
-    if (key === '.' || key === ',') { e.preventDefault(); addDecimal(); }
-    if (key === 'backspace') { e.preventDefault(); backspace(); }
-    if (key === 'escape') { e.preventDefault(); toggleCalc(); }
-    if (key === 'p') { e.preventDefault(); pegarResultado(); }
-    if (key === 'enter') { e.preventDefault(); calcular(); }
+  // Alt + C
+  if (e.altKey && key === 'c') { e.preventDefault(); window.toggleCalc(); return; }
+
+  // Teclas calculadora
+  if (estaVisible && !enInputTabla) {
+    if (/[0-9]/.test(key)) { e.preventDefault(); window.addNum(key); }
+    if (['+', '-', '*', '/'].includes(key)) { e.preventDefault(); window.setOp(key); }
+    if (key === '.' || key === ',') { e.preventDefault(); window.addDecimal(); }
+    if (key === 'backspace') { e.preventDefault(); window.backspace(); }
+    if (key === 'enter') { e.preventDefault(); window.calcular(); }
+    if (key === 'p') { e.preventDefault(); window.pegarResultado(); }
+    if (key === 'c' && !e.altKey) { e.preventDefault(); window.clearCalc(); }
+    if (key === 'escape') { e.preventDefault(); window.toggleCalc(); }
   }
-}, true);
+}, { capture: true });
 
 // ==========================================
 // FUNCIÓN FISCAL (Saca esto de cualquier otro bloque)
@@ -310,6 +316,67 @@ window.calcularFiscal = function() {
   if (document.getElementById('txtNeto')) document.getElementById('txtNeto').innerText = f.format(netoFinal);
 
   mostrarAviso("Cálculos fiscales actualizados");
+};
+
+// ==========================================
+// FUNCIÓN DE AUDITORÍA (Sincronizada con Go)
+// ==========================================
+
+
+
+window.verAuditoria = function(nombre, detalleCuenta, interpretacion) {
+  alert("Llegó: " + detalleCuenta);
+  console.log("Auditoría solicitada para:", nombre);
+
+  // 1. Buscar los elementos del modal
+  const modalElemento = document.getElementById('modalAuditoria');
+  const modalTitulo = document.getElementById('modalAuditoriaTitulo');
+  const modalCuerpo = document.getElementById('modalAuditoriaCuerpo');
+
+  if (!modalElemento) {
+    console.error("No se encontró el modal con ID 'modalAuditoria' en el HTML.");
+    window.mostrarAviso("Error: No se encontró el modal de detalles.");
+    return;
+  }
+
+  // 2. Inyectar los datos que vienen desde Go/Handlebars
+  if (modalTitulo) {
+    modalTitulo.innerHTML = `<i class="bi bi-shield-check me-2"></i> Auditoría: ${nombre}`;
+  }
+
+  if (modalCuerpo) {
+    modalCuerpo.innerHTML = `
+            <div class="p-2">
+                <div class="mb-4">
+                    <h6 class="text-primary fw-bold mb-2">
+                        <i class="bi bi-calculator me-2"></i> Fórmula y Valores (Origen Go):
+                    </h6>
+                    <div class="bg-dark text-success p-3 rounded font-monospace border shadow-sm" style="font-size: 0.95rem;">
+                        ${detalleCuenta}
+                    </div>
+                </div>
+
+                <div class="mb-2">
+                    <h6 class="text-primary fw-bold mb-2">
+                        <i class="bi bi-info-circle me-2"></i> Análisis Técnico:
+                    </h6>
+                    <p class="text-dark bg-light p-3 border-start border-4 border-primary rounded">
+                        ${interpretacion}
+                    </p>
+                </div>
+
+                <div class="text-center mt-3">
+                    <small class="text-muted italic">
+                        Los valores mostrados han sido extraídos directamente de los saldos de la Hoja de Trabajo.
+                    </small>
+                </div>
+            </div>
+        `;
+  }
+
+  // 3. Disparar el Modal (Bootstrap 5)
+  const miModal = new bootstrap.Modal(modalElemento);
+  miModal.show();
 };
 
 const btnPdf = document.getElementById("botonpdf");
@@ -432,3 +499,4 @@ if (btnPdf) {
     mostrarAviso("Reporte Maestro generado con éxito.");
   });
 }
+

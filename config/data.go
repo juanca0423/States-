@@ -9,31 +9,31 @@ import (
 )
 
 var (
-	Disponible       []models.Cue
-	Exigible         []models.Cue
-	Realisable       []models.Cue
-	RealisableCo     []models.Cue
-	PropPlanEqui     []models.Cue
-	GtoIntan         []models.Cue
-	GtoDiferidos     []models.Cue
-	PasivoCorr       []models.Cue
-	PasivoNoCorr     []models.Cue
-	PatriNeto        []models.Cue
-	Ingresos         []models.Cue
-	InveIni          []models.Cue
-	InveIniCo        []models.Cue
-	Compras          []models.Cue
-	InveFin          []models.Cue
-	GtoVentas        []models.Cue
-	GtoAdmin         []models.Cue
-	IngrFina         []models.Cue
-	GastosFina       []models.Cue
-	OtrosGtoFina     []models.Cue
-	Otring           []models.Cue
-	MateriaPrima     []models.Cue
-	ManoObra         []models.Cue
-	GastosFabrica    []models.Cue
-	ProductosProceso []models.Cue
+	Disponible         []models.Cue
+	Exigible           []models.Cue
+	Realisable         []models.Cue
+	RealisableCo       []models.Cue
+	PropPlanEqui       []models.Cue
+	GtoIntan           []models.Cue
+	GtoDiferidos       []models.Cue
+	PasivoCorr         []models.Cue
+	PasivoNoCorr       []models.Cue
+	PatriNeto          []models.Cue
+	Ingresos           []models.Cue
+	InveIni            []models.Cue
+	InveIniCo          []models.Cue
+	Compras            []models.Cue
+	InveFin            []models.Cue
+	GtoVentas          []models.Cue
+	GtoAdmin           []models.Cue
+	IngrFina           []models.Cue
+	GastosFina         []models.Cue
+	OtrosGtoFina       []models.Cue
+	Otring             []models.Cue
+	MaterialesDirectos []models.Cue
+	ManoObra           []models.Cue
+	CostosIndirectos   []models.Cue
+	CuentasInventarios []models.Cue
 )
 
 func CargarNomenclaturaDesdeDB(db *sql.DB) error {
@@ -65,10 +65,10 @@ func CargarNomenclaturaDesdeDB(db *sql.DB) error {
 	GastosFina = nil
 	OtrosGtoFina = nil
 	Otring = nil
-	MateriaPrima = nil
+	MaterialesDirectos = nil
 	ManoObra = nil
-	GastosFabrica = nil
-	ProductosProceso = nil
+	CostosIndirectos = nil
+	CuentasInventarios = nil
 
 	for rows.Next() {
 		var c models.Cue
@@ -84,6 +84,8 @@ func CargarNomenclaturaDesdeDB(db *sql.DB) error {
 			Ingresos = append(Ingresos, c)
 		case "InveIni":
 			InveIni = append(InveIni, c)
+		case "InveFin": // <--- ESTA ES LA QUE FALTA
+			InveFin = append(InveFin, c)
 		case "Compras":
 			Compras = append(Compras, c)
 		case "GtoVentas":
@@ -119,18 +121,14 @@ func CargarNomenclaturaDesdeDB(db *sql.DB) error {
 		case "PatriNeto":
 			PatriNeto = append(PatriNeto, c)
 		// ... dentro del switch en CargarNomenclaturaDesdeDB ...
-		case "MateriaPrima":
-			MateriaPrima = append(MateriaPrima, c)
+		case "MaterialesDirectos":
+			MaterialesDirectos = append(MaterialesDirectos, c)
 		case "ManoObra":
 			ManoObra = append(ManoObra, c)
-		case "GastosFabrica":
-			GastosFabrica = append(GastosFabrica, c)
-		case "ProductosProceso":
-			ProductosProceso = append(ProductosProceso, c)
-		case "InveIniCo":
-			InveIniCo = append(InveIniCo, c)
-		case "InveFin":
-			InveFin = append(InveFin, c)
+		case "CostosIndirectos":
+			CostosIndirectos = append(CostosIndirectos, c)
+		case "CuentasInventarios":
+			CuentasInventarios = append(CuentasInventarios, c)
 		}
 	}
 	// ¡ESTO ES LO NUEVO!
@@ -172,7 +170,7 @@ func CargarComercial() {
 		PatriNeto, Ingresos, InveIni, Compras,
 		InveFin, GtoVentas, GtoAdmin, IngrFina,
 		GastosFina, OtrosGtoFina, Otring,
-		MateriaPrima, ManoObra, GastosFabrica, ProductosProceso,
+		MaterialesDirectos, ManoObra, CostosIndirectos, CuentasInventarios,
 	}
 
 	for _, grupo := range todosLosGrupos {

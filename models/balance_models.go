@@ -51,6 +51,7 @@ type Cuenta struct {
 // Esta es la que recibirá el HTML (.hbs)
 
 type BaString struct {
+	Codigo     string
 	Nombre     string
 	Col1       string
 	Col2       string
@@ -72,4 +73,5 @@ type TotalesBalance struct {
 	PasivoTotal       float64
 	Patrimonio        float64
 	Inventario        float64 // Lo necesitamos para la Prueba Ácida y Rotación
+	InventarioInicial float64 // <--- Agrega este para el Dashboard
 }

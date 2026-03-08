@@ -1,139 +1,301 @@
 {{> 'partials/header'}}
 {{> 'partials/nav'}}
+<div class="card border-primary mb-3">
+  <div class="card-header bg-primary text-white text-center">
+    <h3>ESTADO DE COSTO DE PRODUCCIÓN Y VENTAS</h3>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-hover table-sm">
+        <thead class="table-dark">
+          <tr>
+            <th>CONCEPTO</th>
+            <th class="text-end">DETALLE</th>
+            <th class="text-end">SUBTOTAL</th>
+            <th class="text-end">TOTAL</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="table-active"><th colspan="4">MATERIALES DIRECTOS</th></tr>
+          <tr>
+            <td>Inventario Inicial de Materia Prima</td>
+            <td></td>
+            <td class="text-end text-decoration-underline">{{res.InvInicialMP}}</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Compras Brutas + Gastos</td>
+            <td class="text-end">{{res.ComprasMP}} + {{res.GastosMP}}</td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>(-) Devoluciones y Rebajas s/Compras</td>
+            <td class="text-end text-danger">({{res.DevMP}})</td>
+            <td class="text-end text-decoration-underline">{{res.ComprasNetasMP}}</td>
+            <td></td>
+          </tr>
+          <tr class="fst-italic text-muted">
+            <td>Materia Prima Disponible</td>
+            <td></td>
+            <td class="text-end">{{res.MPDisponible}}</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>(-) Inventario Final Materia Prima</td>
+            <td></td>
+            <td class="text-end text-danger text-decoration-underline">({{res.InvFinalMP}})</td>
+            <td class="text-end fw-bold">{{res.MPConsumida}}</td>
+          </tr>
 
-<div class="table-responsive shadow-lg mt-4">
-  <table class="table table-dark table-bordered table-hover text-center align-middle" style="font-size: 0.85rem;">
-    <thead class="bg-success text-white">
-      <tr>
-        <th rowspan="2" class="align-middle">Cuentas</th>
-        <th colspan="2">Saldos</th>
-        <th colspan="2" class="bg-info text-dark">Costo Prod.</th>
-        <th colspan="2" class="bg-danger">Resultados</th>
-        <th colspan="2" class="bg-primary">Balance Gral.</th>
-      </tr>
-      <tr>
-        <th>Debe</th>
-        <th>Haber</th>
-        <th class="bg-info text-dark">Debe</th>
-        <th class="bg-info text-dark">Haber</th>
-        <th class="bg-danger">Pérdida</th>
-        <th class="bg-danger">Ganancia</th>
-        <th class="bg-primary">Activo</th>
-        <th class="bg-primary">Pasivo</th>
-      </tr>
-    </thead>
-    <tbody>
-      {{#each filasHoja}}
-      <tr>
-        <td class="text-start fw-bold">{{this.Nombre}}</td>
-        <td class="text-end">{{format this.Debe}}</td>
-        <td class="text-end">{{format this.Haber}}</td>
-        <td class="text-end table-info text-dark">{{format this.CostoDebe}}</td>
-        <td class="text-end table-info text-dark">{{format this.CostoHaber}}</td>
-        <td class="text-end table-danger">{{format this.Perdida}}</td>
-        <td class="text-end table-danger">{{format this.Ganancia}}</td>
-        <td class="text-end table-primary">{{format this.Activo}}</td>
-        <td class="text-end table-primary">{{format this.Pasivo}}</td>
-      </tr>
-      {{/each}}
-    </tbody>
-    <tfoot class="fw-bold bg-dark text-white">
-      <tr>
-        <td class="text-start">SUMAS IGUALES</td>
-        <td class="text-end">{{tot.Debe}}</td>
-        <td class="text-end">{{tot.Haber}}</td>
+          <tr>
+            <td class="fw-bold">(+) MANO DE OBRA DIRECTA</td>
+            <td></td>
+            <td></td>
+            <td class="text-end text-decoration-underline">{{res.MOD}}</td>
+          </tr>
+          <tr class="table-info fw-bold">
+            <td>(=) COSTO PRIMO (MP + MOD)</td>
+            <td></td>
+            <td></td>
+            <td class="text-end">{{res.CostoPrimo}}</td>
+          </tr>
 
-        {{!-- Columnas de Costo --}}
-        <td class="text-end table-info text-dark">{{tot.CostoDebe}}</td>
-        <td class="text-end table-info text-dark">{{tot.CostoHaber}}</td>
+          <tr>
+            <td class="fw-bold">(+) GASTOS INDIRECTOS (CIF)</td>
+            <td></td>
+            <td></td>
+            <td class="text-end text-decoration-underline">{{res.CIF}}</td>
+          </tr>
+          <tr class="table-success fw-bold">
+            <td>(=) COSTO DE PRODUCCIÓN DEL PERIODO</td>
+            <td></td>
+            <td></td>
+            <td class="text-end">{{res.CostoProduccion}}</td>
+          </tr>
 
-        {{!-- Columnas de Resultados --}}
-        <td class="text-end table-danger text-dark">{{tot.Perdidas}}</td>
-        <td class="text-end table-danger text-dark">{{tot.Ganancias}}</td>
+          <tr>
+            <td>(+) Inventario Inicial Productos en Proceso</td>
+            <td></td>
+            <td></td>
+            <td class="text-end">{{res.InvInicialProc}}</td>
+          </tr>
+          <tr>
+            <td>(-) Inventario Final Productos en Proceso</td>
+            <td></td>
+            <td></td>
+            <td class="text-end text-danger text-decoration-underline">({{res.InvFinalProc}})</td>
+          </tr>
+          <tr class="fw-bold">
+            <td>(=) COSTO DE ARTÍCULOS TERMINADOS</td>
+            <td></td>
+            <td></td>
+            <td class="text-end border-bottom border-primary">{{res.CostoArtTerm}}</td>
+          </tr>
 
-        {{!-- Columnas de Balance --}}
-        <td class="text-end table-primary text-dark">{{tot.Activo}}</td>
-        <td class="text-end table-primary text-dark">{{tot.Pasivo}}</td>
-      </tr>
-    </tfoot>
-  </table>
-</div>
-
-
-
-<div class="container mt-5">
-  <div class="table-responsive bg-white p-4 shadow-sm">
-    <h2 class="text-center font-monospace">ESTADO DE COSTO DE PRODUCCIÓN</h2>
-    <p class="text-center text-muted small">Cifras expresadas en Quetzales / Dólares</p>
-
-    <table class="table table-sm table-borderless mt-4">
-      <tbody>
-        <tr class="table-light">
-          <td colspan="3"><strong>1. MATERIA PRIMA</strong></td>
-        </tr>
-        <tr>
-          <td>Inventario Inicial de Materia Prima</td>
-          <td class="text-end border-bottom">{{res.InvInicialMP}}</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>(+) Compras y Gastos de Importación</td>
-          <td class="text-end border-bottom">{{res.ComprasNetasMP}}</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>(=) Materia Prima Disponible</td>
-          <td></td>
-          <td class="text-end">{{res.MPDisponible}}</td>
-        </tr>
-        <tr>
-          <td>(-) Inventario Final Materia Prima</td>
-          <td></td>
-          <td class="text-end border-bottom">({{res.InvFinalMP}})</td>
-        </tr>
-        <tr class="fw-bold">
-          <td>MATERIA PRIMA CONSUMIDA</td>
-          <td></td>
-          <td class="text-end">{{res.MPConsumida}}</td>
-        </tr>
-
-        <tr class="table-light">
-          <td colspan="3"><strong>2. MANO DE OBRA</strong></td>
-        </tr>
-        <tr>
-          <td>Mano de Obra Directa (Planillas)</td>
-          <td></td>
-          <td class="text-end border-bottom">{{res.MOD}}</td>
-        </tr>
-        <tr class="fw-bold text-primary">
-          <td>COSTO PRIMO</td>
-          <td></td>
-          <td class="text-end">{{res.CostoPrimo}}</td>
-        </tr>
-
-        <tr class="table-light">
-          <td colspan="3"><strong>3. GASTOS INDIRECTOS (CIF)</strong></td>
-        </tr>
-        <tr>
-          <td>Gastos de Fábrica y Otros Indirectos</td>
-          <td></td>
-          <td class="text-end border-bottom">{{res.CIF}}</td>
-        </tr>
-
-        <tr class="bg-dark text-white">
-          <td class="py-2">COSTO TOTAL DE PRODUCCIÓN</td>
-          <td></td>
-          <td class="text-end py-2" style="border-bottom: 3px double white;">{{res.CostoProduccion}}</td>
-        </tr>
-      </tbody>
-
-    </table>
-
-    <div class="mt-4 d-print-none text-end">
-      <button class="btn btn-primary" onclick="window.print()">Imprimir Reporte</button>
-      <a href="/eeff" class="btn btn-success">Ir al Balance General</a>
+          <tr>
+            <td>(+) Inventario Inicial Artículos Terminados</td>
+            <td></td>
+            <td></td>
+            <td class="text-end">{{res.InvInicialPT}}</td>
+          </tr>
+          <tr>
+            <td>(-) Inventario Final Artículos Terminados</td>
+            <td></td>
+            <td></td>
+            <td class="text-end text-danger text-decoration-underline">({{res.InvFinalPT}})</td>
+          </tr>
+          <tr class="table-dark fw-bold">
+            <td>(=) COSTO DE VENTAS</td>
+            <td></td>
+            <td></td>
+            <td class="text-end">{{res.CostoVentas}}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>
+
+<section>
+  <hr>
+  <div class="table-container tabla-contable">
+    <table id="hojaTrabajo" class="print-table table table-dark table-hover table-bordered">
+      <caption>Hoja de Trabajo</caption>
+      <thead>
+        <tr class="col-12">
+          <th scope="row" class="col-3 text-center"> </th>
+          <th scope="col" colspan="2" class="col-3 border-top text-center">Saldos</th>
+          <th scope="col" colspan="2" class="col-3 border-top text-center">Resultados</th>
+          <th scope="col" colspan="2" class="col-3 border-top text-center">Balance</th>
+        </tr>
+        <tr class="col-12">
+          <th scope="row" class="col-3 border-bottom  text-center">Nombre</th>
+          <th scope="col" class="col-1.5 border-bottom text-center">Debe</th>
+          <th scope="col" class="col-1.5 border-bottom text-center">Haber</th>
+          <th scope="col" class="col-1.5 border-bottom text-center">Perdidas</th>
+          <th scope="col" class="col-1.5 border-bottom text-center">Ganancias</th>
+          <th scope="col" class="col-1.5 border-bottom text-center">Activo</th>
+          <th scope="col" class="col-1.5 border-bottom text-center">Pasivo</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each keys}}
+        <tr class="col-12 {{this.value.ClaTotal}}">
+          <td scope="row" style="text-align: left;" class="col-3">{{this.value.Nombre}}</td>
+          <td class="col-1.5" style="text-align: right;">{{this.value.Debe}}</td>
+          <td class="col-1.5" style="text-align: right;">{{this.value.Haber}}</td>
+          <td class="col-1.5" style="text-align: right;">{{this.value.Perdidas}}</td>
+          <td class="col-1.5" style="text-align: right;">{{this.value.Ganancias}}</td>
+          <td class="col-1.5" style="text-align: right;">{{this.value.Activo}}</td>
+          <td class="col-1.5" style="text-align: right;">{{this.value.Pasivo}}</td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+  <div class="tabla-contable">
+    <table id="resultados" class="table table-dark table-hover table-bordered">
+      <caption>Estado de Resultados</caption>
+      <thead>
+        <tr>
+          <th colspan="4" style="text-align: center;">
+            Estado de Resultados
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each resultados}}
+        <tr>
+          <td style="text-align: left;" class="{{this.value.ClasNombre}}">{{this.value.Nombre}}</td>
+          <td style="text-align: right;" class="{{this.value.Cla1}}">{{this.value.Col1}}</td>
+          <td style="text-align: right;" class="{{this.value.Cla2}}">{{this.value.Col2}}</td>
+          <td style="text-align: right;" class="{{this.value.Cla3}}" {{#if this.value.EsResultado}}id="baseContable"
+            {{/if}}>{{this.value.Col3}}
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+
+  <div id="contenedorSimulador" class="table table-dark table-hover table-bordered container mt-4 p-4 d-print-none">
+    <h4 id="tituloSimulador" class="">Simulador Fiscal Internacional</h4>
+    </p>
+    <div id="camposCalculo">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label text-dark">ISR (%)</label>
+          <input type="number" id="inputISR" class="form-control" value="25">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label text-dark">Reserva Legal (%)</label>
+          <input type="number" id="inputReserva" class="form-control" value="5">
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+          <button class="btn btn-success w-100" onclick="calcularFiscal(event)">Calcular</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="table table-dark table-hover table-bordered mt-3 p-3 border ">
+    <p>Impuesto: <strong id="txtISR">0.00</strong></p>
+    <p>Reserva: <strong id="txtReserva">0.00</strong></p>
+    <hr>
+    <p><strong>Utilidad Neta Disponible: <span id="txtNeto">0.00</span></strong></p>
+  </div>
+  </div>
+  <div>
+    <table id="balance" class="table table-dark table-bordered table-sm table-borderless">
+      <thead>
+        <tr class="border-bottom">
+          <th style="width: 40%;">Descripción</th>
+          <th style="width: 15%;" class="text-end">Detalle</th>
+          <th style="width: 15%;" class="text-end">Subtotal</th>
+          <th style="width: 15%;" class="text-end">NIIF</th>
+          <th style="width: 15%;" class="text-end">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each BalanceRows}}
+        <tr>
+          <td class="{{this.ClasNombre}}">{{this.Nombre}}</td>
+          <td class="text-end font-monospace {{this.Cla1}}">{{this.Col1}}</td>
+          <td class="text-end font-monospace {{this.Cla2}}">{{this.Col2}}</td>
+          <td class="text-end font-monospace {{this.Cla3}}">{{this.Col3}}</td>
+          <td class="text-end font-monospace fw-bold {{this.Cla4}}">{{this.Col4}}</td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+  <div class="container-fluid table table-dark table-hover table-bordered mt-5 mb-5 p-4 border rounded shadow-sm">
+    <div class="row border-bottom mb-4">
+      <div class="col-12">
+        <h4 class="text-secondary"><i class="bi bi-graph-up-arrow"></i> Análisis de Salud Financiera</h4>
+        <p class="text-muted small">Indicadores calculados en base a saldos actuales y costo de ventas.</p>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      {{#each indices}}
+      <div class="col-md-3">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body text-center">
+            <h6 class="card-subtitle mb-2 text-muted fw-bold text-uppercase" style="font-size: 0.75rem;">
+              {{this.Nombre}}
+            </h6>
+            <h2 class="card-title my-3 {{this.Clase}}">
+              {{this.Valor}}
+            </h2>
+            <hr>
+            <p class="card-text small text-secondary italic">
+              {{this.Interpretacion}}
+            </p>
+          </div>
+          <div class="card-body text-center">
+            <button type="button" class="btn btn-sm btn-outline-secondary mt-2"
+              onclick="verAuditoria('{{this.Nombre}}', '{{this.DetalleCuenta}}', '{{this.Interpretacion}}')">
+              <i class="bi bi-search"></i> Ver Auditoría
+            </button>
+          </div>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+</section>
+<div class="text-center mt-4">
+  <button class="btn btn-success px-5 shadow-sm d-flex align-items-center justify-content-center mx-auto" id="botonpdf" onclick="generarReportePDF()">
+    <span id="pdfSpinner" class="spinner-border spinner-border-sm d-none me-2" role="status">
+    </span>
+    <i class="fas fa-file-pdf me-2" id="pdfIcon"></i>
+    <span id="pdfBtnText">Descargar Los Estados PDF</span>
+  </button>
+</div>
+<div class="modal fade" id="modalAuditoria" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title" id="tituloAuditoria">Detalle de Cálculo</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p id="descAuditoria" class="fw-bold"></p>
+        <div class="alert alert-info border-0">
+          <small>Fórmula aplicada:</small>
+          <div id="formulaAuditoria" class="font-monospace mt-1"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+
+<script src="/static/js/estados.js?v=0.01"></script>
+
+
 
 {{> 'partials/footer'}}

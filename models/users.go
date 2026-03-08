@@ -27,6 +27,10 @@ type Mensaje struct {
 	Estado    string `json:"estado" gorm:"default:'pendiente'"`
 }
 
+func (Mensaje) TableName() string {
+	return "mensajes"
+}
+
 // En models/models.go
 
 type CueDB struct {
@@ -50,4 +54,9 @@ type Transaccion struct {
 	Estado     string  `json:"estado"`     // "SUCCESS", "PENDING", "FAILED"
 	Referencia string  `json:"referencia"` // El ID que te da QPayPro
 	Pasarela   string  `json:"pasarela"`   // "qpaypro"
+}
+
+// TableName le dice a GORM que use el nombre exacto de la tabla en Supabase
+func (Transaccion) TableName() string {
+	return "transacciones"
 }

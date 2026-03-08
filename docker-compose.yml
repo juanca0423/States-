@@ -1,12 +1,12 @@
 services:
-   go_web_app:
+  go_web_app:
     build: .
     container_name: go_web_app
     ports:
       - "3000:3000"
     volumes:
-      - ./:/app
-    command: air 
+      - ./:/app # Sincroniza tu carpeta actual con /app en el contenedor
+    command: air -c .air.toml # Asegúrate de apuntar a tu configuración de air
     environment:
       DB_HOST: "aws-0-us-west-2.pooler.supabase.com"
       DB_PORT: 6543
@@ -18,4 +18,4 @@ services:
     dns:
       - 8.8.8.8
       - 8.8.4.4
-    restart: always # Esto evitará que tengas que dar --build cada vez
+    restart: always

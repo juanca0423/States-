@@ -1,6 +1,6 @@
 {{>'partials/header'}}
 {{>'partials/nav'}}
-<div class="shortcuts-bar bg-dark text-light py-2 border-bottom sticky-top">
+<div class="shortcuts-bar bg-dark text-light py-2 border-bottom sticky-top" style="z-index: 101;">
   <div class="container-fluid d-flex justify-content-center gap-4">
     <span class="badge bg-secondary"><kbd>Alt</kbd> + <kbd>C</kbd> Calculadora</span>
     <span class="badge bg-secondary"><kbd>Ctrl</kbd> + <kbd>S</kbd> Guardar Balance</span>
@@ -10,13 +10,13 @@
   </div>
 </div>
 <section class="container mt-4">
-  <form class="card bg-dark p-4 border-success shadow-lg" id="balanceForm" method="POST" enctype="multipart/form-data"
+<form class="card bg-dark p-4 border-success shadow-lg" id="balanceForm" method="POST" enctype="multipart/form-data"
     action="/estados">
     <div class="table-responsive">
       <table class="table table-dark table-hover mb-0">
         <thead class="text-success">
           <tr>
-            <th style="width: 70%">Cuenta Contable</th>
+            <th style="width: 50%">Cuenta Contable</th>
             <th style="width: 30%" class="text-center">Monto</th>
           </tr>
         </thead>
@@ -50,12 +50,12 @@
   <div id="diffValue" class="cuadre-monto">0.00</div>
 </div>
 <button id="btnSumadora" class="btn btn-success rounded-circle shadow-lg" onclick="toggleCalc()"
-  style="position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; z-index: 10000;">
+  style="position: fixed; bottom: 20px; left: 10px; width: 60px; height: 60px; z-index: 10000;">
   <i class="fas fa-calculator fa-lg"></i>
 </button>
 
 <div id="calculadoraContable" class="card shadow-lg d-none"
-  style="position: fixed; top: 100px; right: 20px; width: 260px; z-index: 9999; border: 2px solid #28a745; background: white;">
+  style="position: fixed; top: 100px; left: 20px; width: 260px; z-index: 9999; border: 2px solid #28a745; background: white;">
 
   <div id="calcHeader"
     class="card-header bg-success text-white d-flex justify-content-between align-items-center py-1 calc-header">
@@ -143,5 +143,5 @@
     </div>
   </div>
 </div>
-<script src="/static/js/myscript.js"></script>
+<script src="/static/js/calculadora.js"></script>
 {{>'partials/footer'}}

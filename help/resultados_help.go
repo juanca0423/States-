@@ -331,6 +331,7 @@ func Resultados(Balance map[string]float64, costoProd float64) ([]models.KR, mod
 	// Llenar totales para el Dashboard
 	t.UtilidadNeta = vUtilidadNeta
 	t.MargenBruto = vUtilidadBruta
+	t.VentasNetas = vVentasNetas // <--- ¡ASEGÚRATE DE AGREGAR ESTA LÍNEA!
 
 	return Res, t
 }

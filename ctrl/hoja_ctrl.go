@@ -9,7 +9,7 @@ import (
 func HojaTrabajo(c *fiber.Ctx) error {
 	esCosto := c.QueryBool("costos", false)
 	return c.Render("eeffform", fiber.Map{
-		"Title":   "ingreso de datos",
+		"Title":   "Ingreso de Datos",
 		"Cuentas": config.ObtenerCuentas(esCosto),
 		"EsCosto": esCosto,
 	})
@@ -18,7 +18,7 @@ func HojaTrabajo(c *fiber.Ctx) error {
 func HojaTrabajocosto(c *fiber.Ctx) error {
 	esCosto := c.QueryBool("costos", true)
 	return c.Render("costosform", fiber.Map{
-		"Title":   "ingreso de datos",
+		"Title":   "Ingreso de Datos",
 		"Cuentas": config.ObtenerCuentas(esCosto),
 		"EsCosto": esCosto,
 	})

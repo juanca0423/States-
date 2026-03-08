@@ -12,7 +12,10 @@ import (
 )
 
 func GetPerfil(c *fiber.Ctx) error {
-	uid := c.Locals("uid").(uint)
+	uid, ok := c.Locals("uid").(uint)
+	if !ok {
+		return c.Redirect("/login")
+	}
 	var u models.User
 	var transacciones []models.Transaccion // Cambiado de TransaccionPagalo a Transaccion
 
@@ -24,11 +27,12 @@ func GetPerfil(c *fiber.Ctx) error {
 	}
 
 	dias := max(0, int(time.Until(u.FechaFinPrueba).Hours()/24))
-
 	return c.Render("perfil", fiber.Map{
-		"Usuario":          u,
+		"Usuario":          u, // Esto permite usar {{Usuario.Role}}
 		"DiasRestantes":    dias,
 		"FechaVencimiento": u.FechaFinPrueba.Format("02/01/2006"),
 		"Historial":        transacciones,
+		"TextoDias":        fmt.Sprintf("%d días", dias),
+		"ClaseAlerta":      c.Locals("ClaseAlerta"),
 	})
 }

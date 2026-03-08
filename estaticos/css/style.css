@@ -1,46 +1,23 @@
+/* --- OPTIMIZACIÓN DE RENDIMIENTO --- */
+
 .table thead th {
   position: sticky;
   top: 0;
-  /* Se quedará pegado al borde superior del navegador al bajar */
   z-index: 1000;
-  border-bottom: 2px solid #28a745;
-}
-
-/* Quitar flechas del input number para que sea más limpio */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-/* Línea para la columna del nombre y del input */
-#balanceForm .col-8,
-#balanceForm .col-4 {
-  /* Línea gris tenue */
-  padding-top: 10px !important;
-  padding-bottom: 10px !important;
-  margin-bottom: 0 !important;
-}
-
-/* 4. INPUTS ESPECIALES: El verde que sí funciona */
-body #input-220001,
-body #input-111301 {
-  background-color: #1a3a2a;
-  border-color: #28a745;
+  background-color: #1a1a1a !important;
+  /* Evita transparencias al hacer scroll */
+  border-bottom: 2px solid #28a745 !important;
+  will-change: transform;
 }
 
 .cuadre-flotante {
   position: fixed !important;
-  bottom: 40px !important;
-  /* Separado del borde inferior */
-  right: 40px !important;
-  /* Separado del borde derecho */
+  bottom: 20px !important;
+  left: 10px !important;
+  right: auto !important;
   width: 180px !important;
-  /* Tamaño fijo de cuadrado */
   height: 100px !important;
-  /* Tamaño fijo de cuadrado */
-  z-index: 999999 !important;
-  /* Por encima de TODO */
+  z-index: 9999 !important;
   background-color: #2d2d2d !important;
   color: #00ff00 !important;
   border: 2px solid #28a745 !important;
@@ -49,88 +26,50 @@ body #input-111301 {
   flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8) !important;
-  pointer-events: auto !important;
-  /* Permite que sea interactivo */
 }
 
+/* Corrección del punto faltante */
 .cuadre-monto {
-  font-size: 2rem !important;
-  /* ¡NÚMEROS GRANDES! */
-  font-family: 'Courier New', monospace !important;
-  font-weight: bold !important;
-  line-height: 1 !important;
-}
-
-#balanceForm label {
-  font-size: 0.95rem;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-}
-
-.cuadre-label {
-  font-size: 0.65rem !important;
-  /* Más pequeño y discreto */
-  font-weight: bold !important;
-  color: #00d1b2 !important;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 2px;
-}
-
-cuadre-monto {
-  /* Bajamos de 2.2rem a 1.5rem para que quepan cifras grandes */
-  font-size: 1.5rem !important;
+  font-size: 1.6rem !important;
+  /* Ajustado para pantallas medianas */
   font-family: 'Courier New', monospace !important;
   font-weight: 800 !important;
   white-space: nowrap !important;
-  /* Evita que el número se parta en dos líneas */
+  line-height: 1.2 !important;
 }
 
-/* Si está cuadrado, cambia a un verde más brillante */
-.cuadre-ok {
-  border-color: #00ff00 !important;
-  box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+/* --- LIMPIEZA DE INPUTS --- */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
-/* Líneas horizontales para las filas de cuentas */
-#balanceForm .row.g-3>div {
-  border-bottom: 1px solid rgba(40, 167, 69, 0.2);
-  /* Verde muy tenue */
-  padding-top: 8px;
-  padding-bottom: 8px;
+input[type=number] {
+  appearance: textfield;
+  /* Soporte para Firefox */
 }
 
-/* Eliminamos el scroll interno para que la página mande */
-.table-responsive {
-  max-height: none !important;
-  overflow: visible !important;
-}
-
+/* --- MEJORA DE LECTURA --- */
 .monto-contable {
   text-align: right !important;
   font-family: 'Courier New', monospace !important;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
-.shortcuts-bar {
-  z-index: 1040;
-  /* Justo debajo de los modales */
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 0.85rem;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+/* Filas con hover sutil para no cansar la vista */
+#balanceForm .row.g-3>div {
+  border-bottom: 1px solid rgba(40, 167, 69, 0.15);
+  transition: background-color 0.2s;
 }
 
-kbd {
-  background-color: #444;
-  color: #eee;
-  border-radius: 3px;
-  padding: 2px 4px;
-  border: 1px solid #777;
+#balanceForm .row.g-3:hover {
+  background-color: rgba(40, 167, 69, 0.05);
 }
 
-.badge {
-  display: flex;
-  align-items: center;
-  gap: 5px;
+#icono {
+  content: url('/static/images/logoP.svg');
+  display: inline-block;
+  width: 32px;
+  height: 32px;
 }

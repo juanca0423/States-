@@ -151,12 +151,23 @@
   </div>
 </section>
 <div class="text-center mt-4">
-  <button class="btn btn-success px-5 shadow-sm d-flex align-items-center justify-content-center mx-auto" id="botonpdf">
+  <button class="btn btn-success px-5 shadow-sm d-flex align-items-center justify-content-center mx-auto" id="botonpdf" onclick="generarReportePDF()">
     <span id="pdfSpinner" class="spinner-border spinner-border-sm d-none me-2" role="status">
     </span>
     <i class="fas fa-file-pdf me-2" id="pdfIcon"></i>
     <span id="pdfBtnText">Descargar Los Estados PDF</span>
   </button>
+
+  <form id="formExcel" action="/exportar-excel-todo" method="POST" style="display:none;">
+    {{#each BalanceOriginal}}
+      <input type="hidden" name="{{this.Codigo}}" value="{{this.Monto}}">
+    {{/each}}
+  </form>
+
+  <button type="submit" form="formExcel" class="btn btn-success">
+    <i class="fas fa-file-excel"></i> Descargar Excel Profesional
+  </button>
+
 </div>
 <div class="modal fade" id="modalAuditoria" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
@@ -179,5 +190,5 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
 
-<script src="/static/js/myscript.js"></script>
+<script src="/static/js/estados.js?v=0.01"></script>
 {{>'partials/footer'}}
