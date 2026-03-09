@@ -11,10 +11,11 @@ import (
 	"ef/config"
 	"ef/help"
 	"ef/models"
-	"github.com/gofiber/fiber/v2"
-	"github.com/xuri/excelize/v2"
 	_ "image/jpeg" // Esto registra el de JPEG por si acaso
 	_ "image/png"  // Esto registra el decodificador de PNG
+
+	"github.com/gofiber/fiber/v2"
+	"github.com/xuri/excelize/v2"
 )
 
 type KV struct {
@@ -47,7 +48,7 @@ func GenEstados(c *fiber.Ctx) error {
 
 	DBHojadetravajo := help.HojaDeTrabajo(Balance)
 	DBResultados, TotResu := help.Resultados(Balance, 0) // 0 indica que es comercial
-	DBBalnce, TotBalance := help.GenerarTodoElBalance(Balan, TotResu.UtilidadNeta)
+	DBBalance, TotBalance := help.GenerarTodoElBalance(Balan, TotResu.UtilidadNeta)
 
 	// 3. Ahora el dashboard tiene TODO lo que necesita
 	dashboard := help.GenerarDashboard(
@@ -75,7 +76,7 @@ func GenEstados(c *fiber.Ctx) error {
 		"Title":           "Estados Financieros",
 		"keys":            DBHojadetravajo,
 		"resultados":      DBResultados,
-		"BalanceRows":     DBBalnce,
+		"BalanceRows":     DBBalance,
 		"indices":         dashboard,
 		"BalanceOriginal": listaBalance, // <--- Enviamos la LISTA, no el mapa
 	})
@@ -102,82 +103,46 @@ func GenCostoProduccion(c *fiber.Ctx) error {
 	// 3. Generar la Hoja de Trabajo de 9 Columnas (Llamando a tu nueva función en help)
 	hoja9Cols := help.HojaDeTrabajoIndustrial(balanceRaw)
 
-	// 4. Cálculos con nueva nomenclatura
-	getV := func(cod string) float64 { return balanceRaw[cod] }
-
-	// --- MATERIALES ---
-	invInicialMP := getV("111303")
-	comprasMP := getV("310200") + getV("310300")
-	gastosMP := getV("310400") + getV("310500") + getV("310600")
-	devMP := getV("310700")
-	invFinalMP := getV("310800")
-
-	// --- MANO DE OBRA ---
-	mod := getV("320100") + getV("320200") + getV("320300")
-
-	// --- CIF ---
-	cif := getV("330100") + getV("330200") + getV("330300") + getV("330400") + getV("330500")
-
-	// --- PRODUCTOS EN PROCESO ---
-	invInicialProceso := getV("111304")
-	invFinalProceso := getV("340201")
-
-	// --- PRODUCTOS TERMINADOS (Aquí estaban los errores) ---
-	invInicialPT := getV("111305")
-	invFinalPT := getV("340202")
-
-	// --- LÓGICA DE 3 COLUMNAS ---
-	comprasNetas := comprasMP + gastosMP - devMP
-	mpDisponible := invInicialMP + comprasNetas
-	mpUtilizada := mpDisponible - invFinalMP
-
-	costoPrimo := mpUtilizada + mod
-	costoPeriodo := costoPrimo + cif
-
-	totalEnProceso := costoPeriodo + invInicialProceso
-	costoArtTerm := totalEnProceso - invFinalProceso
-
-	disponibleVenta := costoArtTerm + invInicialPT
-	costoVentas := disponibleVenta - invFinalPT
-
-	// Primero calculas el costo de producción con las fórmulas que vimos
-
-	vCostoProd := mpUtilizada + mod + cif
-
+	costos := help.CalcularCostosIndustriales(balanceRaw)
 	// Se lo pasas a la función para que arme el Estado de Resultados Industrial
 
-	DBResultados, TotResu := help.Resultados(balanceRaw, vCostoProd)
+	DBResultados, TotResu := help.Resultados(balanceRaw, costos.CostoProduccion)
 
 	DBBalnce, _ := help.GenerarTodoElBalance(balan, TotResu.UtilidadNeta)
 	// ... (Resultados y Balance igual)
 
 	// 5. Empaquetar (Agregamos los campos para las 3 columnas del HBS)
 	resCalculados := map[string]string{
-		"InvInicialMP":    config.FCont(invInicialMP),
-		"ComprasMP":       config.FCont(comprasMP),
-		"GastosMP":        config.FCont(gastosMP),
-		"DevMP":           config.FCont(devMP),
-		"ComprasNetasMP":  config.FCont(comprasNetas),
-		"MPDisponible":    config.FCont(mpDisponible),
-		"InvFinalMP":      config.FCont(invFinalMP),
-		"MPConsumida":     config.FCont(mpUtilizada),
-		"MOD":             config.FCont(mod),
-		"CostoPrimo":      config.FCont(costoPrimo),
-		"CIF":             config.FCont(cif),
-		"CostoProduccion": config.FCont(costoPeriodo),
-		"InvInicialProc":  config.FCont(invInicialProceso),
-		"InvFinalProc":    config.FCont(invFinalProceso),
-		"CostoArtTerm":    config.FCont(costoArtTerm),
-		"InvInicialPT":    config.FCont(invInicialPT),
-		"InvFinalPT":      config.FCont(invFinalPT),
-		"CostoVentas":     config.FCont(costoVentas),
+		"InvInicialMP":    config.FCont(costos.InvInicialMP),
+		"ComprasMP":       config.FCont(costos.ComprasMP),
+		"GastosMP":        config.FCont(costos.GastosMP),
+		"DevMP":           config.FCont(costos.DevMP),
+		"ComprasNetasMP":  config.FCont(costos.ComprasNetasMP),
+		"MPDisponible":    config.FCont(costos.MPDisponible),
+		"InvFinalMP":      config.FCont(costos.InvFinalMP),
+		"MPConsumida":     config.FCont(costos.MPConsumida),
+		"MOD":             config.FCont(costos.MOD),
+		"CostoPrimo":      config.FCont(costos.CostoPrimo),
+		"CIF":             config.FCont(costos.CIF),
+		"CostoProduccion": config.FCont(costos.CostoProduccion),
+		"InvInicialProc":  config.FCont(costos.InvInicialProc),
+		"InvFinalProc":    config.FCont(costos.InvFinalProc),
+		"CostoArtTerm":    config.FCont(costos.CostoArtTerm),
+		"InvInicialPT":    config.FCont(costos.InvInicialPT),
+		"InvFinalPT":      config.FCont(costos.InvFinalPT),
+		"CostoVentas":     config.FCont(costos.CostoVentas),
 	}
+	// ... debajo de donde calculas 'costos'
+	ventas := balanceRaw["210001"] // Código de tu nomenclatura
+	dbIndustrial := help.GenerarDashboardIndustrial(costos, ventas)
+
 	return c.Render("costos", fiber.Map{
-		"Title":      "Auditoría Industrial - Costos",
-		"filasHoja":  hoja9Cols,
-		"Resultados": DBResultados,
-		"balanceRaw": DBBalnce,
-		"res":        resCalculados,
+		"Title":               "Auditoría Industrial - Costos",
+		"filasHoja":           hoja9Cols,
+		"Resultados":          DBResultados,
+		"balanceRaw":          DBBalnce,
+		"res":                 resCalculados,
+		"dashboardIndustrial": dbIndustrial, // <--- Nueva variable para el HBS
 	})
 }
 
@@ -778,6 +743,7 @@ func ExportarExcelTodo(c *fiber.Ctx) error {
 	// 3. BALANCE GENERAL
 	sheetBal := "Balance General"
 	f.NewSheet(sheetBal)
+	f.SetCellValue(sheetBal, "A1", "Descripción")
 	f.SetCellValue(sheetBal, "A1", "Descripción")
 	f.SetCellValue(sheetBal, "B1", "Parciales")
 	f.SetCellValue(sheetBal, "C1", "Subtotales")

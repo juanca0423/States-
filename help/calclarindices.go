@@ -115,3 +115,46 @@ func evaluarIndiceEndeudamiento(v float64) string {
 	}
 	return "text-success"
 }
+
+func GenerarDashboardIndustrial(costos ResumenCostos, ventas float64) []models.IndiceFinanciero {
+	var dashboard []models.IndiceFinanciero
+
+	// 1. COSTO PRIMO (Eficiencia de Inversión Directa)
+	dashboard = append(dashboard, models.IndiceFinanciero{
+		Nombre:         "Costo Primo",
+		Valor:          config.FCont(costos.CostoPrimo),
+		Interpretacion: "Inversión directa en materiales y mano de obra.",
+		Clase:          "text-primary",
+		DetalleCuenta:  "MP Consumida + Mano de Obra Directa",
+	})
+
+	// 2. ABSORCIÓN DE COSTOS INDIRECTOS (CIF)
+	// Idealmente el CIF no debe superar el 30-40% del costo total
+	porcentajeCIF := 0.0
+	if costos.CostoProduccion > 0 {
+		porcentajeCIF = (costos.CIF / costos.CostoProduccion) * 100
+	}
+	dashboard = append(dashboard, models.IndiceFinanciero{
+		Nombre:         "Impacto de Carga Fabril (CIF)",
+		Valor:          fmt.Sprintf("%.2f%%", porcentajeCIF),
+		Interpretacion: "Qué tanto pesan los gastos indirectos en la producción.",
+		Clase:          evaluarIndice(porcentajeCIF, 0, 35), // Rojo si supera el 35%
+		DetalleCuenta:  "(CIF / Costo Producción) * 100",
+	})
+
+	// 3. MARGEN INDUSTRIAL
+	// ¿Cuánto nos queda después de fabricar antes de los gastos de admin?
+	margenInd := 0.0
+	if ventas > 0 {
+		margenInd = ((ventas - costos.CostoProduccion) / ventas) * 100
+	}
+	dashboard = append(dashboard, models.IndiceFinanciero{
+		Nombre:         "Margen Industrial",
+		Valor:          fmt.Sprintf("%.2f%%", margenInd),
+		Interpretacion: "Rentabilidad de la planta antes de gastos operativos.",
+		Clase:          "text-success",
+		DetalleCuenta:  "(Ventas - Costo Prod) / Ventas",
+	})
+
+	return dashboard
+}

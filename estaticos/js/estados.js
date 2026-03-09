@@ -275,8 +275,25 @@ window.verAuditoria = function(nombre, detalleCuenta, interpretacion) {
 
   if (txtTitulo) txtTitulo.innerText = "Auditoría: " + nombre;
   if (txtDesc) txtDesc.innerText = interpretacion;
-  if (txtFormula) txtFormula.innerHTML = `<span class="text-primary">${detalleCuenta}</span>`;
 
+  // CAMBIO: Solo insertamos el texto. El color lo dará el HTML.
+  if (txtFormula) txtFormula.innerText = detalleCuenta;
+  const neto = resultadoCalculado; // Tu variable de resultado
+  const elNeto = document.getElementById('txtNeto');
+
+  elNeto.innerText = neto.toLocaleString('en-US', { minimumFractionDigits: 2 });
+
+  // Aplicar colores dinámicos
+  if (neto > 0) {
+    elNeto.classList.remove('perdida-negativa');
+    elNeto.classList.add('ganancia-positiva');
+  } else if (neto < 0) {
+    elNeto.classList.remove('ganancia-positiva');
+    elNeto.classList.add('perdida-negativa');
+  } else {
+    elNeto.classList.remove('ganancia-positiva', 'perdida-negativa');
+    elNeto.className = 'badge fs-4 p-2 shadow utilidad-glow bg-secondary';
+  }
   const modalBS = bootstrap.Modal.getOrCreateInstance(modalElemento);
   modalBS.show();
 };
