@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"ef/config"
 	"ef/db"
@@ -51,5 +52,9 @@ func main() {
 	})
 	rutas.SetUpRutas(app)
 	// 6. Encendido del servidor
-	log.Fatal(app.Listen(":3000"))
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3000" // Default si no hay variable
+	}
+	log.Fatal(app.Listen(":" + port))
 }

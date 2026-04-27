@@ -1,14 +1,13 @@
-{{>'partials/header'}}
-{{>'partials/nav'}}
+{{>'partials/header'}} {{>'partials/nav'}}
 <div class="container py-5">
   <div class="row">
     <div class="col-lg-7">
       <div class="card shadow">
         <div class="card-header bg-dark text-white d-flex justify-content-between">
           <span>Nomenclatura Actual</span>
-          <input type="text" id="buscarCuenta" class="form-control form-control-sm w-50" placeholder="Buscar...">
+          <input type="text" id="buscarCuenta" class="form-control form-control-sm w-50" placeholder="Buscar..." />
         </div>
-        <div class="card-body p-0" style="max-height: 500px; overflow-y: auto;">
+        <div class="card-body p-0" style="max-height: 500px; overflow-y: auto">
           <table class="table table-hover mb-0">
             <thead class="table-light sticky-top">
               <tr>
@@ -17,6 +16,8 @@
                 <th>Categoría</th>
                 <th>Saldo</th>
                 <th>EsCosto</th>
+                <th>Es Variable</th>
+                <th>Es Efectivo</th>
                 <th class="text-center">Acción</th>
               </tr>
             </thead>
@@ -26,6 +27,7 @@
                 <td><code>{{this.Codigo}}</code></td>
                 <td>{{this.Nombre}}</td>
                 <td><span class="badge bg-secondary">{{this.Categoria}}</span></td>
+                <td>{{this.Saldo}}</td>
                 <td>
                   {{#if this.EsCosto}}
                   <span class="badge bg-info text-dark">SÍ</span>
@@ -33,15 +35,32 @@
                   <span class="badge bg-light text-dark">NO</span>
                   {{/if}}
                 </td>
-                <td>{{this.Saldo}}</td>
+                <td>
+                  {{#if this.EsVariable}}<span class="badge bg-warning text-dark">VAR</span> {{else}}<span
+                    class="badge bg-light text-dark"
+                    >FIJO</span
+                  >{{/if}}
+                </td>
+                <td>
+                  {{#if this.EsEfectivo}}<span class="badge bg-success">SÍ</span> {{else}}<span class="badge bg-danger"
+                    >NO</span
+                  >{{/if}}
+                </td>
                 <td class="text-center">
-                  <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                  <button
+                    type="button"
+                    class="btn btn-warning btn-sm"
+                    data-bs-toggle="modal"
                     data-bs-target="#modalEditar"
-                    onclick="llenarModal('{{this.Codigo}}', '{{this.Nombre}}', '{{this.Categoria}}', '{{this.Saldo}}', {{this.EsCosto}})">
+                    onclick="llenarModal('{{this.Codigo}}', '{{this.Nombre}}', '{{this.Categoria}}', '{{this.Saldo}}', {{this.EsCosto}}, {{this.EsVariable}}, {{this.EsEfectivo}})"
+                  >
                     <i class="fas fa-edit"></i>
                   </button>
-                  <a href="/api/admin/eliminar-cuenta/{{this.Codigo}}" class="btn btn-outline-danger btn-sm"
-                    onclick="return confirm('¿Estás seguro de eliminar la cuenta: {{this.Nombre}}? Esta acción no se puede deshacer.')">
+                  <a
+                    href="/api/admin/eliminar-cuenta/{{this.Codigo}}"
+                    class="btn btn-outline-danger btn-sm"
+                    onclick="return confirm('¿Estás seguro de eliminar la cuenta: {{this.Nombre}}? Esta acción no se puede deshacer.')"
+                  >
                     <i class="fas fa-trash"></i>
                   </a>
                 </td>
@@ -57,16 +76,19 @@
       <div class="card shadow border-primary">
         <div class="card-header bg-primary text-white">Nueva Cuenta</div>
         <form action="/api/admin/crearcuenta" method="POST" class="card-body">
-          {{#if error}}<div class="alert alert-danger">{{error}}</div>{{/if}}
-          {{#if success}}<div class="alert alert-success">{{success}}</div>{{/if}}
+          {{#if error}}
+          <div class="alert alert-danger">{{error}}</div>
+          {{/if}} {{#if success}}
+          <div class="alert alert-success">{{success}}</div>
+          {{/if}}
 
           <div class="mb-3">
             <label>Código Contable</label>
-            <input type="number" name="codigo" class="form-control" required>
+            <input type="number" name="codigo" class="form-control" required />
           </div>
           <div class="mb-3">
             <label>Nombre de la Cuenta</label>
-            <input type="text" name="nombre" class="form-control" required>
+            <input type="text" name="nombre" class="form-control" required />
           </div>
           <div class="mb-3">
             <label>Categoría Reporte</label>
@@ -114,6 +136,22 @@
               <option value="false">No Es Costo</option>
             </select>
           </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Tipo de Costo</label>
+              <select name="es_variable" id="edit_es_variable" class="form-select">
+                <option value="false">Fijo</option>
+                <option value="true">Variable</option>
+              </select>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">¿Es Efectivo?</label>
+              <select name="es_efectivo" id="edit_es_efectivo" class="form-select">
+                <option value="true">Sí (Cash)</option>
+                <option value="false">No (Depreciación/Amort)</option>
+              </select>
+            </div>
+          </div>
           <button type="submit" class="btn btn-primary w-100">Registrar en Supabase</button>
         </form>
       </div>
@@ -128,11 +166,11 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <input type="hidden" name="Codigo" id="edit_codigo">
+        <input type="hidden" name="Codigo" id="edit_codigo" />
 
         <div class="mb-3">
           <label class="form-label">Nombre de la Cuenta</label>
-          <input type="text" name="nombre" id="edit_nombre" class="form-control" required>
+          <input type="text" name="nombre" id="edit_nombre" class="form-control" required />
         </div>
 
         <div class="mb-3">
@@ -161,7 +199,6 @@
             <!-- ManoObra         []models.Cue -->
             <!-- GastosFabrica    []models.Cue -->
             <!-- ProductosProceso []models.Cue -->
-
           </select>
         </div>
         <div class="mb-3">
@@ -192,14 +229,21 @@
   </div>
 </div>
 <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1060">
-  <div id="liveToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive"
-    aria-atomic="true">
+  <div
+    id="liveToast"
+    class="toast align-items-center text-white bg-success border-0"
+    role="alert"
+    aria-live="assertive"
+    aria-atomic="true"
+  >
     <div class="d-flex">
-      <div class="toast-body">
-        <i class="fas fa-check-circle me-2"></i> ¡Cuenta actualizada con éxito!
-      </div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="modal"
-        aria-label="Close"></button>
+      <div class="toast-body"><i class="fas fa-check-circle me-2"></i> ¡Cuenta actualizada con éxito!</div>
+      <button
+        type="button"
+        class="btn-close btn-close-white me-2 m-auto"
+        data-bs-dismiss="modal"
+        aria-label="Close"
+      ></button>
     </div>
   </div>
 </div>

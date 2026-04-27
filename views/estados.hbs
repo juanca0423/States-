@@ -1,4 +1,4 @@
-{{> 'partials/header'}}
+ {{> 'partials/header'}}
 {{>'partials/nav'}}
 
 <h1>{{Title}}</h1>
@@ -54,7 +54,8 @@
           <td style="text-align: left;" class="{{this.value.ClasNombre}}">{{this.value.Nombre}}</td>
           <td style="text-align: right;" class="{{this.value.Cla1}}">{{this.value.Col1}}</td>
           <td style="text-align: right;" class="{{this.value.Cla2}}">{{this.value.Col2}}</td>
-          <td style="text-align: right;" class="{{this.value.Cla3}}" {{#if this.value.EsResultado}}id="baseContable"{{/if}}>
+          <td style="text-align: right;" class="{{this.value.Cla3}}" {{#if this.value.EsResultado}}id="baseContable"
+            {{/if}}>
             {{this.value.Col3}}
           </td>
         </tr>
@@ -69,17 +70,18 @@
       <div class="row g-3">
         <div class="col-md-4">
           <label class="form-label text-white">ISR (%)</label>
-          <input type="number" id="inputISR" class="form-control bg-dark text-white border-secondary" value="25">
+          <input type="number" id="inputISR" class="form-control bg-dark text-white border-secondary" min="0" max="100" step="0.01" value="25">
         </div>
         <div class="col-md-4">
           <label class="form-label text-white">Reserva Legal (%)</label>
-          <input type="number" id="inputReserva" class="form-control bg-dark text-white border-secondary" value="5">
+          <input type="number" id="inputReserva" class="form-control bg-dark text-white border-secondary" min="0" max="100" step="0.01" value="5">
         </div>
         <div class="col-md-4 d-flex align-items-end">
           <button class="btn btn-success w-100" onclick="calcularFiscal(event)">Calcular</button>
         </div>
       </div>
     </div>
+
     <div class="mt-4 p-4 border border-secondary rounded-3 shadow-sm" style="background-color: rgba(0,0,0,0.2);">
       <div class="d-flex justify-content-between mb-2">
         <span class="text-white-50">Impuesto (ISR):</span>
@@ -158,24 +160,130 @@
       </div>
       {{/each}}
     </div>
+    <div class="row mt-4">
+      <div id="datos-financieros" data-ventas="{{VentasNetas}}" data-fijos="{{CostosFijos}}"
+        data-variables="{{CostosVar}}">
+      </div>
+      <div class="col-12">
+        <div class="card shadow border-0 bg-light text-dark">
+          <div class="card-header bg-dark text-white">
+            <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Análisis del Punto de Equilibrio</h5>
+          </div>
+          <div class="card-body">
+            <div style="height: 400px;">
+              <canvas id="graficoEquilibrio"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card shadow border-0 bg-light text-dark h-100">
+      <div class="card-header bg-dark text-white text-center">
+        <h5 class="mb-0"><i class="fas fa-microchip me-2"></i>Análisis de Costos</h5>
+      </div>
+      <div class="card-body">
+        <div class="row align-items-center">
+          <div class="col-md-6">
+            <div style="height: 250px;">
+              <canvas id="graficoDona"></canvas>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <table id="tablaPuntoEquilibrioPDF" class="table table-sm table-borderless mt-3">
+              <tbody>
+                <tr>
+                  <td><i class="fas fa-circle text-danger me-2"></i><strong>Fijos:</strong></td>
+                  <td class="text-end formatear-numero">{{CostosFijos}}</td>
+                </tr>
+                <tr>
+                  <td><i class="fas fa-circle text-primary me-2"></i><strong>Variables:</strong></td>
+                  <td class="text-end formatear-numero"> {{CostosVar}}</td>
+                </tr>
+                <tr class="border-top">
+                  <td><strong>Total:</strong></td>
+                  <td class="text-end formatear-numero"><strong>{{TotalCostos}}</strong></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="alert alert-secondary p-2 mt-2" style="font-size: 0.85rem;">
+              <strong>Margen de Contribución:</strong>
+              <span class="float-end">{{MargenContrib}}%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card shadow border-0 bg-light text-dark h-100">
+      <div class="card-header bg-dark text-white text-center">
+        <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Estructura y Puntos de Equilibrio</h5>
+      </div>
+      <div class="card-body">
+        <div class="row align-items-center">
+          <div class="col-md-6 col-sm-12 text-center">
+            <div style="width: 80%; margin: 0 auto; max-width: 200px;">
+              <canvas id="graficoEstructura"></canvas>
+            </div>
+            <small class="text-muted d-block mt-2">Distribución de Costos</small>
+          </div>
+
+          <div class="col-md-6 col-sm-12">
+            <h6 class="text-center mb-3">Resumen de Equilibrio</h6>
+            <table id="tablaEquilibrioResumen" class="table table-sm table-hover table-bordered border-light shadow-sm">
+              <thead class="table-dark text-center">
+                <tr>
+                  <th>Concepto</th>
+                  <th>Monto Requerido</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <strong>Contable</strong>
+                    <br><small class="text-muted">Utilidad cero</small>
+                  </td>
+                  <td id="puntoE" class="text-end fw-bold formatear-numero" style="font-size: 1.1rem;">
+                    {{PuntoE}}
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Caja (Efectivo)</strong>
+                    <br><small class="text-muted">Mínimo para operar</small>
+                  </td>
+                  <td id="puntoEfe" class="text-end fw-bold text-success formatear-numero" style="font-size: 1.1rem;">
+                    {{PuntoEfe}}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <label for="txtObservaciones" class="form-label text-success fw-bold">Notas y Observaciones Profesionales:</label>
+    <textarea class="form-control bg-dark text-light border-secondary shadow-sm" id="txtObservaciones" rows="4"
+      placeholder="Escribe aquí las conclusiones del análisis financiero..."></textarea>
   </div>
 </section>
-
+<div class="form-check form-switch d-inline-block ms-3">
+  <input class="form-check-input" type="checkbox" id="chkWatermark" checked>
+  <label class="form-check-label text-light" for="chkWatermark">
+    <small>Incluir Marca de Agua</small>
+  </label>
+</div>
 <div class="text-center mt-4 mb-5">
-  <button class="btn btn-danger px-5 shadow-sm d-inline-flex align-items-center me-2" id="botonpdf" onclick="generarReportePDF()">
-    <span id="pdfSpinner" class="spinner-border spinner-border-sm d-none me-2"></span>
-    <i class="fas fa-file-pdf me-2" id="pdfIcon"></i>
-    <span id="pdfBtnText">Descargar PDF</span>
+  <button id="btnPDF" class="btn btn-primary" onclick="generarReportePDF()" disabled>
+    <span id="spinnerLogo" class="spinner-border spinner-border-sm" role="status"></span>
+    Generar Reporte PDF
   </button>
-
-  <form id="formExcel" action="/exportar-excel-todo" method="POST" style="display:none;">
-    {{#each BalanceOriginal}}
-      <input type="hidden" name="{{this.Codigo}}" value="{{this.Monto}}">
-    {{/each}}
-  </form>
-
-  <button type="submit" form="formExcel" class="btn btn-success px-5 shadow-sm">
-    <i class="fas fa-file-excel me-2"></i> Descargar Excel Profesional
+  <button id="btnExcel" onclick="window.descargarExcel()" class="btn btn-success shadow-sm btn-loader">
+    <span class="spinner-border spinner-border-sm d-none" role="status" ></span>
+    <i class="bi bi-file-earmark-excel"></i> Descargar Excel
   </button>
 </div>
 
@@ -193,15 +301,32 @@
             Fórmula aplicada
           </small>
           <div id="formulaAuditoria" class="font-monospace text-warning fw-bold fs-5">
-            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
-
+<script>
+    // Pasamos los datos de Go a variables de JavaScript (en formato JSON)
+    const dataReporte = {
+      hojaTrabajo: {{{keysjson}}},
+        resultados: {{{resultadosjson}}},
+          balance: {{{BalanceRowsjson}}},
+            indices: {{{indicesjson}}},
+        config: {
+          ventas: {{{VentasNetas}}},
+           // pE: {{PuntoE}},
+           // costosFijos: {{CostosFijos}},
+           // costosVar: {{CostosVar}}
+        }
+    };
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="/static/js/exel.js"></script>
 <script src="/static/js/estados.js?v=0.01"></script>
-
 {{>'partials/footer'}}

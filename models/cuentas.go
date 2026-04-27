@@ -2,11 +2,13 @@
 package models
 
 type Cue struct {
-	Codigo    int    `json:"codigo"`
-	Nombre    string `json:"nombre"`
-	Saldo     string `json:"Saldo"`
-	Categoria string `json:"categoria"`
-	EsCosto   bool   `json:"escosto"`
+	Codigo     int    `json:"codigo"`
+	Nombre     string `json:"nombre"`
+	Saldo      string `json:"saldo"`
+	Categoria  string `json:"categoria"`
+	EsCosto    bool   `json:"es_costo"`
+	EsVariable bool   `json:"es_variable"`
+	EsEfectivo bool   `json:"es_efectivo"`
 }
 type HtString struct {
 	Nombre      string `json:"nombre"`
@@ -41,7 +43,7 @@ type Datos struct {
 
 type Re struct {
 	Nombre     string  `json:"nombre"`
-	Col1       float64 `json:"Col1"`
+	Col1       float64 `json:"col1"`
 	Col2       float64 `json:"col2"`
 	Col3       float64 `json:"col3"`
 	ClasNombre string  `json:"clasnombre"`
@@ -52,7 +54,7 @@ type Re struct {
 
 type ReString struct {
 	Nombre      string `json:"nombre"`
-	Col1        string `json:"Col1"`
+	Col1        string `json:"col1"`
 	Col2        string `json:"col2"`
 	Col3        string `json:"col3"`
 	ClasNombre  string `json:"clasnombre"`
@@ -85,4 +87,6 @@ type TotalesResultados struct {
 	UtilidadNeta      float64
 	VentasNetas       float64
 	MargenBruto       float64
+	GastosFijos       float64
+	GastosVariables   float64
 }

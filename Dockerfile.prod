@@ -1,0 +1,29 @@
+# ETAPA 1: Compilación
+FROM golang:1.26-alpine AS builder
+RUN apk add --no-cache git
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+# Compilación optimizada
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o eeff_app .
+
+# ETAPA 2: Imagen Final (Ultra ligera)
+FROM alpine:latest
+RUN apk add --no-cache ca-certificates tzdata
+WORKDIR /root/
+
+# 1. Copiamos el binario
+COPY --from=builder /app/eeff_app .
+
+# 2. COPIAMOS TUS VISTAS (Tal cual están en tu main.go)
+COPY --from=builder /app/views ./views
+
+# 3. COPIAMOS TUS ESTÁTICOS (Importante: nombre exacto)
+COPY --from=builder /app/estaticos ./estaticos
+
+# 4. Copiamos el .env (Opcional, mejor usar variables de entorno en la nube)
+COPY --from=builder /app/.env . 
+
+EXPOSE 3000
+CMD ["./eeff_app"]

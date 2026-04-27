@@ -3,9 +3,8 @@ package config
 
 import (
 	"database/sql"
-	"strconv"
-
 	"ef/models"
+	"strconv"
 )
 
 var (
@@ -37,7 +36,7 @@ var (
 )
 
 func CargarNomenclaturaDesdeDB(db *sql.DB) error {
-	rows, err := db.Query("SELECT codigo, nombre, saldo, categoria, es_costo FROM nomenclatura ORDER BY codigo ASC")
+	rows, err := db.Query("SELECT codigo, nombre, saldo, categoria, es_costo, es_variable, es_efectivo FROM nomenclatura ORDER BY codigo ASC")
 	if err != nil {
 		return err
 	}
@@ -73,7 +72,7 @@ func CargarNomenclaturaDesdeDB(db *sql.DB) error {
 	for rows.Next() {
 		var c models.Cue
 
-		err := rows.Scan(&c.Codigo, &c.Nombre, &c.Saldo, &c.Categoria, &c.EsCosto)
+		err := rows.Scan(&c.Codigo, &c.Nombre, &c.Saldo, &c.Categoria, &c.EsCosto, &c.EsVariable, &c.EsEfectivo)
 		if err != nil {
 			return err
 		}
@@ -141,12 +140,14 @@ func CargarNomenclaturaDesdeDB(db *sql.DB) error {
 }
 
 type CuentaItem struct {
-	Codigo    string `json:"codigo"`
-	CodInt    int    `json:"-"`
-	Nombre    string `json:"nombre"`
-	Saldo     string `json:"saldo"` // Asegúrate que sea String si en la DB es VARCHAR
-	Categoria string `json:"categoria"`
-	EsCosto   bool   `json:"es_costo"`
+	Codigo     string `json:"codigo"`
+	CodInt     int    `json:"-"`
+	Nombre     string `json:"nombre"`
+	Saldo      string `json:"saldo"` // Asegúrate que sea String si en la DB es VARCHAR
+	Categoria  string `json:"categoria"`
+	EsCosto    bool   `json:"es_costo"`
+	EsEfectivo bool   `json:"es_efectivo"`
+	EsVariable bool   `json:"es_variable"`
 }
 
 var (
@@ -178,12 +179,14 @@ func CargarComercial() {
 			key := strconv.Itoa(v.Codigo)
 
 			item := CuentaItem{
-				Codigo:    key,
-				CodInt:    v.Codigo,
-				Nombre:    v.Nombre,
-				Saldo:     v.Saldo,
-				Categoria: v.Categoria,
-				EsCosto:   v.EsCosto,
+				Codigo:     key,
+				CodInt:     v.Codigo,
+				Nombre:     v.Nombre,
+				Saldo:      v.Saldo,
+				Categoria:  v.Categoria,
+				EsCosto:    v.EsCosto,
+				EsEfectivo: v.EsEfectivo,
+				EsVariable: v.EsVariable,
 			}
 
 			// --- LÓGICA PARA REPORTES (Comercial) ---

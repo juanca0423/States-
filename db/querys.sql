@@ -1,0 +1,695 @@
+INSERT INTO
+  "public"."nomenclatura" (
+    "codigo",
+    "nombre",
+    "saldo",
+    "categoria",
+    "es_costo",
+    "es_efectivo",
+    "es_variable"
+  )
+VALUES
+  (
+    111101,
+    'Efectivo',
+    'activo',
+    'Disponible',
+    false,
+    true,
+    false
+  ),
+  (
+    111102,
+    'Bancos',
+    'activo',
+    'Disponible',
+    false,
+    true,
+    false
+  ),
+  (
+    111201,
+    'Deu. no Comerciales',
+    'activo',
+    'Exigible',
+    false,
+    true,
+    false
+  ),
+  (
+    111202,
+    'Doc. por Cobrar',
+    'activo',
+    'Exigible',
+    false,
+    true,
+    false
+  ),
+  (
+    111203,
+    'Clientes',
+    'activo',
+    'Exigible',
+    false,
+    true,
+    false
+  ),
+  (
+    111204,
+    '(-)Res. para Cuen Inco.',
+    'pasivo',
+    'Exigible',
+    false,
+    true,
+    false
+  ),
+  (
+    111301,
+    'Mercaderias',
+    'activo',
+    'Realisable',
+    false,
+    true,
+    false
+  ),
+  (
+    111302,
+    'Papelería y útiles',
+    'activo',
+    'Realisable',
+    false,
+    true,
+    false
+  ),
+  (
+    111303,
+    'Materia Prima',
+    'activo',
+    'Realisable',
+    true,
+    true,
+    false
+  ),
+  (
+    111304,
+    'Productos en Proceso',
+    'activo',
+    'Realisable',
+    true,
+    true,
+    false
+  ),
+  (
+    111305,
+    'Productos Terminados',
+    'activo',
+    'Realisable',
+    true,
+    true,
+    false
+  ),
+  (
+    112101,
+    'Mobiliario y Equipo',
+    'activo',
+    'PropPlanEqui',
+    false,
+    true,
+    false
+  ),
+  (
+    112102,
+    '(-) Dep. Acu. Mob y Equipo',
+    'pasivo',
+    'PropPlanEqui',
+    false,
+    false,
+    false
+  ),
+  (
+    112103,
+    'Equipo de Computo',
+    'activo',
+    'PropPlanEqui',
+    false,
+    true,
+    false
+  ),
+  (
+    112104,
+    'Dep. Acu. de Equi de Compu',
+    'pasivo',
+    'PropPlanEqui',
+    false,
+    false,
+    false
+  ),
+  (
+    112201,
+    'Gastos de Organización',
+    'activo',
+    'GtoIntan',
+    false,
+    true,
+    false
+  ),
+  (
+    112202,
+    'Amor. Acu. de Gtos de Organ',
+    'pasivo',
+    'GtoIntan',
+    false,
+    false,
+    false
+  ),
+  (
+    112301,
+    'Inve. en Valores a L P',
+    'activo',
+    'GtoDiferidos',
+    false,
+    true,
+    false
+  ),
+  (
+    121001,
+    'Proveedores',
+    'pasivo',
+    'PasivoCorr',
+    false,
+    true,
+    false
+  ),
+  (
+    121002,
+    'IVA',
+    'pasivo',
+    'PasivoCorr',
+    false,
+    true,
+    false
+  ),
+  (
+    121003,
+    'Doc. por Pagar a C/Plazo',
+    'pasivo',
+    'PasivoCorr',
+    false,
+    true,
+    false
+  ),
+  (
+    121004,
+    'Préstamos Banc C/Plazo',
+    'pasivo',
+    'PasivoCorr',
+    false,
+    true,
+    false
+  ),
+  (
+    121005,
+    'IGSS por Pagar',
+    'pasivo',
+    'PasivoCorr',
+    false,
+    true,
+    false
+  ),
+  (
+    121006,
+    'Comi. Percibi no Deven',
+    'pasivo',
+    'PasivoCorr',
+    false,
+    true,
+    false
+  ),
+  (
+    121008,
+    '(-) ISR Trimestral',
+    'activo',
+    'PasivoCorr',
+    false,
+    true,
+    false
+  ),
+  (
+    122001,
+    'Doc. por Pagar a L P',
+    'pasivo',
+    'PasivoNoCorr',
+    false,
+    true,
+    false
+  ),
+  (
+    131001,
+    'Capital',
+    'pasivo',
+    'PatriNeto',
+    false,
+    true,
+    false
+  ),
+  (
+    131003,
+    '(-)Cuenta Personal',
+    'activo',
+    'PatriNeto',
+    false,
+    true,
+    false
+  ),
+  (
+    210001,
+    'Ventas',
+    'ganancia',
+    'Ingresos',
+    false,
+    true,
+    false
+  ),
+  (
+    210002,
+    '(-)Dev y Rebajas S/Ventas',
+    'perdida',
+    'Ingresos',
+    false,
+    true,
+    false
+  ),
+  (
+    220001,
+    'Inve. Ini de Mercaderías',
+    'perdida',
+    'InveIni',
+    false,
+    true,
+    false
+  ),
+  (
+    220002,
+    'Inv. Inicial Productos Terminados',
+    'perdida',
+    'InveIni',
+    true,
+    true,
+    false
+  ),
+  (
+    220005,
+    'Inve. Final de Mercaderías',
+    'ganancia',
+    'InveFin',
+    false,
+    true,
+    false
+  ),
+  (
+    220101,
+    'Compras',
+    'perdida',
+    'Compras',
+    false,
+    true,
+    false
+  ),
+  (
+    220151,
+    'Gastos sobre Compras',
+    'perdida',
+    'Compras',
+    false,
+    true,
+    false
+  ),
+  (
+    220152,
+    'Fletes sobre Compras',
+    'perdida',
+    'Compras',
+    false,
+    true,
+    false
+  ),
+  (
+    220153,
+    'Impuestos Aduaneros / Compras',
+    'perdida',
+    'Compras',
+    false,
+    true,
+    false
+  ),
+  (
+    220154,
+    'Comi. Banc. / Compras',
+    'perdida',
+    'Compras',
+    false,
+    true,
+    false
+  ),
+  (
+    220201,
+    'Dev. y Rev. / Compras',
+    'ganancia',
+    'Compras',
+    false,
+    true,
+    false
+  ),
+  (
+    231001,
+    'Sueldos Sala de Ventas',
+    'perdida',
+    'GtoVentas',
+    false,
+    true,
+    false
+  ),
+  (
+    231002,
+    'Boni Incen Sala de Ventas',
+    'perdida',
+    'GtoVentas',
+    false,
+    true,
+    false
+  ),
+  (
+    231003,
+    'Cuo. Patro S/Ventas',
+    'perdida',
+    'GtoVentas',
+    false,
+    true,
+    false
+  ),
+  (
+    231004,
+    'Dep. Mob. y Equi S/Ventas',
+    'perdida',
+    'GtoVentas',
+    false,
+    false,
+    false
+  ),
+  (
+    231005,
+    'Comisiones sobre Ventas',
+    'perdida',
+    'GtoVentas',
+    false,
+    true,
+    true
+  ),
+  (
+    232001,
+    'Sueldos de Admón.',
+    'perdida',
+    'GtoAdmin',
+    false,
+    true,
+    false
+  ),
+  (
+    232002,
+    'Boni Incentivo de Admon',
+    'perdida',
+    'GtoAdmin',
+    false,
+    true,
+    false
+  ),
+  (
+    232003,
+    'Cuo Pat de Admon',
+    'perdida',
+    'GtoAdmin',
+    false,
+    true,
+    false
+  ),
+  (
+    232004,
+    'Dep. Mob y Equi de Oficina',
+    'perdida',
+    'GtoAdmin',
+    false,
+    false,
+    false
+  ),
+  (
+    232005,
+    'Dep Equi de Computación',
+    'perdida',
+    'GtoAdmin',
+    false,
+    false,
+    false
+  ),
+  (
+    232006,
+    'Amor. Gtos de Organización',
+    'perdida',
+    'GtoAdmin',
+    false,
+    false,
+    false
+  ),
+  (
+    232007,
+    'Pap y Utiles Consumidos',
+    'perdida',
+    'GtoAdmin',
+    false,
+    true,
+    false
+  ),
+  (
+    232008,
+    'Cuentas Incobrables',
+    'perdida',
+    'GtoAdmin',
+    false,
+    false,
+    false
+  ),
+  (
+    240001,
+    'Intereses Percibidos',
+    'ganancia',
+    'IngrFina',
+    false,
+    true,
+    false
+  ),
+  (
+    250001,
+    'Intereses Gastos',
+    'perdida',
+    'GastosFina',
+    false,
+    true,
+    false
+  ),
+  (
+    260001,
+    'Donativos',
+    'perdida',
+    'OtrosGtoFina',
+    false,
+    true,
+    false
+  ),
+  (
+    270001,
+    'Comisiones Percibidas',
+    'ganancia',
+    'Otring',
+    false,
+    true,
+    false
+  ),
+  (
+    310100,
+    'Inventario Inicial de Materia Prima',
+    'costo_debe',
+    'MaterialesDirectos',
+    true,
+    true,
+    false
+  ),
+  (
+    310200,
+    'Compras de Materia Prima (Locales)',
+    'costo_debe',
+    'MaterialesDirectos',
+    true,
+    true,
+    false
+  ),
+  (
+    310300,
+    'Compras de Materia Prima (Importaciones)',
+    'costo_debe',
+    'MaterialesDirectos',
+    true,
+    true,
+    false
+  ),
+  (
+    310400,
+    'Impuestos Aduaneros / Aranceles',
+    'costo_debe',
+    'MaterialesDirectos',
+    true,
+    true,
+    false
+  ),
+  (
+    310500,
+    'Fletes y Seguros de Importación',
+    'costo_debe',
+    'MaterialesDirectos',
+    true,
+    true,
+    false
+  ),
+  (
+    310600,
+    'Gastos de Desaduanaje',
+    'costo_debe',
+    'MaterialesDirectos',
+    true,
+    true,
+    false
+  ),
+  (
+    310700,
+    '(-) Devoluciones y Rebajas sobre Compras',
+    'costo_haber',
+    'MaterialesDirectos',
+    true,
+    true,
+    false
+  ),
+  (
+    310800,
+    '(-) Inventario Final de Materia Prima',
+    'costo_haber',
+    'MaterialesDirectos',
+    true,
+    true,
+    false
+  ),
+  (
+    320100,
+    'Sueldos y Salarios',
+    'costo_debe',
+    'ManoObra',
+    true,
+    true,
+    false
+  ),
+  (
+    320200,
+    'Prestaciones Sociales y Cargas Patronales',
+    'costo_debe',
+    'ManoObra',
+    true,
+    true,
+    false
+  ),
+  (
+    320300,
+    'Horas Extra Directas',
+    'costo_debe',
+    'ManoObra',
+    true,
+    true,
+    false
+  ),
+  (
+    330100,
+    'Materiales Indirectos y Suministros',
+    'costo_debe',
+    'CostosIndirectos',
+    true,
+    true,
+    false
+  ),
+  (
+    330200,
+    'Mano de Obra Indirecta (Supervisión)',
+    'costo_debe',
+    'CostosIndirectos',
+    true,
+    true,
+    false
+  ),
+  (
+    330300,
+    'Depreciaciones Maquinaria y Planta',
+    'costo_debe',
+    'CostosIndirectos',
+    true,
+    true,
+    false
+  ),
+  (
+    330400,
+    'Servicios Públicos de Fábrica',
+    'costo_debe',
+    'CostosIndirectos',
+    true,
+    true,
+    false
+  ),
+  (
+    330500,
+    'Alquileres y Seguros de Planta',
+    'costo_debe',
+    'CostosIndirectos',
+    true,
+    true,
+    false
+  ),
+  (
+    340101,
+    'Inventario Inicial Artículos en Proceso',
+    'costo_debe',
+    'CuentasInventarios',
+    true,
+    true,
+    false
+  ),
+  (
+    340102,
+    'Inventario Inicial Artículos Terminados',
+    'costo_debe',
+    'CuentasInventarios',
+    true,
+    true,
+    false
+  ),
+  (
+    340201,
+    '(-) Inventario Final en Proceso',
+    'costo_haber',
+    'CuentasInventarios',
+    true,
+    true,
+    false
+  ),
+  (
+    340202,
+    '(-) Inventario Final Artículos Terminados',
+    'costo_haber',
+    'CuentasInventarios',
+    true,
+    true,
+    false
+  );

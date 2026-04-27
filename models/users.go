@@ -8,20 +8,18 @@ import (
 
 type User struct {
 	gorm.Model
-	Nombre   string `json:"nombre" form:"nombre"`
-	Apellido string `json:"apellido" form:"apellido"`
-	Email    string `json:"email" form:"email" gorm:"uniqueIndex"`
-	Pase     string `json:"pase" form:"pase"`
-	Role     string `json:"role" form:"role"`
-	// --- NUEVOS CAMPOS ---
+	Nombre            string    `json:"nombre" form:"nombre"`
+	Apellido          string    `json:"apellido" form:"apellido"`
+	Email             string    `json:"email" form:"email" gorm:"uniqueIndex"`
+	Pase              string    `json:"pase" form:"pase"`
+	Role              string    `json:"role" form:"role"`
 	SuscripcionActiva bool      `json:"suscripcion_activa" gorm:"default:false"`
 	FechaFinPrueba    time.Time `json:"fecha_fin_prueba"` // Atajo para no calcular siempre
 }
 
 type Mensaje struct {
 	gorm.Model
-	UserID uint `json:"user_id"`
-	//	User      User   `gorm:"foreignKey:UserID"`
+	UserID    uint   `json:"user_id"`
 	Consulta  string `json:"consulta" gorm:"type:text" form:"consulta"`
 	Respuesta string `json:"respuesta" gorm:"type:text"`
 	Estado    string `json:"estado" gorm:"default:'pendiente'"`
@@ -31,17 +29,15 @@ func (Mensaje) TableName() string {
 	return "mensajes"
 }
 
-// En models/models.go
-
 type CueDB struct {
-	Codigo    int    `gorm:"primaryKey"`
-	Nombre    string `gorm:"type:varchar(100)"`
-	Saldo     string `gorm:"type:varchar(20)"`
-	Categoria string `gorm:"type:varchar(50)"`
-	EsCosto   bool   `gorm:"default:false"`
+	Codigo     int    `gorm:"primaryKey;column:codigo"`
+	Nombre     string `gorm:"type:varchar(100);column:nombre"`
+	Saldo      string `gorm:"type:varchar(20);column:saldo"`
+	Categoria  string `gorm:"type:varchar(50);column:categoria"`
+	EsCosto    bool   `gorm:"default:false;column:es_costo"`
+	EsVariable bool   `gorm:"default:false;column:es_variable"` // <--- ESTE TAG ES VITAL
+	EsEfectivo bool   `gorm:"default:false;column:es_efectivo"` // <--- ESTE TAMBIÉN
 }
-
-// TableName le dice a GORM que use el nombre exacto de la tabla que creamos
 
 func (CueDB) TableName() string {
 	return "nomenclatura"
@@ -56,7 +52,6 @@ type Transaccion struct {
 	Pasarela   string  `json:"pasarela"`   // "qpaypro"
 }
 
-// TableName le dice a GORM que use el nombre exacto de la tabla en Supabase
 func (Transaccion) TableName() string {
 	return "transacciones"
 }

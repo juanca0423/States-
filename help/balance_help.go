@@ -11,22 +11,18 @@ import (
 func GenerarPatrimonioVista(plantilla []models.Cue, titulo string, acumPat *float64, saldos map[string]models.Cuenta, utilidadNeta float64) []models.BaString {
 	var filas []models.BaString
 	var suma float64
+	ultimoIdx := -1
 
 	for _, c := range plantilla {
 		valorReal := 0.0
-		codigo := c.Codigo
-		// Si es la cuenta de Ganancia, usamos el valor que calculamos en Resultados
-		if codigo == 131002 {
+		if c.Codigo == 131002 {
 			valorReal = utilidadNeta
 		} else {
-			// Si no, buscamos en el mapa normal
 			if cuenta, existe := saldos[strconv.Itoa(c.Codigo)]; existe {
 				valorReal = cuenta.Saldo
 			}
 		}
 
-		// REGLA DE SIGNOS:
-		// En el Pasivo/Patrimonio, las cuentas "Activo" RESTAN (como la Cuenta Personal)
 		if c.Saldo == "activo" {
 			suma -= valorReal
 		} else {
@@ -35,17 +31,23 @@ func GenerarPatrimonioVista(plantilla []models.Cue, titulo string, acumPat *floa
 
 		if valorReal != 0 {
 			filas = append(filas, models.BaString{
-				Codigo: strconv.Itoa(codigo),
+				Codigo: strconv.Itoa(c.Codigo),
 				Nombre: c.Nombre,
 				Col1:   config.FCont(valorReal),
 			})
+			ultimoIdx = len(filas) - 1
 		}
+	}
+
+	// Cerramos la Col1 antes de pasar al total en Col3
+	if ultimoIdx != -1 {
+		filas[ultimoIdx].Cla1 = "border-bottom"
 	}
 
 	*acumPat += suma
 	filas = append(filas, models.BaString{
 		Nombre: "Total " + titulo,
-		Col3:   config.FCont(suma), // El total va a la columna 3
+		Col3:   config.FCont(suma),
 		Cla3:   "border-top",
 	})
 	return filas
@@ -57,26 +59,23 @@ func GenerarBalanceVista(plantilla []models.Cue, tituloGrupo string, acumuladorT
 
 	filas = append(filas, models.BaString{Nombre: tituloGrupo, ClasNombre: "ps-4 fw-bold text-muted small"})
 
+	// Variable para rastrear el índice de la última fila numérica agregada
+	ultimoIndiceNumerico := -1
+
 	for _, c := range plantilla {
 		valorReal := 0.0
 		if cuenta, existe := saldosReales[strconv.Itoa(c.Codigo)]; existe {
 			valorReal = cuenta.Saldo
 		}
 
-		// --- CORRECCIÓN DE LA LÓGICA DE INTERCEPCIÓN ---
-		// --- CORRECCIÓN DE LA LÓGICA DE INTERCEPCIÓN ---
 		if c.Codigo == 111301 {
-			// 1. Guardamos el valor que venía de saldos reales como INICIAL
 			t.InventarioInicial = valorReal
-
-			// 2. Buscamos el inventario final para el Balance General
 			if invFin, existe := saldosReales["220005"]; existe {
 				valorReal = invFin.Saldo
-				t.Inventario = valorReal // Este es el FINAL
+				t.Inventario = valorReal
 			}
 		}
 
-		// LÓGICA DE SUMA O RESTA SEGÚN SECCIÓN (Mantenemos tu lógica original)
 		if esPasivo {
 			if c.Saldo == "activo" {
 				sumaSubGrupo -= valorReal
@@ -97,16 +96,21 @@ func GenerarBalanceVista(plantilla []models.Cue, tituloGrupo string, acumuladorT
 				Nombre: c.Nombre,
 				Col1:   config.FCont(valorReal),
 			})
+			ultimoIndiceNumerico = len(filas) - 1 // Guardamos la posición
 		}
+	}
+
+	// --- LA MAGIA: Aplicar línea a la última cuenta del parcial ---
+	if ultimoIndiceNumerico != -1 {
+		filas[ultimoIndiceNumerico].Cla1 = "border-bottom"
 	}
 
 	*acumuladorTotal += sumaSubGrupo
 
-	// Añadimos el subtotal del grupo
 	filas = append(filas, models.BaString{
 		Nombre: "Total " + tituloGrupo,
 		Col2:   config.FCont(sumaSubGrupo),
-		Cla2:   "border-top",
+		Cla2:   "border-top", // Esta es la línea que recibe el subtotal en Col2
 	})
 
 	return filas
@@ -159,33 +163,47 @@ func GenerarTodoElBalance(datos map[string]models.Cuenta, utilidadNeta float64) 
 	// --- 1. ACTIVO ---
 	vista = append(vista, models.BaString{Nombre: "ACTIVO", ClasNombre: "fw-bold fs-5 text-success"})
 
-	// Corriente
-	vista = append(vista, models.BaString{Nombre: "CORRIENTE", ClasNombre: "fw-bold ps-2"})
+	// Corriente (Solo se agregan si tienen datos)
 	vista = append(vista, GenerarBalanceVista(config.Disponible, "Disponibilidades", &t.ActivoCorriente, datos, false, &t)...)
+
 	vista = append(vista, GenerarBalanceVista(config.Exigible, "Exigible", &t.ActivoCorriente, datos, false, &t)...)
+
 	vista = append(vista, GenerarBalanceVista(config.Realisable, "Realizable", &t.ActivoCorriente, datos, false, &t)...)
 
-	// Inyectamos Total Corriente en Columna 3
-	vista = append(vista, models.BaString{Nombre: "Total Activo Corriente", Col3: config.FCont(t.ActivoCorriente), Cla3: "border-top"})
+	if t.ActivoCorriente > 0 {
+		vista = append(vista, models.BaString{Nombre: "Total Activo Corriente", Col3: config.FCont(t.ActivoCorriente), Cla3: "border-top"})
+	}
 
 	// No Corriente
-	vista = append(vista, models.BaString{Nombre: "NO CORRIENTE", ClasNombre: "fw-bold ps-2 mt-2"})
 	vista = append(vista, GenerarBalanceVista(config.PropPlanEqui, "Propiedad, Planta y Equipo", &t.ActivoNoCorriente, datos, false, &t)...)
-	vista = append(vista, GenerarBalanceVista(config.GtoIntan, "Gastos Intangibles", &t.ActivoNoCorriente, datos, false, &t)...)
-	vista = append(vista, GenerarBalanceVista(config.GtoDiferidos, "Inversiones y Otros", &t.ActivoNoCorriente, datos, false, &t)...)
 
-	// Inyectamos Total No Corriente en Columna 3
-	vista = append(vista, models.BaString{Nombre: "Total Activo No Corriente", Col3: config.FCont(t.ActivoNoCorriente), Cla3: "border-top"})
+	vista = append(vista, GenerarBalanceVista(config.GtoIntan, "Gastos Intangibles", &t.ActivoNoCorriente, datos, false, &t)...)
+
+	vista = append(vista, GenerarBalanceVista(config.GtoDiferidos, "Gastos Diferidos", &t.ActivoNoCorriente, datos, false, &t)...)
+
+	if t.ActivoNoCorriente > 0 {
+		vista = append(vista, models.BaString{Nombre: "Total Activo No Corriente", Col3: config.FCont(t.ActivoNoCorriente), Cla3: "border-top"})
+	}
 
 	t.ActivoTotal = t.ActivoCorriente + t.ActivoNoCorriente
-	vista = append(vista, models.BaString{Nombre: "SUMA DEL ACTIVO", Col4: config.FCont(t.ActivoTotal), ClasNombre: "fw-bold text-primary", Cla4: " border-bottom-double"})
+	// En la sección de Sumas Finales:
+	vista = append(vista, models.BaString{
+		Nombre:      "SUMA DEL ACTIVO",
+		Col4:        config.FCont(t.ActivoTotal),
+		ClasNombre:  "fw-bold text-primary",
+		Cla4:        "border-double", // Cambiado de border-bottom-double
+		EsResultado: true,
+	})
 
 	// --- 2. PASIVO ---
 	vista = append(vista, models.BaString{Nombre: "PASIVO Y PATRIMONIO", ClasNombre: "fs-5 mt-4 text-danger"})
 
 	// Pasivo Corriente
 	vista = append(vista, GenerarBalanceVista(config.PasivoCorr, "Corto Plazo", &t.PasivoCorriente, datos, true, &t)...)
-	vista = append(vista, models.BaString{Nombre: "Total Pasivo Corriente", Col3: config.FCont(t.PasivoCorriente), Cla3: "border-top"})
+
+	if t.PasivoCorriente > 0 {
+		vista = append(vista, models.BaString{Nombre: "Total Pasivo Corriente", Col3: config.FCont(t.PasivoCorriente), Cla3: "border-top"})
+	}
 
 	// Pasivo No Corriente
 	vista = append(vista, GenerarBalanceVista(config.PasivoNoCorr, "Largo Plazo", &t.PasivoNoCorriente, datos, true, &t)...)
@@ -200,7 +218,13 @@ func GenerarTodoElBalance(datos map[string]models.Cuenta, utilidadNeta float64) 
 
 	PasPatrUtilidad := sumaPasivoPatrimonio + utilidadNeta
 	vista = append(vista, models.BaString{Nombre: "GANANCIA ANTES DE IMPUESTOS Y RESERVAS", Col4: config.FCont(utilidadNeta), ClasNombre: "text-success-dark", Cla4: "border-bottom"})
-	vista = append(vista, models.BaString{Nombre: "SUMA IGUAL AL PASIVO", Col4: config.FCont(PasPatrUtilidad), ClasNombre: "text-success-dark", Cla4: "border-bottom-double"})
 
+	vista = append(vista, models.BaString{
+		Nombre:      "SUMA IGUAL AL PASIVO",
+		Col4:        config.FCont(PasPatrUtilidad),
+		ClasNombre:  "text-success-dark",
+		Cla4:        "border-double", // Cambiado de border-bottom-double
+		EsResultado: true,
+	})
 	return vista, t
 }

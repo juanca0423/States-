@@ -51,17 +51,18 @@ type Cuenta struct {
 // Esta es la que recibirá el HTML (.hbs)
 
 type BaString struct {
-	Codigo     string
-	Nombre     string
-	Col1       string
-	Col2       string
-	Col3       string
-	Col4       string
-	ClasNombre string // Para indentación y estilos
-	Cla1       string
-	Cla2       string
-	Cla3       string
-	Cla4       string
+	Codigo      string
+	Nombre      string
+	Col1        string
+	Col2        string
+	Col3        string
+	Col4        string
+	ClasNombre  string // Para indentación y estilos
+	Cla1        string
+	Cla2        string
+	Cla3        string
+	Cla4        string
+	EsResultado bool
 }
 
 type TotalesBalance struct {

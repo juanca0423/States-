@@ -7,14 +7,7 @@ services:
     volumes:
       - ./:/app # Sincroniza tu carpeta actual con /app en el contenedor
     command: air -c .air.toml # Asegúrate de apuntar a tu configuración de air
-    environment:
-      DB_HOST: "aws-0-us-west-2.pooler.supabase.com"
-      DB_PORT: 6543
-      DB_USER: "postgres.rmxmcnygzqranlcoinbr"
-      DB_PASSWORD: "#bEAqJBwne-7Ak7"
-      DB_NAME: "postgres"
-      DB_SSL: "require"
-      JWT_SECRET: "RPKk4nn5snKRwvO1Gg84vehDa6PjQem9sshOJmXcZ3"
+    env_file: [.env]
     dns:
       - 8.8.8.8
       - 8.8.4.4

@@ -2,10 +2,10 @@
 package help
 
 import (
-	"strconv"
-
 	"ef/config"
 	"ef/models"
+	"fmt"
+	"strconv"
 )
 
 func FilaCostoProduccion(costoTotal float64) ([]models.KR, float64) {
@@ -22,21 +22,26 @@ func FilaCostoProduccion(costoTotal float64) ([]models.KR, float64) {
 
 // Ingresos financieros
 
-func RecCol3(Balance map[string]float64, Recorido []models.Cue) ([]models.KR, float64) {
+func RecCol3(Balance map[string]float64, Recorido []models.Cue) ([]models.KR, float64, float64) {
 	var (
-		res   []models.KR
-		data  models.ReString
-		Saldo float64
+		res    []models.KR
+		data   models.ReString
+		Saldo  float64
+		Ventas float64
 	)
 
 	data.ClasNombre = "titulo"
 	data.Nombre = "Ingresos"
 	res = append(res, models.KR{Key: "210000", Value: data})
 	for _, v := range Recorido {
+
 		i := strconv.Itoa(v.Codigo)
 		Val := Balance[i]
 		if Val == 0 {
 			continue
+		}
+		if i == "210001" {
+			Ventas = Val
 		}
 		var dato models.ReString
 		dato.Nombre = v.Nombre
@@ -56,68 +61,163 @@ func RecCol3(Balance map[string]float64, Recorido []models.Cue) ([]models.KR, fl
 	data.Nombre = "Ventas Brutas"
 	res = append(res, models.KR{Key: "210000", Value: data})
 
-	return res, Saldo
+	return res, Saldo, Ventas
 }
 
-func RecCol1(Balance map[string]float64, Recorido []models.Cue) ([]models.KR, float64) {
+// Ejemplo de RecCol1 "Inteligente"
+func RecCol1(Balance map[string]float64, Recorido []models.Cue, titulo string, vTotalVariables, vTotalFijos, vGtosNoEfectivo *float64) ([]models.KR, float64) {
 	var res []models.KR
-	var Saldo float64
+	var SaldoGrupo float64 // Solo para este grupo (ej. Gastos Distribución)
+
 	for _, v := range Recorido {
-		i := strconv.Itoa(v.Codigo)
-		Val := Balance[i]
-		if Val == 0 {
+		val := Balance[strconv.Itoa(v.Codigo)]
+		if val == 0 {
 			continue
 		}
-		var dato models.ReString
-		dato.Nombre = v.Nombre
-		dato.Col1 = config.FCont(Val)
-		saldo := v.Saldo
-		if saldo == "perdida" {
-			Saldo += Val
+		// Agrega este Print dentro del for de RecCol1 para ver qué lee de la DB
+		fmt.Printf("Cuenta: %s | Valor: %f | ¿Es Var?: %v\n", v.Nombre, val, v.EsVariable)
+		// Acumuladores para el Dashboard (Punteros)
+		if v.EsVariable {
+			*vTotalVariables += val
 		} else {
-			Saldo -= Val
+			*vTotalFijos += val
 		}
-		res = append(res, models.KR{Key: i, Value: dato})
+		if !v.EsEfectivo {
+			*vGtosNoEfectivo += val
+		}
+
+		// En un grupo de GASTOS, todos los gastos SUMAN al total del grupo
+		SaldoGrupo += val
+
+		res = append(res, models.KR{
+			Key: strconv.Itoa(v.Codigo),
+			Value: models.ReString{
+				Nombre: v.Nombre,
+				Col1:   config.FCont(val),
+			},
+		})
 	}
-	// EL TRUCO: Al último elemento le ponemos el total en la Columna 2
-	if len(res) > 0 {
-		res[len(res)-1].Value.Col2 = config.FCont(Saldo)
-		res[len(res)-1].Value.Cla1 = "fw-bold border-bottom" // Línea de suma
+
+	if len(res) == 0 {
+		return nil, 0
 	}
-	return res, Saldo
+
+	// Título
+	finalRes := []models.KR{
+		{Key: "TIT-" + titulo, Value: models.ReString{Nombre: titulo, ClasNombre: "fw-bold"}},
+	}
+	finalRes = append(finalRes, res...)
+
+	// El total del grupo va en la Columna 2 de la ÚLTIMA FILA de datos
+	// Usamos len(finalRes)-1 porque ya agregamos el título
+	finalRes[len(finalRes)-1].Value.Col2 = config.FCont(SaldoGrupo)
+	finalRes[len(finalRes)-1].Value.Cla1 = "border-bottom"
+
+	return finalRes, SaldoGrupo
 }
 
-func RecCol1Tot(Balance map[string]float64, Recorido []models.Cue, Sum float64) ([]models.KR, float64) {
+func RecCol1Tot(Balance map[string]float64, Recorido []models.Cue, titulo string, SumaAnterior float64, vTotalVariables, vTotalFijos, vGtosNoEfectivo *float64) ([]models.KR, float64) {
 	var res []models.KR
-	var Saldo float64
+	var SaldoGrupo float64
+
 	for _, v := range Recorido {
-		i := strconv.Itoa(v.Codigo)
-		Val := Balance[i]
-		if Val == 0 {
+		val := Balance[strconv.Itoa(v.Codigo)]
+		if val == 0 {
 			continue
 		}
+		fmt.Printf("Cuenta: %s | Valor: %f | ¿Es Var?: %v\n", v.Nombre, val, v.EsVariable)
 
-		var dato models.ReString
-		dato.Nombre = v.Nombre
-		dato.Col1 = config.FCont(Val)
-		saldo := v.Saldo
-		if saldo == "perdida" {
-			Saldo += Val
+		if v.EsVariable {
+			*vTotalVariables += val
 		} else {
-			Saldo -= Val
+			*vTotalFijos += val
 		}
-		res = append(res, models.KR{Key: i, Value: dato})
+		if !v.EsEfectivo {
+			*vGtosNoEfectivo += val
+		}
+
+		SaldoGrupo += val
+
+		res = append(res, models.KR{
+			Key: strconv.Itoa(v.Codigo),
+			Value: models.ReString{
+				Nombre: v.Nombre,
+				Col1:   config.FCont(val),
+			},
+		})
 	}
 
-	// EL TRUCO: Al último elemento le ponemos el total en la Columna 2
-	if len(res) > 0 {
-		res[len(res)-1].Value.Col2 = config.FCont(Saldo)
-		res[len(res)-1].Value.Col3 = config.FCont(Sum + Saldo)
-		res[len(res)-1].Value.Cla2 = "fw-bold border-bottom"
-		res[len(res)-1].Value.Cla3 = "fw-bold border-bottom"
-		res[len(res)-1].Value.Cla1 = "border-bottom" // Línea de suma
+	if len(res) == 0 {
+		return nil, 0
 	}
-	return res, Saldo
+
+	finalRes := []models.KR{
+		{Key: "TIT-" + titulo, Value: models.ReString{Nombre: titulo, ClasNombre: "fw-bold"}},
+	}
+	finalRes = append(finalRes, res...)
+
+	// Col 2: Total de este grupo
+	// Col 3: Suma de (Grupo Anterior + Este Grupo)
+	finalRes[len(finalRes)-1].Value.Col2 = config.FCont(SaldoGrupo)
+	finalRes[len(finalRes)-1].Value.Col3 = config.FCont(SumaAnterior + SaldoGrupo)
+
+	finalRes[len(finalRes)-1].Value.Cla3 = "border-bottom"
+	finalRes[len(finalRes)-1].Value.Cla2 = "border-bottom"
+	finalRes[len(finalRes)-1].Value.Cla1 = "border-bottom"
+
+	return finalRes, SaldoGrupo
+}
+
+func RecCol2Tot(Balance map[string]float64, Recorido []models.Cue, titulo string, SumaAnterior float64, vTotalVariables, vTotalFijos, vGtosNoEfectivo *float64) ([]models.KR, float64) {
+	var res []models.KR
+	var SaldoGrupo float64
+
+	for _, v := range Recorido {
+		val := Balance[strconv.Itoa(v.Codigo)]
+		if val == 0 {
+			continue
+		}
+		fmt.Printf("Cuenta: %s | Valor: %f | ¿Es Var?: %v\n", v.Nombre, val, v.EsVariable)
+
+		if v.EsVariable {
+			*vTotalVariables += val
+		} else {
+			*vTotalFijos += val
+		}
+		if !v.EsEfectivo {
+			*vGtosNoEfectivo += val
+		}
+
+		SaldoGrupo += val
+
+		res = append(res, models.KR{
+			Key: strconv.Itoa(v.Codigo),
+			Value: models.ReString{
+				Nombre: v.Nombre,
+				Col1:   config.FCont(val),
+			},
+		})
+	}
+
+	if len(res) == 0 {
+		return nil, 0
+	}
+
+	finalRes := []models.KR{
+		{Key: "TIT-" + titulo, Value: models.ReString{Nombre: titulo, ClasNombre: "fw-bold"}},
+	}
+	finalRes = append(finalRes, res...)
+
+	// Col 2: Total de este grupo
+	// Col 3: Suma de (Grupo Anterior + Este Grupo)
+	finalRes[len(finalRes)-1].Value.Col2 = config.FCont(SaldoGrupo)
+	finalRes[len(finalRes)-1].Value.Col3 = config.FCont(SumaAnterior - SaldoGrupo)
+
+	finalRes[len(finalRes)-1].Value.Cla3 = "border-bottom"
+	finalRes[len(finalRes)-1].Value.Cla2 = "border-bottom"
+	finalRes[len(finalRes)-1].Value.Cla1 = "border-bottom"
+
+	return finalRes, SaldoGrupo
 }
 
 func InvIni(Balance map[string]float64) ([]models.KR, float64) {
@@ -213,11 +313,13 @@ func CostoVentas(Balance map[string]float64, invIni float64, compNetas float64) 
 func Resultados(Balance map[string]float64, costoProd float64) ([]models.KR, models.TotalesResultados) {
 	Res := make([]models.KR, 0)
 	var t models.TotalesResultados
+	var vTotalVariables, vTotalFijos, vGtosNoEfectivo float64
 
 	// --- 1. INGRESOS ---
-	filasIng, vVentasNetas := RecCol3(Balance, config.Ingresos) // Usamos tu variable IngresosCo
+	filasIng, vVentasNetas, vVentas := RecCol3(Balance, config.Ingresos) // Usamos tu variable IngresosCo
 	Res = append(Res, filasIng...)
 
+	t.Ventas = vVentas
 	// --- 2. COSTO DE VENTAS (Híbrido) ---
 	if costoProd > 0 {
 		// --- ESCENARIO INDUSTRIAL ---
@@ -240,7 +342,6 @@ func Resultados(Balance map[string]float64, costoProd float64) ([]models.KR, mod
 		datoFin.Nombre = "(-) Inventario Final de Productos Terminados"
 		datoFin.Col2 = config.FCont(vInvFinPT)
 		Res = append(Res, models.KR{Key: "111305", Value: datoFin})
-
 		t.CostoVentas = (vInvIniPT + costoProd) - vInvFinPT
 
 		// AÑADE ESTO PARA QUE SE VEA EL TOTAL DEL COSTO EN EL REPORTE:
@@ -272,54 +373,60 @@ func Resultados(Balance map[string]float64, costoProd float64) ([]models.KR, mod
 
 	// --- 2. GASTOS DE OPERACIÓN ---
 	Res = append(Res, models.KR{Key: "TIT_GO", Value: models.ReString{Nombre: "GASTOS DE OPERACIÓN", ClasNombre: "fw-bold titulo"}})
-	Res = append(Res, models.KR{Key: "TIT_GD", Value: models.ReString{Nombre: "Gastos de Distribución", ClasNombre: "fw-bold"}})
-	gtoven, vSumGtoVen := RecCol1(Balance, config.GtoVentas)
+
+	gtoven, vSumGtoVen := RecCol1(Balance, config.GtoVentas, "Gastos de Distribución", &vTotalVariables, &vTotalFijos, &vGtosNoEfectivo)
+
 	Res = append(Res, gtoven...)
-	Res = append(Res, models.KR{Key: "TIT_GA", Value: models.ReString{Nombre: "Gastos de Administración", ClasNombre: "fw-bold"}})
-	gtoadm, vSumGtoAdm := RecCol1Tot(Balance, config.GtoAdmin, vSumGtoVen)
+
+	gtoadm, vSumGtoAdm := RecCol1Tot(Balance, config.GtoAdmin, "Gastos de Administración", vSumGtoVen, &vTotalVariables, &vTotalFijos, &vGtosNoEfectivo)
 	Res = append(Res, gtoadm...)
 
-	vTotalGastos := vSumGtoVen + vSumGtoAdm
-	vResultadoOp := vUtilidadBruta - vTotalGastos
+	// --- RESULTADO DE OPERACIÓN ---
+	vTotalGastosOp := vSumGtoVen + vSumGtoAdm
+	vResultadoOp := vUtilidadBruta - vTotalGastosOp
 
-	Res = append(Res, models.KR{Key: "RO", Value: models.ReString{
-		Nombre: "RESULTADO DE OPERACIÓN",
-		Col3:   config.FCont(vResultadoOp),
-		// Cla3:   "fw-bold border-top",
-		Cla2: "fw-bold border-top",
-	}})
+	Res = append(Res, models.KR{
+		Key: "RO",
+		Value: models.ReString{
+			Nombre: "RESULTADO DE OPERACIÓN",
+			Col3:   config.FCont(vResultadoOp),
+			Cla3:   "fw-bold border-top",
+		},
+	})
 
-	Res = append(Res, models.KR{Key: "TIT_OI", Value: models.ReString{Nombre: "INGRESOS FINANCIEROS", ClasNombre: "fw-bold"}})
-	filasIngFin, vIngFin := RecCol1(Balance, config.IngrFina)
+	// --- FINANCIEROS (Ingresos suman, Gastos restan) ---
+	filasIngFin, vSumIngFin := RecCol1(Balance, config.IngrFina, "INGRESOS FINANCIEROS", &vTotalVariables, &vTotalFijos, &vGtosNoEfectivo)
 	Res = append(Res, filasIngFin...)
 
-	Res = append(Res, models.KR{Key: "TIT_OI", Value: models.ReString{Nombre: "GASTOS FINANCIEROS", ClasNombre: "fw-bold"}})
-
-	filasGtoFin, vGtoFin := RecCol1Tot(Balance, config.GastosFina, vIngFin)
+	filasGtoFin, vSumGtoFin := RecCol2Tot(Balance, config.GastosFina, "GASTOS FINANCIEROS", vSumIngFin, &vTotalVariables, &vTotalFijos, &vGtosNoEfectivo)
 	Res = append(Res, filasGtoFin...)
 
-	vSumaIngGtoFin := vResultadoOp + -(vGtoFin + vIngFin)
-	// Agregamos una fila de subtotal visual para Otros Ingresos
-	Res = append(Res, models.KR{Key: "SUM_OI", Value: models.ReString{
-		Nombre: "Resultado Despues de Ing y Gto Financieros",
-		Col3:   config.FCont(vSumaIngGtoFin),
-		Cla2:   "fw-bold border-top",
-	}})
+	// UTILIDAD FINAL: 258,395.89 - 8,640 = 249,755.89 <-- ¡ESTE ES EL VALOR DE TU HOJA!
+	// OJO: Aquí vSumIngFin es positivo, vSumGtoFin es positivo.
+	// El neto financiero es: Ingresos - Gastos
+	vNetoFinanciero := vSumIngFin - vSumGtoFin
+	vResultadoPostFin := vResultadoOp + vNetoFinanciero
+	Res = append(Res, models.KR{
+		Key: "SUM_FIN",
+		Value: models.ReString{
+			Nombre: "Resultado Después de Ing. y Gto. Financieros",
+			Col3:   config.FCont(vResultadoPostFin),
+			Cla2:   "fw-bold border-top",
+		},
+	})
 
-	// --- SECCIÓN DE GASTOS FINANCIEROS ---
-	Res = append(Res, models.KR{Key: "TIT_GE", Value: models.ReString{Nombre: "OTROS GASTOS", ClasNombre: "fw-bold"}})
+	// --- SECCIÓN FINANCIERA Y OTROS ---
+	filasOtrosIngFin, vOtrosIng := RecCol1(Balance, config.Otring, "OTROS INGRESOS FINANCIEROS", &vTotalVariables, &vTotalFijos, &vGtosNoEfectivo)
+	Res = append(Res, filasOtrosIngFin...)
 
-	filasOtrosGto, vOtrosGto := RecCol1(Balance, config.OtrosGtoFina)
-	Res = append(Res, filasOtrosGto...)
-	Res = append(Res, models.KR{Key: "TIT_GE", Value: models.ReString{Nombre: "OTROS INGRESOS", ClasNombre: "fw-bold"}})
-	filasOtrosIng, vOtrosIng := RecCol1Tot(Balance, config.Otring, vOtrosGto)
-	Res = append(Res, filasOtrosIng...)
+	filasOtrosGtoFin, vOtrosGto := RecCol2Tot(Balance, config.OtrosGtoFina, "OTROS GASTOS FINANCIEROS", vOtrosIng, &vTotalVariables, &vTotalFijos, &vGtosNoEfectivo)
+	Res = append(Res, filasOtrosGtoFin...)
 
-	vSumaOtrosGtoIng := vSumaIngGtoFin - (vOtrosGto + vOtrosIng)
+	vNetoOtros := vOtrosIng - vOtrosGto // (1,360 - 10,000 = -8,640)
+	vUtilidadNeta := vResultadoPostFin + vNetoOtros
 
-	// --- 4. CÁLCULO FINAL ---
-	vUtilidadNeta := vSumaOtrosGtoIng
-
+	// --- FINAL: UTILIDAD NETA ---
+	// Repite la lógica: (ResultadoPostFin + OtrosIngresos - OtrosGastos)
 	Res = append(Res, models.KR{Key: "UN", Value: models.ReString{
 		Nombre:      "UTILIDAD NETA DEL EJERCICIO",
 		ClasNombre:  "fw-bold fs-5",
@@ -331,7 +438,11 @@ func Resultados(Balance map[string]float64, costoProd float64) ([]models.KR, mod
 	// Llenar totales para el Dashboard
 	t.UtilidadNeta = vUtilidadNeta
 	t.MargenBruto = vUtilidadBruta
-	t.VentasNetas = vVentasNetas // <--- ¡ASEGÚRATE DE AGREGAR ESTA LÍNEA!
+	t.VentasNetas = vVentasNetas
+	// ... al final de la función Resultados ...
+	t.GastosFijos = vTotalFijos
+	// Sumamos los gastos variables detectados + el costo de ventas
+	t.GastosVariables = vTotalVariables + t.CostoVentas
 
 	return Res, t
 }

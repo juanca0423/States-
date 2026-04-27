@@ -29,7 +29,6 @@ func SetUpRutas(app *fiber.App) {
 	// Ruta para herramienta comercial
 	app.Get("/eeff", middleware.AuthRequired, ctrl.HojaTrabajo)
 	app.Post("/estados", middleware.AuthRequired, ctrl.GenEstados)
-	app.Post("/exportar-excel-todo", middleware.AuthRequired, ctrl.ExportarExcelTodo)
 	app.Post("/api/pagos/qpay-webhook", ctrl.WebhookQPayPro)
 	app.Get("/perfil", middleware.AuthRequired, ctrl.GetPerfil)
 	// PROTEGIDAS (Requieren estar logueado)
@@ -39,7 +38,13 @@ func SetUpRutas(app *fiber.App) {
 	})
 
 	// Ruta para la nueva herramienta industrial
-	app.Post("/costos", middleware.AuthRequired, ctrl.GenCostoProduccion)
+	app.Get("/costos", middleware.AuthRequired, func(c *fiber.Ctx) error {
+		return c.Render("costos-construccion", fiber.Map{
+			"Titulo":  "Módulo de Costos",
+			"Mensaje": "Estamos ajustando los cálculos de materia prima. ¡Vuelve pronto!",
+		})
+	})
+	//	app.Post("/costos", middleware.AuthRequired, ctrl.GenCostoProduccion)
 	app.Get("/costosform", middleware.AuthRequired, ctrl.HojaTrabajocosto)
 
 	app.Get("/soport", middleware.AuthRequired, ctrl.GetSoporte)

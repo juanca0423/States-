@@ -1,7 +1,8 @@
 root = "."
 tmp_dir = "tmp"
 [build]
-  cmd = "go build -o ./tmp/main ."
+  cmd = "go build -buildvcs=false -o ./tmp/main ."
+  entrypoint = "."
   full_bin = "./tmp/main"
   # Agregamos "svg" a la lista:
   include_ext = ["go", "tpl", "tmpl", "html", "hbs", "css", "js", "svg"]
