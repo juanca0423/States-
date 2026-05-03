@@ -2,10 +2,10 @@
 package help
 
 import (
+	"strconv"
+
 	"ef/config"
 	"ef/models"
-	"fmt"
-	"strconv"
 )
 
 func FilaCostoProduccion(costoTotal float64) ([]models.KR, float64) {
@@ -64,7 +64,20 @@ func RecCol3(Balance map[string]float64, Recorido []models.Cue) ([]models.KR, fl
 	return res, Saldo, Ventas
 }
 
-// Ejemplo de RecCol1 "Inteligente"
+// Función auxiliar interna para no repetir código
+func acumularCostos(v models.Cue, val float64, vTotalVariables, vTotalFijos, vGtosNoEfectivo *float64) {
+	if v.EsVariable {
+		*vTotalVariables += val
+	} else {
+		*vTotalFijos += val
+	}
+
+	if !v.EsEfectivo {
+		*vGtosNoEfectivo += val
+	}
+}
+
+// RecCol1 "Inteligente"
 func RecCol1(Balance map[string]float64, Recorido []models.Cue, titulo string, vTotalVariables, vTotalFijos, vGtosNoEfectivo *float64) ([]models.KR, float64) {
 	var res []models.KR
 	var SaldoGrupo float64 // Solo para este grupo (ej. Gastos Distribución)
@@ -74,17 +87,7 @@ func RecCol1(Balance map[string]float64, Recorido []models.Cue, titulo string, v
 		if val == 0 {
 			continue
 		}
-		// Agrega este Print dentro del for de RecCol1 para ver qué lee de la DB
-		fmt.Printf("Cuenta: %s | Valor: %f | ¿Es Var?: %v\n", v.Nombre, val, v.EsVariable)
-		// Acumuladores para el Dashboard (Punteros)
-		if v.EsVariable {
-			*vTotalVariables += val
-		} else {
-			*vTotalFijos += val
-		}
-		if !v.EsEfectivo {
-			*vGtosNoEfectivo += val
-		}
+		acumularCostos(v, val, vTotalVariables, vTotalFijos, vGtosNoEfectivo)
 
 		// En un grupo de GASTOS, todos los gastos SUMAN al total del grupo
 		SaldoGrupo += val
@@ -125,16 +128,7 @@ func RecCol1Tot(Balance map[string]float64, Recorido []models.Cue, titulo string
 		if val == 0 {
 			continue
 		}
-		fmt.Printf("Cuenta: %s | Valor: %f | ¿Es Var?: %v\n", v.Nombre, val, v.EsVariable)
-
-		if v.EsVariable {
-			*vTotalVariables += val
-		} else {
-			*vTotalFijos += val
-		}
-		if !v.EsEfectivo {
-			*vGtosNoEfectivo += val
-		}
+		acumularCostos(v, val, vTotalVariables, vTotalFijos, vGtosNoEfectivo)
 
 		SaldoGrupo += val
 
@@ -177,16 +171,7 @@ func RecCol2Tot(Balance map[string]float64, Recorido []models.Cue, titulo string
 		if val == 0 {
 			continue
 		}
-		fmt.Printf("Cuenta: %s | Valor: %f | ¿Es Var?: %v\n", v.Nombre, val, v.EsVariable)
-
-		if v.EsVariable {
-			*vTotalVariables += val
-		} else {
-			*vTotalFijos += val
-		}
-		if !v.EsEfectivo {
-			*vGtosNoEfectivo += val
-		}
+		acumularCostos(v, val, vTotalVariables, vTotalFijos, vGtosNoEfectivo)
 
 		SaldoGrupo += val
 
@@ -443,6 +428,7 @@ func Resultados(Balance map[string]float64, costoProd float64) ([]models.KR, mod
 	t.GastosFijos = vTotalFijos
 	// Sumamos los gastos variables detectados + el costo de ventas
 	t.GastosVariables = vTotalVariables + t.CostoVentas
+	t.GastosNoEfectivo = vGtosNoEfectivo
 
 	return Res, t
 }

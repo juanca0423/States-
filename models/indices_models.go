@@ -21,4 +21,12 @@ type DatosDashboard struct {
 	UtilidadNeta      float64 // Ganancia final después de impuestos
 	GastosFijos       float64 // Costos que no varían con la producción
 	GastosVariables   float64 // Costos que dependen del volumen
+	GastosNoEfectivo  float64
+}
+
+type IndicesTotales struct {
+	PuntoEContable     float64 // El punto de equilibrio normal
+	PuntoECaja         float64 // El punto de equilibrio financiero (restando depreciaciones)
+	MargenContribucion float64
+	CostosTotales      float64
 }

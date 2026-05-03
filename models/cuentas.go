@@ -89,4 +89,5 @@ type TotalesResultados struct {
 	MargenBruto       float64
 	GastosFijos       float64
 	GastosVariables   float64
+	GastosNoEfectivo  float64
 }

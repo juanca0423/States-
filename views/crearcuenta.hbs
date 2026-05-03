@@ -220,6 +220,22 @@
             <option value="false">No Es Costo</option>
           </select>
         </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Tipo de Costo</label>
+            <select name="es_variable" id="edit_es_variable" class="form-select">
+              <option value="false">Fijo</option>
+              <option value="true">Variable</option>
+            </select>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">¿Es Efectivo?</label>
+            <select name="es_efectivo" id="edit_es_efectivo" class="form-select">
+              <option value="true">Sí (Cash)</option>
+              <option value="false">No (Depreciación/Amort)</option>
+            </select>
+          </div>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>

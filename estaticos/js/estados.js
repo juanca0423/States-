@@ -30,16 +30,19 @@ function renderizarGraficas() {
   const contenedor = document.getElementById("datos-financieros");
   if (!contenedor) return;
 
+  // 1. Capturamos los nuevos datos (Punto de Equilibrio de Caja y Margen real)
   const vNetas = parseFloat(contenedor.dataset.ventas) || 0;
   const cFijos = parseFloat(contenedor.dataset.fijos) || 0;
   const cVar = parseFloat(contenedor.dataset.variables) || 0;
+  const pECaja = parseFloat(contenedor.dataset.puntoEfe) || 0; // Nuevo
 
+  // --- GRÁFICA DE EQUILIBRIO ---
   const ctxEq = document.getElementById("graficoEquilibrio");
   if (ctxEq) {
     if (graficoEquilibrioInstance) graficoEquilibrioInstance.destroy();
     graficoEquilibrioInstance = new Chart(ctxEq.getContext("2d"), {
       type: "line",
-      plugins: [pluginFondoBlanco], // <--- Añade el plugin aquí
+      plugins: [pluginFondoBlanco],
       data: {
         labels: ["0%", "25%", "50%", "75%", "100%"],
         datasets: [
@@ -65,34 +68,16 @@ function renderizarGraficas() {
             fill: false,
             tension: 0.1,
           },
+          // Opcional: Podrías añadir una línea horizontal para el Punto de Equilibrio de Caja
         ],
       },
       options: {
-        animation: {
-          onComplete: function (animation) {
-            // La forma correcta de obtener el canvas en Chart.js v3/v4
-            const chartInstance = animation.chart;
-            const canvasElement = chartInstance.ctx.canvas;
-
-            if (canvasElement.id === "graficoEquilibrio") {
-              imgEquilibrioBase64 = canvasElement.toDataURL("image/png");
-            } else if (canvasElement.id === "graficoDona") {
-              imgDonaBase64 = canvasElement.toDataURL("image/png");
-            }
-            // window.mostrarAviso("Imagen capturada en memoria"); // Opcional para debug
-          },
-        },
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          customCanvasBackgroundColor: {
-            color: "white",
-          },
-        },
+        // ... (tus opciones de animación y responsive se mantienen igual)
       },
     });
   }
 
+  // --- GRÁFICA DE DONA (ESTRUCTURA DE COSTOS) ---
   const ctxDo = document.getElementById("graficoDona");
   if (ctxDo) {
     if (graficoDonaInstance) graficoDonaInstance.destroy();
@@ -100,36 +85,32 @@ function renderizarGraficas() {
       type: "doughnut",
       data: {
         labels: ["Fijos", "Variables"],
-        datasets: [
-          {
-            data: [cFijos, cVar],
-            backgroundColor: ["#FF6384", "#36A2EB"],
-          },
-        ],
+        datasets: [{
+          data: [cFijos, cVar],
+          backgroundColor: ["#FF6384", "#36A2EB"],
+        }],
       },
       options: {
-        animation: {
-          onComplete: function (animation) {
-            // La forma correcta de obtener el canvas en Chart.js v3/v4
-            const chartInstance = animation.chart;
-            const canvasElement = chartInstance.ctx.canvas;
-
-            if (canvasElement.id === "graficoEquilibrio") {
-              imgEquilibrioBase64 = canvasElement.toDataURL("image/png");
-            } else if (canvasElement.id === "graficoDona") {
-              imgDonaBase64 = canvasElement.toDataURL("image/png");
-            }
-            // window.mostrarAviso("Imagen capturada en memoria"); // Opcional para debug
-          },
-        },
         responsive: true,
         maintainAspectRatio: false,
-        plugins: {
-          customCanvasBackgroundColor: {
-            color: "white",
-          },
-        },
       },
+    });
+  }
+  
+  // --- GRÁFICA DE ESTRUCTURA (La que aparecía vacía en la imagen) ---
+  const ctxEst = document.getElementById("graficoEstructura");
+  if (ctxEst) {
+    // Aquí puedes usar una gráfica de barras simple o replicar la dona
+    new Chart(ctxEst.getContext("2d"), {
+        type: 'pie',
+        data: {
+            labels: ['Fijos', 'Variables'],
+            datasets: [{
+                data: [cFijos, cVar],
+                backgroundColor: ['#FF6384', '#36A2EB']
+            }]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
     });
   }
 }

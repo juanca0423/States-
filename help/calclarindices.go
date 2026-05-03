@@ -7,8 +7,11 @@ import (
 	"ef/models"
 )
 
-func GenerarDashboard(d models.DatosDashboard) []models.IndiceFinanciero {
-	var dashboard []models.IndiceFinanciero
+func GenerarDashboard(d models.DatosDashboard) ([]models.IndiceFinanciero, models.IndicesTotales) {
+	var (
+		dashboard []models.IndiceFinanciero
+		totales   models.IndicesTotales
+	)
 
 	// Variables internas para cálculos complejos
 	patrimonio := d.ActivoTotal - d.PasivoTotal
@@ -120,22 +123,36 @@ func GenerarDashboard(d models.DatosDashboard) []models.IndiceFinanciero {
 	})
 
 	// --- 9. PUNTO DE EQUILIBRIO ---
-	puntoE := 0.0
 	margenContribucion := d.Ventas - d.GastosVariables
-	if margenContribucion > 0 {
-		puntoE = d.GastosFijos / (margenContribucion / d.Ventas)
+	indiceMargen := 0.0
+	if d.Ventas > 0 {
+		indiceMargen = margenContribucion / d.Ventas
 	}
-	// Si puntoE es 0, evitamos mostrar el detalle roto
-	detallePE := "-"
-	if puntoE > 0 {
-		detallePE = fmt.Sprintf("Fijos (%s) / (Margen Contrib (%s) / Ventas (%s)) = %s", config.FCont(d.GastosFijos), config.FCont(margenContribucion), config.FCont(d.Ventas), config.FCont(puntoE))
+
+	if indiceMargen > 0 {
+		totales.PuntoEContable = d.GastosFijos / indiceMargen
+		// PE de Caja: Fijos menos los que no mueven efectivo (depreciaciones)
+		fijosEfectivos := d.GastosFijos - d.GastosNoEfectivo
+		totales.PuntoECaja = fijosEfectivos / indiceMargen
 	}
+
+	totales.MargenContribucion = margenContribucion
+	totales.CostosTotales = d.GastosVariables + d.GastosFijos
+
 	dashboard = append(dashboard, models.IndiceFinanciero{
-		Nombre:         "Punto de Equilibrio (Q)",
-		Valor:          config.FCont(puntoE),
-		Interpretacion: "Ventas mínimas para no tener pérdidas.",
+		Nombre:         "Punto de Equilibrio (Contable)",
+		Valor:          config.FCont(totales.PuntoEContable),
+		Interpretacion: "Ventas necesarias para cubrir todos los costos y gastos.",
 		Clase:          "text-primary fw-bold",
-		DetalleCuenta:  detallePE,
+		DetalleCuenta:  fmt.Sprintf("Fijos (%s) / Margen Cont. (%.2f%%)", config.FCont(d.GastosFijos), indiceMargen*100),
+	})
+
+	dashboard = append(dashboard, models.IndiceFinanciero{
+		Nombre:         "Mínimo Vital de Caja",
+		Valor:          config.FCont(totales.PuntoECaja),
+		Interpretacion: "Ventas necesarias para cubrir solo gastos que requieren efectivo.",
+		Clase:          "text-warning fw-bold",
+		DetalleCuenta:  fmt.Sprintf("(Fijos %s - No Efectivo %s) / Margen Cont.", config.FCont(d.GastosFijos), config.FCont(d.GastosNoEfectivo)),
 	})
 
 	// --- 10. ROTACIÓN DE INVENTARIOS (Usando promedio) ---
@@ -165,20 +182,7 @@ func GenerarDashboard(d models.DatosDashboard) []models.IndiceFinanciero {
 		DetalleCuenta:  fmt.Sprintf("365 / Rotación (%.1f veces) = %.0f dias", rot, dias),
 	})
 
-	// --- 12. MARGEN NETO (Nuevo) ---
-	// mNeto:= 0.0
-	if d.Ventas > 0 {
-		mNeto = (d.UtilidadNeta / d.Ventas) * 100
-	}
-	dashboard = append(dashboard, models.IndiceFinanciero{
-		Nombre:         "Margen Neto de Utilidad",
-		Valor:          fmt.Sprintf("%.2f%%", mNeto),
-		Interpretacion: "Ganancia real por cada quetzal vendido.",
-		Clase:          "text-success",
-		DetalleCuenta:  fmt.Sprintf("(Utilidad Neta (%s) / Ventas Totales (%s)) * 100 = %.2f%%", config.FCont(d.UtilidadNeta), config.FCont(d.Ventas), mNeto),
-	})
-
-	return dashboard
+	return dashboard, totales
 }
 
 // --- FUNCIONES DE APOYO ---

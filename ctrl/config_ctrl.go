@@ -44,32 +44,42 @@ func EliminarCuenta(c *fiber.Ctx) error {
 }
 
 // CrearCuenta Crear cuenta
+
 func CrearCuenta(c *fiber.Ctx) error {
 	codigoStr := c.FormValue("codigo")
 	nombre := c.FormValue("nombre")
 	categoria := c.FormValue("categoria")
 	saldo := c.FormValue("saldo")
-	// 1. Capturamos el valor del select ("true" o "false")
+
+	// Capturamos los booleanos
 	escostoStr := c.FormValue("escosto")
-	// 2. Convertimos el string a booleano
-	// ParseBool acepta: "1", "t", "T", "true", "TRUE", "True", "0", "f", "F", "false", "FALSE", "False"
+	esvariableStr := c.FormValue("es_variable") // Nombre que pusimos en el select del HTML
+	esefectivoStr := c.FormValue("es_efectivo")
+
 	escosto, _ := strconv.ParseBool(escostoStr)
+	esvariable, _ := strconv.ParseBool(esvariableStr)
+	esefectivo, _ := strconv.ParseBool(esefectivoStr)
 	codigo, _ := strconv.Atoi(codigoStr)
+
 	var existe models.CueDB
 	if db.DB.Where("codigo = ?", codigo).First(&existe).RowsAffected > 0 {
 		return c.Redirect("/api/admin/crearcuenta?error=El código " + codigoStr + " ya existe.")
 	}
-	// 3. Asignamos la variable booleana ya convertida
+
 	nueva := models.CueDB{
-		Codigo:    codigo,
-		Nombre:    nombre,
-		Categoria: categoria,
-		Saldo:     saldo,
-		EsCosto:   escosto,
+		Codigo:     codigo,
+		Nombre:     nombre,
+		Categoria:  categoria,
+		Saldo:      saldo,
+		EsCosto:    escosto,
+		EsVariable: esvariable, // <-- Nuevo
+		EsEfectivo: esefectivo, // <-- Nuevo
 	}
+
 	if err := db.DB.Create(&nueva).Error; err != nil {
 		return c.Redirect("/api/admin/crearcuenta?error=Error al guardar")
 	}
+
 	sqlDB, _ := db.DB.DB()
 	config.CargarNomenclaturaDesdeDB(sqlDB)
 	return c.Redirect("/api/admin/crearcuenta?success=Cuenta '" + nombre + "' agregada con éxito")
@@ -94,29 +104,31 @@ func ActualizarCuenta(c *fiber.Ctx) error {
 
 // PostEditarCuenta Editar cuentas
 func PostEditarCuenta(c *fiber.Ctx) error {
-	codigoStr := c.FormValue("Codigo") // Viene del input hidden id="edit_codigo"
+	codigoStr := c.FormValue("Codigo")
 
 	var cuenta models.CueDB
-	// Buscamos la cuenta. Importante: Convertir a int si es necesario o dejar que GORM lo haga
 	if err := db.DB.First(&cuenta, "codigo = ?", codigoStr).Error; err != nil {
-		fmt.Println("Error: No se encontró la cuenta con código:", codigoStr)
 		return c.Redirect("/api/admin/crearcuenta?error=no_encontrada")
 	}
 
-	// Actualizamos los valores
 	cuenta.Nombre = c.FormValue("nombre")
 	cuenta.Categoria = c.FormValue("categoria")
-	cuenta.Saldo = c.FormValue("saldo") // Debe coincidir con el name="Saldo" del modal
+	cuenta.Saldo = c.FormValue("saldo")
 
+	// Actualizamos los booleanos
 	escostoStr := c.FormValue("escosto")
-	cuenta.EsCosto, _ = strconv.ParseBool(escostoStr)
+	esvariableStr := c.FormValue("es_variable")
+	esefectivoStr := c.FormValue("es_efectivo")
 
-	// Guardamos los cambios físicamente en la DB
+	cuenta.EsCosto, _ = strconv.ParseBool(escostoStr)
+	cuenta.EsVariable, _ = strconv.ParseBool(esvariableStr)
+	cuenta.EsEfectivo, _ = strconv.ParseBool(esefectivoStr)
+
 	if err := db.DB.Save(&cuenta).Error; err != nil {
 		return c.Redirect("/api/admin/crearcuenta?error=db_error")
 	}
 
-	// RECARGA DE MEMORIA: Esto es lo que hace que los 65 pasen a 66
+	// Recarga de memoria
 	sqlDB, _ := db.DB.DB()
 	config.CargarNomenclaturaDesdeDB(sqlDB)
 

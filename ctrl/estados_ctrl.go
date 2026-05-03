@@ -3,6 +3,7 @@ package ctrl
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -59,10 +60,11 @@ func GenEstados(c *fiber.Ctx) error {
 		UtilidadNeta:      TotResu.UtilidadNeta,
 		GastosFijos:       TotResu.GastosFijos,
 		GastosVariables:   TotResu.GastosVariables,
+		GastosNoEfectivo:  TotResu.GastosNoEfectivo,
 	}
 
 	// Llamada limpia
-	dashboard := help.GenerarDashboard(d)
+	dashboard, indicesTotales := help.GenerarDashboard(d)
 
 	type ItemBalance struct {
 		Codigo string
@@ -78,23 +80,32 @@ func GenEstados(c *fiber.Ctx) error {
 	resultadosJSON, _ := json.Marshal(DBResultados)
 	balanceJSON, _ := json.Marshal(DBBalance)
 	indicesJSON, _ := json.Marshal(dashboard)
+	// Calcula el porcentaje real: (Margen en Q / Ventas) * 100
+	porcentajeMargen := 0.0
+	if TotResu.Ventas > 0 {
+		porcentajeMargen = (indicesTotales.MargenContribucion / TotResu.Ventas) * 100
+	}
 
 	// 5. Renderizado
 	return c.Render("estados", fiber.Map{
-		"Title":           "Estados Financieros",
-		"keys":            DBHojadetravajo,
-		"resultados":      DBResultados,
-		"BalanceRows":     DBBalance,
-		"indices":         dashboard,
-		"nombreEmpresa":   "JC Dev Systems",
-		"keysjson":        string(keysJSON),
-		"resultadosjson":  string(resultadosJSON),
-		"BalanceRowsjson": string(balanceJSON),
-		"indicesjson":     string(indicesJSON),
-		"VentasNetas":     TotResu.VentasNetas,
-		//"PuntoE":
-		"CostosFijos": TotResu.GastosFijos,
-		"CostosVar":   TotResu.GastosVariables,
+		"Title":              "Estados Financieros",
+		"keys":               DBHojadetravajo,
+		"resultados":         DBResultados,
+		"BalanceRows":        DBBalance,
+		"indices":            dashboard,
+		"nombreEmpresa":      "JC Dev Systems",
+		"keysjson":           string(keysJSON),
+		"resultadosjson":     string(resultadosJSON),
+		"BalanceRowsjson":    string(balanceJSON),
+		"indicesjson":        string(indicesJSON),
+		"VentasNetas":        TotResu.VentasNetas,
+		"CostosFijos":        TotResu.GastosFijos,
+		"CostosVar":          TotResu.GastosVariables,
+		"CostosTotales":      indicesTotales.CostosTotales,
+		"MargenContribucion": fmt.Sprintf("%.2f", porcentajeMargen), // Esto enviará "85.01"
+		"PuntoE":             indicesTotales.PuntoEContable,         // Cambiado
+		"PuntoEfe":           indicesTotales.PuntoECaja,             // Para llenar el cuadro de Caja
+		"GastosNoEfectivo":   TotResu.GastosNoEfectivo,              // Pásalo para mostrarlo en el front
 	})
 }
 
