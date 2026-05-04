@@ -35,7 +35,7 @@ function renderizarGraficas() {
   const cFijos = parseFloat(contenedor.dataset.fijos) || 0;
   const cVar = parseFloat(contenedor.dataset.variables) || 0;
   const pECaja = parseFloat(contenedor.dataset.puntoEfe) || 0;
-  const pEContable = parseFloat(contenedor.dataset.puntoContable) || 0;
+  const pEContable = parseFloat(contenedor.dataset.puntoE) || 0;
 
   // --- 1. GRÁFICA DE EQUILIBRIO (Lineal) ---
   const ctxEq = document.getElementById("graficoEquilibrio");
