@@ -3,6 +3,7 @@
 // ==========================================
 let graficoEquilibrioInstance = null;
 let graficoDonaInstance = null;
+let graficoEstructuraInstance = null;
 let logoDataURL = null;
 
 // NUEVAS: Para guardar las imágenes "en frío"
@@ -25,18 +26,18 @@ const pluginFondoBlanco = {
 // ==========================================
 // 2. FUNCIÓN MAESTRA DE GRÁFICAS
 // ==========================================
-
 function renderizarGraficas() {
   const contenedor = document.getElementById("datos-financieros");
   if (!contenedor) return;
 
-  // 1. Capturamos los nuevos datos (Punto de Equilibrio de Caja y Margen real)
+  // 1. Captura de datos REALES desde el servidor (vía dataset)
   const vNetas = parseFloat(contenedor.dataset.ventas) || 0;
   const cFijos = parseFloat(contenedor.dataset.fijos) || 0;
   const cVar = parseFloat(contenedor.dataset.variables) || 0;
-  const pECaja = parseFloat(contenedor.dataset.puntoEfe) || 0; // Nuevo
+  const pECaja = parseFloat(contenedor.dataset.puntoEfe) || 0;
+  const pEContable = parseFloat(contenedor.dataset.puntoContable) || 0;
 
-  // --- GRÁFICA DE EQUILIBRIO ---
+  // --- 1. GRÁFICA DE EQUILIBRIO (Lineal) ---
   const ctxEq = document.getElementById("graficoEquilibrio");
   if (ctxEq) {
     if (graficoEquilibrioInstance) graficoEquilibrioInstance.destroy();
@@ -68,16 +69,31 @@ function renderizarGraficas() {
             fill: false,
             tension: 0.1,
           },
-          // Opcional: Podrías añadir una línea horizontal para el Punto de Equilibrio de Caja
+          // LÍNEA HORIZONTAL DE PUNTO DE EQUILIBRIO DE CAJA
+          {
+            label: "Límite Equilibrio Caja",
+            data: Array(5).fill(pECaja),
+            borderColor: "#4BC0C0",
+            borderWidth: 2,
+            pointRadius: 0,
+            fill: false,
+            borderDash: [2, 2],
+          },
         ],
       },
       options: {
-        // ... (tus opciones de animación y responsive se mantienen igual)
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: { duration: 1000, easing: "easeInOutQuart" },
+        scales: {
+          y: { beginAtZero: true, ticks: { color: "#fff" } },
+          x: { ticks: { color: "#fff" } },
+        },
       },
     });
   }
 
-  // --- GRÁFICA DE DONA (ESTRUCTURA DE COSTOS) ---
+  // --- 2. GRÁFICA DE DONA (Estructura de Costos) ---
   const ctxDo = document.getElementById("graficoDona");
   if (ctxDo) {
     if (graficoDonaInstance) graficoDonaInstance.destroy();
@@ -95,34 +111,25 @@ function renderizarGraficas() {
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        animation: { animateRotate: true, animateScale: true },
       },
     });
   }
 
-  // --- GRÁFICA DE ESTRUCTURA (Resumen de Equilibrio) ---
+  // --- 3. GRÁFICA DE ESTRUCTURA (Comparativa de Barras) ---
   const ctxEst = document.getElementById("graficoEstructura");
   if (ctxEst) {
-    // 1. Capturamos los datos de equilibrio que ya vienen en el dataset
-    const pEContable =
-      parseFloat(contenedor.dataset.puntoContable) || 267076.14;
-    const pECajaVal = parseFloat(contenedor.dataset.puntoEfe) || 252185.45;
-    const ventasActuales = vNetas;
-
     if (graficoEstructuraInstance) graficoEstructuraInstance.destroy();
 
     graficoEstructuraInstance = new Chart(ctxEst.getContext("2d"), {
-      type: "bar", // Cambiamos a barras para comparar montos
+      type: "bar",
       data: {
         labels: ["Equilibrio Contable", "Equilibrio Caja", "Ventas Actuales"],
         datasets: [
           {
-            label: "Monto Requerido vs Real",
-            data: [pEContable, pECajaVal, ventasActuales],
-            backgroundColor: [
-              "#FF6384", // Rojo para el riesgo (Contable)
-              "#4BC0C0", // Verde/Azul para caja
-              "#FFD700", // Dorado para tus ventas reales
-            ],
+            label: "Monto Q",
+            data: [pEContable, pECaja, vNetas],
+            backgroundColor: ["#FF6384", "#4BC0C0", "#FFD700"],
             borderWidth: 1,
           },
         ],
@@ -130,18 +137,10 @@ function renderizarGraficas() {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false }, // No hace falta leyenda si los ejes tienen etiquetas
-        },
+        plugins: { legend: { display: false } },
         scales: {
-          y: {
-            beginAtZero: true,
-            grid: { color: "rgba(255, 255, 255, 0.1)" },
-            ticks: { color: "#fff" },
-          },
-          x: {
-            ticks: { color: "#fff" },
-          },
+          y: { beginAtZero: true, ticks: { color: "#fff" } },
+          x: { ticks: { color: "#fff" } },
         },
       },
     });
