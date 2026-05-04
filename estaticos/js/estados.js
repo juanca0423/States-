@@ -85,10 +85,12 @@ function renderizarGraficas() {
       type: "doughnut",
       data: {
         labels: ["Fijos", "Variables"],
-        datasets: [{
-          data: [cFijos, cVar],
-          backgroundColor: ["#FF6384", "#36A2EB"],
-        }],
+        datasets: [
+          {
+            data: [cFijos, cVar],
+            backgroundColor: ["#FF6384", "#36A2EB"],
+          },
+        ],
       },
       options: {
         responsive: true,
@@ -96,21 +98,52 @@ function renderizarGraficas() {
       },
     });
   }
-  
-  // --- GRÁFICA DE ESTRUCTURA (La que aparecía vacía en la imagen) ---
+
+  // --- GRÁFICA DE ESTRUCTURA (Resumen de Equilibrio) ---
   const ctxEst = document.getElementById("graficoEstructura");
   if (ctxEst) {
-    // Aquí puedes usar una gráfica de barras simple o replicar la dona
-    new Chart(ctxEst.getContext("2d"), {
-        type: 'pie',
-        data: {
-            labels: ['Fijos', 'Variables'],
-            datasets: [{
-                data: [cFijos, cVar],
-                backgroundColor: ['#FF6384', '#36A2EB']
-            }]
+    // 1. Capturamos los datos de equilibrio que ya vienen en el dataset
+    const pEContable =
+      parseFloat(contenedor.dataset.puntoContable) || 267076.14;
+    const pECajaVal = parseFloat(contenedor.dataset.puntoEfe) || 252185.45;
+    const ventasActuales = vNetas;
+
+    if (graficoEstructuraInstance) graficoEstructuraInstance.destroy();
+
+    graficoEstructuraInstance = new Chart(ctxEst.getContext("2d"), {
+      type: "bar", // Cambiamos a barras para comparar montos
+      data: {
+        labels: ["Equilibrio Contable", "Equilibrio Caja", "Ventas Actuales"],
+        datasets: [
+          {
+            label: "Monto Requerido vs Real",
+            data: [pEContable, pECajaVal, ventasActuales],
+            backgroundColor: [
+              "#FF6384", // Rojo para el riesgo (Contable)
+              "#4BC0C0", // Verde/Azul para caja
+              "#FFD700", // Dorado para tus ventas reales
+            ],
+            borderWidth: 1,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }, // No hace falta leyenda si los ejes tienen etiquetas
         },
-        options: { responsive: true, maintainAspectRatio: false }
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: { color: "rgba(255, 255, 255, 0.1)" },
+            ticks: { color: "#fff" },
+          },
+          x: {
+            ticks: { color: "#fff" },
+          },
+        },
+      },
     });
   }
 }
