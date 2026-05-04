@@ -11,6 +11,14 @@ services:
       - 8.8.4.4
     expose:
       - "3000"
+    # EL HEALTHCHECK VA AQUÍ (En el backend)
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: always
+
   nginx:
     image: nginx:alpine
     container_name: nginx_proxy
@@ -23,4 +31,5 @@ services:
       - ./certbot/www:/var/www/certbot
     restart: always
     depends_on:
-      - go_web_app
+      go_web_app:
+        condition: service_healthy # Nginx espera a que Go responda
