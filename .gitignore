@@ -5,3 +5,4 @@
 .env
 texto.md
 ./estaticos/js/@popper*.*
+tmp/
