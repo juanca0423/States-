@@ -183,11 +183,13 @@ func GenCostoProduccion(c *fiber.Ctx) error {
 	//	dbIndustrial := help.GenerarDashboardIndustrial(costos, ventas)
 
 	return c.Render("costos", fiber.Map{
-		"Title":      "Auditoría Industrial - Costos",
-		"filasHoja":  hoja9Cols,
-		"Resultados": DBResultados,
-		"balanceRaw": DBBalnce,
-		"res":        resCalculados,
-		//	"dashboardIndustrial": dbIndustrial, // <--- Nueva variable para el HBS
+		"Title":               "Auditoría Industrial - Costos",
+		"filasHoja":           hoja9Cols,
+		"Resultados":          DBResultados,
+		"balanceRaw":          DBBalnce,
+		"res":                 resCalculados,
+		"dashboardIndustrial": dbIndustrial, // <--- Nueva variable para el HBS
+		"PuntoE":              indicesTotales.PuntoEContable,
+		"PuntoEfe":            indicesTotales.PuntoECaja,
 	})
 }
