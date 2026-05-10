@@ -1,0 +1,35 @@
+services:
+  go_web_app:
+    build:  
+      context: .
+      dockerfile: Dockerfile.prod
+    container_name: go_web_app
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    env_file: 
+      - .env
+    expose:
+      - "3000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: always
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx_proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    restart: always
+    depends_on:
+      go_web_app:
+        condition: service_healthy

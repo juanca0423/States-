@@ -2,35 +2,15 @@ services:
   go_web_app:
     build:  
       context: .
-      dockerfile: Dockerfile.prod
-    container_name: go_web_app
-    env_file: 
-      - .env
+      dockerfile: Dockerfile # <-- Usamos el de desarrollo (con Air)
+    container_name: go_web_app_dev
     dns:
       - 8.8.8.8
       - 8.8.4.4
-    expose:
-      - "3000"
-    # EL HEALTHCHECK VA AQUÍ (En el backend)
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
-    restart: always
-
-  nginx:
-    image: nginx:alpine
-    container_name: nginx_proxy
+    env_file: 
+      - .env
     ports:
-      - "80:80"
-      - "443:443"
+      - "3000:3000" # <-- Mapeo directo para entrar por localhost:3000
     volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
-    restart: always
-    depends_on:
-      go_web_app:
-        condition: service_healthy # Nginx espera a que Go responda
+      - .:/app # <-- Importante: sincroniza tu código local con el contenedor
+    # En local no solemos necesitar Nginx ni Healthchecks complejos
