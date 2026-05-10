@@ -57,16 +57,16 @@ func PostHandleLogin(c *fiber.Ctx) error {
 	// 1. Buscar usuario
 	var u models.User
 	emailLimpio := strings.ToLower(strings.TrimSpace(in.Email))
-	// Cambia la línea de la consulta por esta:
+
 	if err := db.DB.Session(&gorm.Session{PrepareStmt: false}).Where("email = ?", emailLimpio).First(&u).Error; err != nil {
-		// No revelamos si el correo existe o no, pero devolvemos el email para su comodidad
 		return c.Render("loguin", fiber.Map{
 			"Error": "Correo o contraseña no válidos",
 			"Email": emailLimpio,
 		})
 	}
 
-	// 2. Validar Contraseña
+	// 2. Validar Contraseña (IMPORTANTE: Validar contraseña ANTES que la verificación)
+	// Así no le decimos a un hacker si la cuenta está verificada o no si no sabe la clave.
 	if err := bcrypt.CompareHashAndPassword([]byte(u.Pase), []byte(in.Pase)); err != nil {
 		return c.Render("loguin", fiber.Map{
 			"Error": "Correo o contraseña no válidos",
@@ -74,7 +74,15 @@ func PostHandleLogin(c *fiber.Ctx) error {
 		})
 	}
 
-	// 3. Generar Token
+	// 3. NUEVO: Verificar si la cuenta está activa (Usando 'u' no 'usuario')
+	if !u.Verificado {
+		return c.Render("loguin", fiber.Map{ // Asegúrate que el nombre sea "loguin" o "login" según tus archivos
+			"Error": "Tu cuenta aún no ha sido verificada. Revisa tu correo electrónico.",
+			"Email": emailLimpio,
+		})
+	}
+
+	// 4. Generar Token
 	tok, err := middleware.GenerateToken(u.ID, u.Role)
 	if err != nil {
 		return c.Render("error-sistema", fiber.Map{
@@ -83,17 +91,16 @@ func PostHandleLogin(c *fiber.Ctx) error {
 		})
 	}
 
-	// 4. Guardar en Cookie con configuración profesional
+	// 5. Guardar en Cookie
 	c.Cookie(&fiber.Cookie{
 		Name:     "jwt",
 		Value:    tok,
 		Expires:  time.Now().Add(72 * time.Hour),
 		HTTPOnly: true,
-		Secure:   false, // ¡Recuerda ponerlo en TRUE cuando subas a internet con HTTPS!
+		Secure:   true, // Ya que estás en eeffs.com (HTTPS), cámbialo a true
 		SameSite: "Lax",
-		Path:     "/", // Asegura que la cookie sea válida en todas las rutas del sistema
+		Path:     "/",
 	})
 
-	// 5. Redirigir al panel principal
 	return c.Redirect("/eeff")
 }

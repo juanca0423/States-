@@ -23,11 +23,13 @@ func SeedAdmin() {
 		nuevoAdmin := models.User{
 			Nombre:            "Juan Carlos",
 			Apellido:          "Perez Castro",
-			Email:             adminEmail, // Usamos la misma variable
+			Email:             adminEmail,
 			Pase:              string(hash),
 			Role:              "admin",
 			SuscripcionActiva: true,
 			FechaFinPrueba:    time.Now().AddDate(99, 0, 0),
+			Verificado:        true,
+			TokenVerificacion: "",
 		}
 		if errCreate := DB.Create(&nuevoAdmin).Error; errCreate != nil {
 			log.Printf("No se pudo crear el admin: %v", errCreate)
