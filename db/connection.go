@@ -7,6 +7,8 @@ import (
 	"os"
 	"time"
 
+	"ef/models"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -45,7 +47,13 @@ func DBConnection() {
 			sqlDB.SetConnMaxLifetime(time.Minute * 10)
 
 			DB = db
-			fmt.Println("🚀 Conexión optimizada con PgBouncer exitosa")
+
+			err = DB.AutoMigrate(&models.User{}, &models.Mensaje{}, &models.CueDB{}, &models.Transaccion{})
+			if err != nil {
+				fmt.Printf("❌ Error en AutoMigrate: %v\n", err)
+			}
+
+			fmt.Println("🚀 Conexión y Migración exitosa")
 			return
 		}
 

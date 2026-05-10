@@ -14,7 +14,9 @@ type User struct {
 	Pase              string    `json:"pase" form:"pase"`
 	Role              string    `json:"role" form:"role"`
 	SuscripcionActiva bool      `json:"suscripcion_activa" gorm:"default:false"`
-	FechaFinPrueba    time.Time `json:"fecha_fin_prueba"` // Atajo para no calcular siempre
+	FechaFinPrueba    time.Time `json:"fecha_fin_prueba"`
+	Verificado        bool      `json:"verificado" gorm:"default:false"`
+	TokenVerificacion string    `json:"token_verificacion"`
 }
 
 type Mensaje struct {

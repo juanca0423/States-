@@ -1,0 +1,36 @@
+{{> 'partials/header' }} {{> 'partials/nav' }}
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow-lg border-0">
+        <div class="card-body text-center p-5">
+          <div class="mb-4">
+            <i class="fas fa-paper-plane text-primary" style="font-size: 4rem"></i>
+          </div>
+
+          <h1 class="display-6 mb-2">¡Bienvenido, {{Nombre}}!</h1>
+          <h2 class="h4 text-muted mb-4">Solo falta un último paso</h2>
+
+          <p class="lead">
+            Hemos enviado un enlace de verificación a:<br />
+            <strong>{{Email}}</strong>
+          </p>
+
+          <p class="text-secondary">
+            Por favor, revisa tu bandeja de entrada (y la carpeta de spam por si acaso) para activar tu cuenta en
+            <strong>EEFFS</strong>.
+          </p>
+
+          <hr class="my-4" />
+
+          <div class="d-grid gap-2">
+            <a href="/" class="btn btn-primary btn-lg">Entendido</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{> 'partials/footer' }}

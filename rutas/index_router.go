@@ -37,7 +37,7 @@ func SetUpRutas(app *fiber.App) {
 
 	app.Get("/register", ctrl.GetRejistro)
 	app.Post("/register", authLimiter, ctrl.RegisterHandler)
-
+	app.Get("/verificar", ctrl.VerificarCuenta)
 	app.Get("/about", ctrl.GetAbout)
 
 	// En ef/rutas/rutas.go
