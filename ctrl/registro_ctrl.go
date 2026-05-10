@@ -1,6 +1,10 @@
 package ctrl
 
 import (
+	"encoding/json"
+	"net/http"
+	"net/url"
+	"os"
 	"regexp"
 	"strings"
 	"time"
@@ -12,9 +16,36 @@ import (
 	"ef/models"
 )
 
+func VerificarCaptcha(response string) bool {
+	secretKey := os.Getenv("EEFFS_APP") // Mejor si viene de os.Getenv("RECAPTCHA_SECRET")
+	apiURL := "https://www.google.com/recaptcha/api/siteverify"
+
+	resp, err := http.PostForm(apiURL, url.Values{
+		"secret":   {secretKey},
+		"response": {response},
+	})
+	if err != nil {
+		return false
+	}
+	defer resp.Body.Close()
+
+	var result struct {
+		Success bool `json:"success"`
+	}
+	json.NewDecoder(resp.Body).Decode(&result)
+	return result.Success
+}
+
 var emailRegex = regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
 
 func RegisterHandler(c *fiber.Ctx) error {
+	captchaResponse := c.FormValue("g-recaptcha-response")
+	if !VerificarCaptcha(captchaResponse) {
+		return c.Render("register", fiber.Map{
+			"Error": "Por favor, completa el captcha correctamente.",
+		})
+	}
+
 	// 1. Definición del input
 	type input struct {
 		Nombre   string `json:"nombre" form:"nombre"`
@@ -27,7 +58,7 @@ func RegisterHandler(c *fiber.Ctx) error {
 	var in input
 	if err := c.BodyParser(&in); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "JSON o Formulario inválido",
+			"Error": "JSON o Formulario inválido",
 		})
 	}
 
@@ -35,12 +66,12 @@ func RegisterHandler(c *fiber.Ctx) error {
 	in.Email = strings.TrimSpace(strings.ToLower(in.Email))
 	if !emailRegex.MatchString(in.Email) {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Email no válido",
+			"Error": "Email no válido",
 		})
 	}
 	if len(in.Pase) < 6 {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "La contraseña debe tener al menos 6 caracteres",
+			"Error": "La contraseña debe tener al menos 6 caracteres",
 		})
 	}
 
@@ -54,7 +85,7 @@ func RegisterHandler(c *fiber.Ctx) error {
 	var count int64
 	db.DB.Model(&models.User{}).Where("email = ?", in.Email).Count(&count)
 	if count > 0 {
-		return c.Render("registro", fiber.Map{
+		return c.Render("register", fiber.Map{
 			"Error": "Este correo ya está en uso, intenta con otro.",
 			"Datos": in,
 		})
@@ -64,7 +95,7 @@ func RegisterHandler(c *fiber.Ctx) error {
 	hash, err := bcrypt.GenerateFromPassword([]byte(in.Pase), bcrypt.DefaultCost)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Error al encriptar contraseña",
+			"Error": "Error al encriptar contraseña",
 		})
 	}
 
@@ -80,13 +111,14 @@ func RegisterHandler(c *fiber.Ctx) error {
 	}
 
 	if err := db.DB.Create(&user).Error; err != nil {
-		return c.Render("registro", fiber.Map{
-			"error": "Error al guardar en BD",
+		return c.Render("register", fiber.Map{
+			"Error": "Error al guardar en BD",
 		})
 	}
 
 	// 7. Respuesta
 	return c.Render("bienvenida", fiber.Map{
-		"nombre": user.Nombre,
+		"Nombre": user.Nombre,
+		"Email":  user.Email,
 	})
 }

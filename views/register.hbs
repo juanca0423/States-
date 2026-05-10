@@ -1,6 +1,8 @@
 {{> 'partials/header' }}
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 {{> 'partials/nav'}}
 <h1>{{Title}}</h1>
+
 {{#if Error}}
 <div class="alert alert-danger alert-dismissible fade show col-8" role="alert">
   <strong>¡Atención!</strong> {{Error}}
@@ -8,46 +10,111 @@
 </div>
 {{/if}}
 <form class="needs-validation" id="registroForm" method="POST" action="/register" novalidate>
-
   <div class="col-8 mb-3">
     <label for="nombre" class="form-label">Nombre</label>
-    <input type="text" class="form-control" name="nombre" id="nombre" placeholder="Ingresa tu Nombre" required>
+    <input type="text" class="form-control" name="nombre" id="nombre" placeholder="Ingresa tu Nombre" required />
     <div class="invalid-feedback">El nombre es obligatorio.</div>
   </div>
 
   <div class="col-8 mb-3">
     <label for="apellido" class="form-label">Apellido</label>
-    <input type="text" class="form-control" name="apellido" id="apellido" placeholder="Ingresa tu Apellido" required>
+    <input type="text" class="form-control" name="apellido" id="apellido" placeholder="Ingresa tu Apellido" required />
     <div class="invalid-feedback">El apellido es obligatorio.</div>
   </div>
 
   <div class="col-8 mb-3">
     <label for="email" class="form-label">Email</label>
-    <input type="email" class="form-control" name="email" id="email" placeholder="nombre@algo.com" required>
+    <input type="email" class="form-control" name="email" id="email" placeholder="nombre@algo.com" required />
     <div class="invalid-feedback">Ingresa un correo válido.</div>
   </div>
 
-  <div class="col-8 mb-3">
-    <label for="pase" class="form-label">Palabra clave</label>
-    <input type="password" class="form-control" name="pase" id="pase" placeholder="Mínimo 6 caracteres" required
-      minlength="6">
-    <div class="invalid-feedback">La contraseña debe tener al menos 6 caracteres.</div>
+  <div class="form-group mb-3">
+    <label for="pase">Contraseña</label>
+    <div class="input-group">
+      <input type="password" id="pase" name="pase" class="form-control" minlength="6" required />
+      <button class="btn btn-outline-secondary" type="button" id="togglePase1">
+        <i class="fa-solid fa-eye"></i>
+      </button>
+    </div>
   </div>
 
-  <div class="col-8 mb-3">
-    <label for="pase2" class="form-label">Confirme su palabra clave</label>
-    <input type="password" class="form-control" id="pase2" placeholder="Repite tu contraseña" required>
-    <div class="invalid-feedback" id="matchError">Las contraseñas no coinciden.</div>
+  <div class="form-group mb-3">
+    <label for="pase2" class="form-label">Confirme su Contraseña</label>
+    <div class="input-group">
+      <input type="password" id="pase2" name="pase2" class="form-control" required />
+      <button class="btn btn-outline-secondary" type="button" id="togglePase2">
+        <i class="fa-solid fa-eye"></i>
+      </button>
+      <div class="invalid-feedback" id="matchError">Las contraseñas no coinciden.</div>
+    </div>
+  </div>
+  <div class="mb-3 d-flex justify-content-center">
+    <div
+      class="g-recaptcha"
+      data-sitekey="6LcQv-IsAAAAAFWoi_MkqUgzsKwV4WzWutL3K7nd
+"
+    ></div>
   </div>
 
-  <input type="hidden" name="role" value="usuario">
+  <input type="hidden" name="role" value="usuario" />
 
   <div class="col-8">
     <button type="submit" class="btn btn-primary w-100 mb-3">Confirme identidad</button>
   </div>
 
-  <hr>
-
+  <hr />
 </form>
 
+<script>
+  // Función para los ojos con Font Awesome
+  function setupToggle(btnId, inputId) {
+    const btn = document.querySelector(btnId);
+    const input = document.querySelector(inputId);
+    if (btn && input) {
+      btn.addEventListener("click", function () {
+        const type = input.getAttribute("type") === "password" ? "text" : "password";
+        input.setAttribute("type", type);
+
+        // Toggle de clases de Font Awesome
+        const icon = this.querySelector("i");
+        icon.classList.toggle("fa-eye");
+        icon.classList.toggle("fa-eye-slash");
+      });
+    }
+  }
+
+  setupToggle("#togglePase1", "#pase");
+  setupToggle("#togglePase2", "#pase2");
+
+  // Validación de coincidencia al hacer submit
+  const form = document.getElementById("registroForm");
+  form.addEventListener(
+    "submit",
+    function (event) {
+      const p1 = document.getElementById("pase");
+      const p2 = document.getElementById("pase2");
+      const errorDiv = document.getElementById("matchError");
+
+      if (p1.value !== p2.value) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        p2.classList.add("is-invalid");
+        errorDiv.style.display = "block";
+      } else {
+        p2.classList.remove("is-invalid");
+        errorDiv.style.display = "none";
+      }
+      // Dentro del event listener del submit, antes de terminar:
+      const captchaRes = grecaptcha.getResponse();
+      if (captchaRes.length == 0) {
+        event.preventDefault();
+        alert("Por favor, completa el captcha.");
+        return;
+      }
+      form.classList.add("was-validated");
+    },
+    false,
+  );
+</script>
 {{>'partials/footer'}}

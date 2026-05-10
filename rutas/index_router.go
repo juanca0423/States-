@@ -2,21 +2,41 @@
 package rutas
 
 import (
+	"time"
+
 	"ef/ctrl"
 	"ef/middleware"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/limiter"
 )
 
 func SetUpRutas(app *fiber.App) {
+	// Limitador para Registro y Login (Máximo 5 intentos por minuto por IP)
+	authLimiter := limiter.New(limiter.Config{
+		Max:        5,
+		Expiration: 1 * time.Minute,
+		KeyGenerator: func(c *fiber.Ctx) string {
+			return c.IP() // Limita por dirección IP
+		},
+		LimitReached: func(c *fiber.Ctx) error {
+			vista := "loguin"
+			if c.Path() == "/register" {
+				vista = "register"
+			}
+			return c.Status(429).Render(vista, fiber.Map{
+				"Error": "Demasiados intentos. Por favor, espera un minuto.",
+			})
+		},
+	})
 	// PÚBLICAS
 	app.Get("/", ctrl.GetIndex)
 
 	app.Get("/loguin", ctrl.GetLoguin)
-	app.Post("/loguin", ctrl.PostHandleLogin)
+	app.Post("/loguin", authLimiter, ctrl.PostHandleLogin)
 
 	app.Get("/register", ctrl.GetRejistro)
-	app.Post("/register", ctrl.RegisterHandler)
+	app.Post("/register", authLimiter, ctrl.RegisterHandler)
 
 	app.Get("/about", ctrl.GetAbout)
 
