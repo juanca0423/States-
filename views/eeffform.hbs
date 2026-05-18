@@ -19,33 +19,13 @@
     action="/estados"
   >
     <div class="table-responsive">
-      <table class="table table-dark table-hover mb-0">
-        <thead class="text-success">
-          <tr>
-            <th style="width: 50%">Cuenta Contable</th>
-            <th style="width: 30%" class="text-center">Monto</th>
-          </tr>
-        </thead>
-        <tbody>
-          {{#each Cuentas}}
-          <tr>
-            <td class="align-middle">
-              <label for="input-{{Codigo}}" class="text-white mb-0 fw-bold"> {{Nombre}} </label>
-            </td>
-            <td>
-              <input
-                type="text"
-                id="input-{{Codigo}}"
-                data-saldo="{{Saldo}}"
-                name="{{Codigo}}"
-                step="0.01"
-                class="form-control monto-contable input-contable w-100 bg-transparent text-white border-info text-end"
-              />
-            </td>
-          </tr>
-          {{/each}}
-        </tbody>
-      </table>
+      <div id="react-formulario-root"></div>
+
+      <script>
+        window.CATALOGO_CUENTAS = {{{Cuentas}}};
+      </script>
+
+      <script src="/static/js/bundle-formulario.js"></script>
     </div>
 
     <div class="text-center mt-4">
