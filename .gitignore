@@ -6,3 +6,6 @@
 texto.md
 ./estaticos/js/@popper*.*
 tmp/
+node_modules/
+frontend/node_modules/
+*.log
