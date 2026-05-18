@@ -430,9 +430,6 @@ window.generarReportePDF = function () {
 };
 
 // ==========================================
-// 5.5 EXPORTACIÓN A EXCEL (SheetJS)
-// ==========================================
-// ==========================================
 // NUEVA FUNCIÓN DE ENLACE A EXCELJS
 // ==========================================
 // Dentro de window.descargarExcel en estados.js

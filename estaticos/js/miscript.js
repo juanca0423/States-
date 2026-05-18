@@ -1,4 +1,4 @@
-function activarSuscripcion(usetenemos, rId, e) {
+function activarSuscripcion(_, _, e) {
   if (!confirm("¿Deseas activar la suscripción Pro para este usuario?")) return;
 
   // Feedback visual: deshabilitamos el botón para evitar doble clic
@@ -8,10 +8,10 @@ function activarSuscripcion(usetenemos, rId, e) {
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
   fetch(`/api/admin/activar-usuario/${userId}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' }
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
   })
-    .then(response => {
+    .then((response) => {
       if (response.ok) {
         // Usamos tu función mostrarAviso que ya tienes en el main js
         if (typeof mostrarAviso === "function") {
@@ -24,7 +24,7 @@ function activarSuscripcion(usetenemos, rId, e) {
         throw new Error("Fallo en el servidor");
       }
     })
-    .catch(error => {
+    .catch((error) => {
       alert("Error: " + error.message);
       btn.disabled = false;
       btn.innerHTML = originalIcon;
@@ -33,14 +33,14 @@ function activarSuscripcion(usetenemos, rId, e) {
 
 function verUsuario(userId) {
   // Abrimos el modal (Bootstrap 5)
-  const myModal = new bootstrap.Modal(document.getElementById('userModal'));
+  const myModal = new bootstrap.Modal(document.getElementById("userModal"));
   myModal.show();
 
   // Pedimos los datos al servidor
   fetch(`/api/admin/usuario/${userId}`)
-    .then(res => res.json())
-    .then(data => {
-      const content = document.getElementById('modalContent');
+    .then((res) => res.json())
+    .then((data) => {
+      const content = document.getElementById("modalContent");
       content.innerHTML = `
                 <div class="list-group list-group-flush">
                     <div class="list-group-item"><strong>Nombre:</strong> ${data.Nombre} ${data.Apellido}</div>
@@ -53,13 +53,14 @@ function verUsuario(userId) {
                 </div>
             `;
     })
-    .catch(err => {
-      document.getElementById('modalContent').innerHTML = '<p class="text-danger">Error al cargar datos</p>';
+    .catch((err) => {
+      document.getElementById("modalContent").innerHTML =
+        '<p class="text-danger">Error al cargar datos</p>';
     });
 }
 
 function filtrarUsuarios() {
-  const input = document.getElementById('busquedaUsuario');
+  const input = document.getElementById("busquedaUsuario");
   const filter = input.value.toLowerCase();
   const table = document.querySelector(".table");
   const tr = table.getElementsByTagName("tr");
@@ -74,32 +75,38 @@ function filtrarUsuarios() {
       const txtNombre = tdNombre.textContent || tdNombre.innerText;
       const txtEmail = tdEmail.textContent || tdEmail.innerText;
 
-      if (txtNombre.toLowerCase().indexOf(filter) > -1 ||
-        txtEmail.toLowerCase().indexOf(filter) > -1) {
+      if (
+        txtNombre.toLowerCase().indexOf(filter) > -1 ||
+        txtEmail.toLowerCase().indexOf(filter) > -1
+      ) {
         tr[i].style.display = ""; // Mostrar
       } else {
         tr[i].style.display = "none"; // Ocultar
       }
     }
     // Al final del bucle for
-    let hayResultados = Array.from(tr).slice(1).some(row => row.style.display !== "none");
-    document.getElementById("noResultados").style.display = hayResultados ? "none" : "";
+    let hayResultados = Array.from(tr)
+      .slice(1)
+      .some((row) => row.style.display !== "none");
+    document.getElementById("noResultados").style.display = hayResultados
+      ? "none"
+      : "";
   }
 }
 
 function llenarModal(codigo, nombre, categoria, saldo) {
-  document.getElementById('edit_codigo').value = codigo;
-  document.getElementById('edit_nombre').value = nombre;
-  document.getElementById('edit_categoria').value = categoria;
-  document.getElementById('edit_saldo').value = saldo;
+  document.getElementById("edit_codigo").value = codigo;
+  document.getElementById("edit_nombre").value = nombre;
+  document.getElementById("edit_categoria").value = categoria;
+  document.getElementById("edit_saldo").value = saldo;
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener("DOMContentLoaded", function () {
   const urlParams = new URLSearchParams(window.location.search);
 
   // Si la URL tiene ?success=actualizada
-  if (urlParams.get('success') === 'actualizada') {
-    const toastLiveExample = document.getElementById('liveToast');
+  if (urlParams.get("success") === "actualizada") {
+    const toastLiveExample = document.getElementById("liveToast");
     const toast = new bootstrap.Toast(toastLiveExample);
     toast.show();
 
@@ -108,10 +115,9 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-document.getElementById('buscarCuenta').addEventListener('keyup', function() {
+document.getElementById("buscarCuenta").addEventListener("keyup", function () {
   let val = this.value.toUpperCase();
-  document.querySelectorAll('tbody tr').forEach(tr => {
-    tr.style.display = tr.innerText.toUpperCase().includes(val) ? '' : 'none';
+  document.querySelectorAll("tbody tr").forEach((tr) => {
+    tr.style.display = tr.innerText.toUpperCase().includes(val) ? "" : "none";
   });
 });
-
