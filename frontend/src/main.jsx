@@ -1,22 +1,28 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 
 function FormularioContable() {
   const catalogoCompleto = window.CATALOGO_CUENTAS || [];
 
-  const [cuentasSeleccionadas, setCuentasSeleccionadas] = useState([]);
-  const [busqueda, setBusqueda] = useState('');
+  // 1. INICIALIZADOR INTELIGENTE: Lee del disco duro si ya existía un ejercicio a medias
+  const [cuentasSeleccionadas, setCuentasSeleccionadas] = useState(() => {
+    const copiaTemporal = localStorage.getItem('eeff_formulario_cache');
+    return copiaTemporal ? JSON.parse(copiaTemporal) : [];
+  });
 
-  // 1. Control de visibilidad del dropdown
+  const [busqueda, setBusqueda] = useState('');
   const [estaListaAbierta, setEstaListaAbierta] = useState(false);
+
+  // 2. EFECTO DE AGRUPACIÓN: Cada vez que una cuenta cambie o se agregue un monto, guardamos en tiempo real
+  useEffect(() => {
+    localStorage.setItem('eeff_formulario_cache', JSON.stringify(cuentasSeleccionadas));
+  }, [cuentasSeleccionadas]);
 
   const agregarCuenta = (cuenta) => {
     const codigo = cuenta.Codigo || cuenta.codigo;
     if (!cuentasSeleccionadas.some(c => (c.Codigo || c.codigo) === codigo)) {
       setCuentasSeleccionadas([...cuentasSeleccionadas, { ...cuenta, Monto: '' }]);
     }
-
-    // Al seleccionar, limpiamos y cerramos la lista
     setBusqueda('');
     setEstaListaAbierta(false);
   };
@@ -32,13 +38,18 @@ function FormularioContable() {
     setCuentasSeleccionadas(cuentasSeleccionadas.filter(c => (c.Codigo || c.codigo) !== codigo));
   };
 
-  // 2. Filtrado interactivo
+  // 3. LIMPIEZA MANUAL: Para resetear la hoja de trabajo por completo
+  const vaciarFormulario = () => {
+    if (window.confirm("¿Seguro que deseas limpiar todas las cuentas e iniciar un ejercicio nuevo?")) {
+      localStorage.removeItem('eeff_formulario_cache');
+      setCuentasSeleccionadas([]);
+    }
+  };
+
   const cuentasFiltradas = estaListaAbierta ? catalogoCompleto.filter(c => {
     const nombreCuenta = c.Nombre || c.nombre || "";
     const codigoCuenta = c.Codigo || c.codigo || "";
-
     if (!busqueda) return true;
-
     return (
       nombreCuenta.toLowerCase().includes(busqueda.toLowerCase()) ||
       codigoCuenta.toString().includes(busqueda)
@@ -47,9 +58,20 @@ function FormularioContable() {
 
   return (
     <div>
-      {/* SECTOR DE SELECT BUSCADOR INTELIGENTE (Se queda fijo arriba) */}
+      {/* SECTOR DE SELECT BUSCADOR INTELIGENTE */}
       <div className="mb-4 position-relative">
-        <label className="text-success fw-bold mb-2">📁 Seleccionar Cuenta Contable:</label>
+        <div className="d-flex justify-content-between align-items-center mb-2">
+          <label className="text-success fw-bold">📁 Seleccionar Cuenta Contable:</label>
+          {cuentasSeleccionadas.length > 0 && (
+            <button
+              type="button"
+              className="btn btn-outline-warning btn-sm shadow-sm"
+              onClick={vaciarFormulario}
+            >
+              <i className="fas fa-eraser me-1"></i> Reiniciar Ejercicio
+            </button>
+          )}
+        </div>
 
         <div className="input-group">
           <span className="input-group-text bg-dark border-success text-success">
@@ -108,34 +130,24 @@ function FormularioContable() {
         </div>
       </div>
 
-      {/* ─── CONTENEDOR CON TAMAÑO FIJO REDUCIDO Y SCROLL ─── */}
+      {/* CONTENEDOR CON TAMAÑO FIJO REDUCIDO Y SCROLL */}
       <div
         className="overflow-auto border border-secondary rounded p-2"
         style={{
-          maxHeight: "380px",       // Reducido de 450px a 380px para ahorrar espacio
+          maxHeight: "380px",
           backgroundColor: "#1a1d20"
         }}
       >
         <table className="table table-dark table-hover mb-0" style={{ borderCollapse: "separate" }}>
           <thead>
             <tr>
-              {/* Forzamos el sticky directamente en las celdas <th> con fondo sólido */}
-              <th
-                style={{ width: "50%", position: "sticky", top: 0, backgroundColor: "#212529", zIndex: 10 }}
-                className="text-success"
-              >
+              <th style={{ width: "50%", position: "sticky", top: 0, backgroundColor: "#212529", zIndex: 10 }} className="text-success">
                 Cuenta Contable
               </th>
-              <th
-                style={{ width: "40%", position: "sticky", top: 0, backgroundColor: "#212529", zIndex: 10 }}
-                className="text-success text-center"
-              >
+              <th style={{ width: "40%", position: "sticky", top: 0, backgroundColor: "#212529", zIndex: 10 }} className="text-success text-center">
                 Monto
               </th>
-              <th
-                style={{ width: "10%", position: "sticky", top: 0, backgroundColor: "#212529", zIndex: 10 }}
-                className="text-success text-center"
-              >
+              <th style={{ width: "10%", position: "sticky", top: 0, backgroundColor: "#212529", zIndex: 10 }} className="text-success text-center">
                 Acción
               </th>
             </tr>
@@ -161,6 +173,7 @@ function FormularioContable() {
                       <small className="text-muted d-block">{codigo} {categoria && `(${categoria})`}</small>
                     </td>
                     <td>
+                      {/* IMPORTANTE: Mantenemos el 'name' dinámico para que tu backend en Go siga recibiendo la data mapeada al enviar el formulario */}
                       <input
                         type="text"
                         name={codigo}
@@ -192,7 +205,6 @@ function FormularioContable() {
   );
 }
 
-// ─── EL INICIALIZADOR DEBE IR AQUÍ AFUERA (AL FINAL DEL ARCHIVO) ───
 const container = document.getElementById('react-formulario-root');
 if (container) {
   const root = createRoot(container);
