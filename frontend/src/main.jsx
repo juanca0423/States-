@@ -1,8 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react'; // Añadido useRef aquí
 import { createRoot } from 'react-dom/client';
 
 function FormularioContable() {
   const catalogoCompleto = window.CATALOGO_CUENTAS || [];
+
+  // CREACIÓN DE LA REFERENCIA: Enlaza el DOM del input con el botón del icono
+  const inputBuscadorRef = useRef(null);
 
   // 1. INICIALIZADOR INTELIGENTE: Lee del disco duro si ya existía un ejercicio a medias
   const [cuentasSeleccionadas, setCuentasSeleccionadas] = useState(() => {
@@ -74,10 +77,27 @@ function FormularioContable() {
         </div>
 
         <div className="input-group">
-          <span className="input-group-text bg-dark border-success text-success">
+          {/* INTERACTIVIDAD DEL ICONO: Corregido para forzar la apertura del estado */}
+          <span
+            className="input-group-text bg-dark border-success text-success"
+            style={{ cursor: "pointer" }}
+            onMouseDown={(e) => {
+              // 1. Evitamos que el clic se propague o cause comportamientos extraños
+              e.preventDefault();
+
+              // 2. Le damos el foco físico al input
+              if (inputBuscadorRef.current) {
+                inputBuscadorRef.current.focus();
+              }
+
+              // 3. Forzamos a React a dejar la lista abierta sin importar dónde diste clic
+              setEstaListaAbierta(true);
+            }}
+          >
             <i className="fas fa-list"></i>
           </span>
           <input
+            ref={inputBuscadorRef}
             type="text"
             className="form-control bg-dark text-white border-success"
             placeholder="Haz clic aquí o escribe para filtrar..."
@@ -173,7 +193,6 @@ function FormularioContable() {
                       <small className="text-muted d-block">{codigo} {categoria && `(${categoria})`}</small>
                     </td>
                     <td>
-                      {/* IMPORTANTE: Mantenemos el 'name' dinámico para que tu backend en Go siga recibiendo la data mapeada al enviar el formulario */}
                       <input
                         type="text"
                         name={codigo}

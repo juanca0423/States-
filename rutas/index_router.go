@@ -39,7 +39,11 @@ func SetUpRutas(app *fiber.App) {
 	app.Post("/register", authLimiter, ctrl.RegisterHandler)
 	app.Get("/verificar", ctrl.VerificarCuenta)
 	app.Get("/about", ctrl.GetAbout)
-
+	app.Get("/manual", func(c *fiber.Ctx) error {
+		return c.Render("manual", fiber.Map{
+			"Title": "Manual de Usuario - States",
+		})
+	})
 	// En ef/rutas/rutas.go
 	app.Get("/logout", func(c *fiber.Ctx) error {
 		c.ClearCookie("jwt")

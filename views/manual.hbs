@@ -1,0 +1,108 @@
+{{>'partials/header'}} 
+{{>'partials/nav'}}   <hr />
+<section class="container my-5 text-light">
+  <div class="card bg-dark p-5 border-success shadow-lg markdown-body" style="background-color: #1a1d20 !important;">
+    
+    <h1 class="text-success border-bottom border-success pb-2 mb-4">Manual de Usuario — States (eeffs.com)</h1>
+
+    <h2 class="text-info mt-4">🚀 Inicio y Registro</h2>
+    <p><strong>Regístrate:</strong> El sistema te otorgará de forma automática <strong>30 días de prueba completamente gratis</strong> para que conozcas la plataforma, cargues tus ejercicios y pruebes todas las herramientas de generación financiera.</p>
+
+    <hr class="border-secondary" />
+
+    <h2 class="text-info mt-4">🛠️ Forma de Uso y Módulos</h2>
+    <p>Después de registrarte e iniciar sesión, ingresa al menú superior <strong>Herramientas</strong>. Dentro de este panel encontrarás las siguientes aplicaciones:</p>
+
+    <div class="text-center my-3">
+      <img src="/static/images/MenuHerramientas.png" class="img-fluid border border-secondary rounded shadow" alt="Menú Herramientas" />
+    </div>
+
+    <ul>
+      <li><strong>EE. FF. Comercio:</strong> Formulario interactivo de alta velocidad para el ingreso de datos y generación instantánea de estados financieros de empresas comerciales.</li>
+      <li><strong>EE. FF. Industria:</strong> Formulario adaptado con nomenclaturas específicas para contabilidad de costos y empresas industriales <em>(Actualmente en construcción)</em>.</li>
+      <li><strong>Soporte:</strong> Un canal de comunicación directa por chat donde nuestro equipo recibe tus sugerencias, reportes de errores o solicitudes para implementar cuentas específicas que te hagan falta en el catálogo.</li>
+    </ul>
+
+    <hr class="border-secondary" />
+
+    <h2 class="text-info mt-4">📝 Ingreso de Datos y Cuadre de Balances</h2>
+    <p>Al ingresar a la sección de <strong>EE. FF. Comercio</strong>, te encontrarás con la siguiente pantalla de trabajo:</p>
+
+    <div class="text-center my-3">
+      <img src="/static/images/Formulario000.png" class="img-fluid border border-secondary rounded shadow" alt="Formulario General" />
+    </div>
+
+    <ul>
+      <li><strong>Buscador Inteligente:</strong> Haz clic en el campo de texto (<em>input</em>) superior y empieza a escribir el nombre o el código de la cuenta. El catálogo se filtrará automáticamente en tiempo real.</li>
+      <div class="text-center my-2">
+        <img src="/static/images/ListaCuentas0001.png" class="img-fluid border border-secondary rounded" alt="Lista de Cuentas" />
+      </div>
+      <li><strong>Manejo Obligatorio de Inventarios:</strong> Para el correcto cálculo del costo de ventas, es indispensable que busques e ingreses por separado los tres registros de inventario correspondientes. Ejemplo: <em>Mercaderías</em>, <em>Inventario Inicial de Mercaderías</em> e <em>Inventario Final de Mercaderías</em>.</li>
+      <li><strong>Listado Interactivo:</strong> Al hacer clic en una cuenta del buscador, esta se añadirá instantáneamente a la tabla inferior.</li>
+      <li><strong>Botón Reiniciar Ejercicio:</strong> Este botón borra de forma permanente y definitiva los datos y cuentas almacenados en el navegador. Presiónalo <strong>únicamente</strong> si deseas vaciar la pantalla para empezar un cliente o ejercicio contable desde cero.</li>
+      <div class="text-center my-2">
+        <img src="/static/images/CuentasEleidas1.png" class="img-fluid border border-secondary rounded" alt="Cuentas Elegidas" />
+      </div>
+      <li><strong>Ingreso de Saldos y Cuadre:</strong> Digita los montos de cada cuenta. El sistema cuenta con un panel flotante que calcula la <strong>Diferencia</strong> en tiempo real.</li>
+      <li><strong>Generación del Reporte:</strong> Cuando el cuadro de diferencia marque exactamente <strong>0.00 y se ponga de color verde</strong>, significa que el balance es consistente. En ese momento, puedes hacer clic en el botón <strong>Generar Estados Financieros</strong> o ejecutar su atajo de teclado.</li>
+    </ul>
+
+    <hr class="border-secondary" />
+
+    <h2 class="text-info mt-4">⌨️ Catálogo Completo de Atajos de Teclado</h2>
+    <p>Para maximizar tu velocidad de trabajo y auditar balances sin tocar el mouse, memoriza y utiliza los siguientes comandos rápidos:</p>
+
+    <div class="table-responsive">
+      <table class="table table-dark table-striped table-bordered border-secondary mt-3">
+        <thead>
+          <tr class="text-success">
+            <th>Combinación / Tecla</th>
+            <th>Módulo</th>
+            <th>Acción y Comportamiento en el Sistema</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><kbd class="bg-secondary">Ctrl</kbd> + <kbd class="bg-secondary">S</kbd></td>
+            <td><strong>General</strong></td>
+            <td><strong>Guardar Balance:</strong> Envía el formulario de forma directa al servidor para generar los estados financieros (igual que el botón verde).</td>
+          </tr>
+          <tr>
+            <td><kbd class="bg-secondary">Alt</kbd> + <kbd class="bg-secondary">C</kbd></td>
+            <td><strong>Sumadora</strong></td>
+            <td><strong>Abrir/Cerrar Calculadora:</strong> Muestra u oculta de forma flotante la sumadora contable en la pantalla sin perder tus datos.</td>
+          </tr>
+          <tr>
+            <td><kbd class="bg-secondary">Enter</kbd></td>
+            <td><strong>Formulario</strong></td>
+            <td><strong>Siguiente Campo:</strong> Salta automáticamente al input de monto de la siguiente cuenta en la lista.</td>
+          </tr>
+          <tr>
+            <td><kbd class="bg-secondary">Enter</kbd></td>
+            <td><strong>Sumadora</strong></td>
+            <td><strong>Calcular Total:</strong> Ejecuta la operación matemática activa dentro de la calculadora y la imprime en la cinta.</td>
+          </tr>
+          <tr>
+            <td><kbd class="bg-secondary">P</kbd></td>
+            <td><strong>Sumadora</strong></td>
+            <td><strong>Pegar de Calculadora:</strong> Toma el resultado actual de la sumadora y lo inyecta directo en el campo de monto seleccionado.</td>
+          </tr>
+          <tr>
+            <td><kbd class="bg-secondary">Esc</kbd></td>
+            <td><strong>Sumadora</strong></td>
+            <td><strong>Cerrar Calculadora:</strong> Oculta la sumadora de la pantalla, manteniendo guardado el registro en la cinta de operaciones.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="alert alert-success bg-gradient border-success mt-4 p-3 text-dark" role="alert">
+      <h5 class="alert-heading fw-bold"><i class="fas fa-lightbulb me-2"></i>Tip de Flujo de Trabajo Extremo:</h5>
+      <p class="mb-0">Gracias al sistema de persistencia local (<em>Local Storage</em>), puedes ingresar un ejercicio completo, enviarlo a procesar para ver la hoja de trabajo completa y, si notas que cometiste un "dedazo" en una cantidad, simplemente presiona el botón <strong>Atrás</strong> de tu navegador. El formulario se volverá a cargar con el 100% de tus datos intactos; corrige la cifra errónea en un segundo y vuelve a enviarlo sin tener que transcribir nada desde cero.</p>
+    </div>
+
+  </div>
+</section>
+<hr />
+
+{{>'partials/footer'}}
