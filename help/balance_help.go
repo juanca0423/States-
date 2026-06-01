@@ -13,18 +13,15 @@ func GenerarPatrimonioVista(plantilla []models.Cue, titulo string, acumPat *floa
 	var suma float64
 	ultimoIdx := -1
 
+	// 1. Procesamos las cuentas reales que SÍ existen en la nomenclatura (Capital, Reservas, etc.)
 	for _, c := range plantilla {
 		valorReal := 0.0
-		if c.Codigo == 131002 {
-			valorReal = utilidadNeta
-		} else {
-			if cuenta, existe := saldos[strconv.Itoa(c.Codigo)]; existe {
-				valorReal = cuenta.Saldo
-			}
+		if cuenta, existe := saldos[strconv.Itoa(c.Codigo)]; existe {
+			valorReal = cuenta.Saldo
 		}
 
 		if c.Saldo == "activo" {
-			suma -= valorReal
+			suma -= valorReal // Aquí restarán las acciones en tesorería automáticamente
 		} else {
 			suma += valorReal
 		}
@@ -39,12 +36,25 @@ func GenerarPatrimonioVista(plantilla []models.Cue, titulo string, acumPat *floa
 		}
 	}
 
-	// Cerramos la Col1 antes de pasar al total en Col3
+	// 2. LA INYECCIÓN MAESTRA: Agregamos la utilidad calculada por el sistema
+	if utilidadNeta != 0 {
+		suma += utilidadNeta
+		filas = append(filas, models.BaString{
+			Codigo: "SISTEMA", // Identificador claro de que es un cálculo automático
+			Nombre: "Utilidad (o Pérdida) del Ejercicio",
+			Col1:   config.FCont(utilidadNeta),
+		})
+		ultimoIdx = len(filas) - 1
+	}
+
+	// Cerramos la Col1 con su línea de subtotal
 	if ultimoIdx != -1 {
 		filas[ultimoIdx].Cla1 = "border-bottom"
 	}
 
+	// 3. Acumulamos al gran total del Pasivo + Patrimonio
 	*acumPat += suma
+
 	filas = append(filas, models.BaString{
 		Nombre: "Total " + titulo,
 		Col3:   config.FCont(suma),
@@ -211,20 +221,15 @@ func GenerarTodoElBalance(datos map[string]models.Cuenta, utilidadNeta float64) 
 	vista = append(vista, models.BaString{Nombre: "Total Pasivo", Col3: config.FCont(t.PasivoTotal), Cla3: "border-top"})
 
 	// --- 3. PATRIMONIO ---
+	// t.Patrimonio aquí ya se calcula completo, absorbiendo internamente la utilidadNeta
 	vista = append(vista, GenerarPatrimonioVista(config.PatriNeto, "Patrimonio Neto", &t.Patrimonio, datos, utilidadNeta)...)
 
-	sumaPasivoPatrimonio := t.PasivoTotal + t.Patrimonio
-	vista = append(vista, models.BaString{Nombre: "SUMA DEL PASIVO Y PATRIMONIO", Col4: config.FCont(sumaPasivoPatrimonio), ClasNombre: "text-danger", Cla4: "border-top"})
+	// 1. Calculamos la suma real final
+	t.PasivoPatrimonioTotal = t.PasivoTotal + t.Patrimonio
 
-	PasPatrUtilidad := sumaPasivoPatrimonio + utilidadNeta
-	vista = append(vista, models.BaString{Nombre: "GANANCIA ANTES DE IMPUESTOS Y RESERVAS", Col4: config.FCont(utilidadNeta), ClasNombre: "text-success-dark", Cla4: "border-bottom"})
+	// 2. Inyectamos tus filas de cierre (las que muestran si está "CUADRADO ✔️" o "DESCUADRADO")
+	filasCierre := GenerarFilaCierre(t.ActivoTotal, t.PasivoPatrimonioTotal)
+	vista = append(vista, filasCierre...)
 
-	vista = append(vista, models.BaString{
-		Nombre:      "SUMA IGUAL AL PASIVO",
-		Col4:        config.FCont(PasPatrUtilidad),
-		ClasNombre:  "text-success-dark",
-		Cla4:        "border-double", // Cambiado de border-bottom-double
-		EsResultado: true,
-	})
 	return vista, t
 }

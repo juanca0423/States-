@@ -66,13 +66,14 @@ type BaString struct {
 }
 
 type TotalesBalance struct {
-	ActivoCorriente   float64
-	ActivoNoCorriente float64
-	ActivoTotal       float64
-	PasivoCorriente   float64
-	PasivoNoCorriente float64
-	PasivoTotal       float64
-	Patrimonio        float64
-	Inventario        float64 // Lo necesitamos para la Prueba Ácida y Rotación
-	InventarioInicial float64 // <--- Agrega este para el Dashboard
+	ActivoCorriente       float64
+	ActivoNoCorriente     float64
+	ActivoTotal           float64
+	PasivoCorriente       float64
+	PasivoNoCorriente     float64
+	PasivoTotal           float64
+	PasivoPatrimonioTotal float64
+	Patrimonio            float64
+	Inventario            float64 // Lo necesitamos para la Prueba Ácida y Rotación
+	InventarioInicial     float64 // <--- Agrega este para el Dashboard
 }

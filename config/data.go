@@ -3,8 +3,9 @@ package config
 
 import (
 	"database/sql"
-	"ef/models"
 	"strconv"
+
+	"ef/models"
 )
 
 var (
@@ -135,7 +136,6 @@ func CargarNomenclaturaDesdeDB(db *sql.DB) error {
 	MapContable = make(map[string]CuentaItem)
 	MapCostos = make(map[string]CuentaItem)
 	CargarComercial()
-	CargarCostos()
 	return nil
 }
 
@@ -206,10 +206,6 @@ func CargarComercial() {
 			}
 		}
 	}
-}
-
-func CargarCostos() {
-	// Ya no necesita lógica propia porque CargarComercial llena MapCostos con todo.
 }
 
 func ObtenerCuentas(esCosto bool) []CuentaItem {

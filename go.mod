@@ -7,6 +7,7 @@ require (
 	github.com/gofiber/template/handlebars/v3 v3.0.1
 	github.com/golang-jwt/jwt/v5 v5.3.0
 	github.com/lib/pq v1.11.1
+	github.com/resend/resend-go/v3 v3.6.0
 	golang.org/x/crypto v0.48.0
 	golang.org/x/text v0.34.0
 	gorm.io/driver/postgres v1.6.0
@@ -40,8 +41,6 @@ require (
 	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.4 // indirect
 	github.com/philhofer/fwd v1.1.3-0.20240916144458-20a13a1f6b7c // indirect
-	github.com/resend/resend-go/v2 v2.28.0 // indirect
-	github.com/resend/resend-go/v3 v3.6.0 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/spf13/afero v1.14.0 // indirect
