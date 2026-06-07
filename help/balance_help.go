@@ -185,6 +185,8 @@ func GenerarTodoElBalance(datos map[string]models.Cuenta, utilidadNeta float64) 
 	}
 
 	// No Corriente
+	vista = append(vista, GenerarBalanceVista(config.ActivoNoCorr, "Activos No Corrientes", &t.ActivoNoCorriente, datos, false, &t)...)
+
 	vista = append(vista, GenerarBalanceVista(config.PropPlanEqui, "Propiedad, Planta y Equipo", &t.ActivoNoCorriente, datos, false, &t)...)
 
 	vista = append(vista, GenerarBalanceVista(config.GtoIntan, "Gastos Intangibles", &t.ActivoNoCorriente, datos, false, &t)...)

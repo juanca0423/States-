@@ -62,14 +62,16 @@ func SetUpRutas(app *fiber.App) {
 	})
 
 	// Ruta para la nueva herramienta industrial
-	app.Get("/costosform", middleware.AuthRequired, func(c *fiber.Ctx) error {
-		return c.Render("costos-construccion", fiber.Map{
-			"Titulo":  "Módulo de Costos",
-			"Mensaje": "Estamos ajustando los cálculos de materia prima. ¡Vuelve pronto!",
-		})
-	})
-	//	app.Post("/costos", middleware.AuthRequired, ctrl.GenCostoProduccion)
-	// app.Get("/costosform", middleware.AuthRequired, ctrl.HojaTrabajocosto)
+
+	//  app.Get("/costosform", middleware.AuthRequired, func(c *fiber.Ctx) error {
+	// 	return c.Render("costos-construccion", fiber.Map{
+	// 		"Titulo":  "Módulo de Costos",
+	// 		"Mensaje": "Estamos ajustando los cálculos de materia prima. ¡Vuelve pronto!",
+	// 	})
+	// })
+
+	app.Post("/costos", middleware.AuthRequired, ctrl.GenCostoProduccion)
+	app.Get("/costosform", middleware.AuthRequired, ctrl.GenCostoProduccion)
 
 	app.Get("/soport", middleware.AuthRequired, ctrl.GetSoporte)
 	app.Post("/soporte/enviar", middleware.AuthRequired, ctrl.PostConsulta)

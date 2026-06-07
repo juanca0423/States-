@@ -13,6 +13,7 @@ var (
 	Exigible           []models.Cue
 	Realisable         []models.Cue
 	RealisableCo       []models.Cue
+	ActivoNoCorr       []models.Cue
 	PropPlanEqui       []models.Cue
 	GtoIntan           []models.Cue
 	GtoDiferidos       []models.Cue
@@ -48,6 +49,7 @@ func CargarNomenclaturaDesdeDB(db *sql.DB) error {
 	Exigible = nil
 	Realisable = nil
 	RealisableCo = nil
+	ActivoNoCorr = nil
 	PropPlanEqui = nil
 	GtoIntan = nil
 	GtoDiferidos = nil
@@ -108,6 +110,8 @@ func CargarNomenclaturaDesdeDB(db *sql.DB) error {
 			Realisable = append(Realisable, c)
 		case "RealisableCo":
 			RealisableCo = append(RealisableCo, c)
+		case "ActivoNoCorr":
+			ActivoNoCorr = append(ActivoNoCorr, c)
 		case "PropPlanEqui":
 			PropPlanEqui = append(PropPlanEqui, c)
 		case "GtoIntan":
@@ -120,7 +124,6 @@ func CargarNomenclaturaDesdeDB(db *sql.DB) error {
 			PasivoNoCorr = append(PasivoNoCorr, c)
 		case "PatriNeto":
 			PatriNeto = append(PatriNeto, c)
-		// ... dentro del switch en CargarNomenclaturaDesdeDB ...
 		case "MaterialesDirectos":
 			MaterialesDirectos = append(MaterialesDirectos, c)
 		case "ManoObra":
@@ -143,7 +146,7 @@ type CuentaItem struct {
 	Codigo     string `json:"codigo"`
 	CodInt     int    `json:"-"`
 	Nombre     string `json:"nombre"`
-	Saldo      string `json:"saldo"` // Asegúrate que sea String si en la DB es VARCHAR
+	Saldo      string `json:"saldo"`
 	Categoria  string `json:"categoria"`
 	EsCosto    bool   `json:"es_costo"`
 	EsEfectivo bool   `json:"es_efectivo"`
@@ -166,7 +169,7 @@ func CargarComercial() {
 
 	// 2. Todos los grupos que manejas en el Switch
 	todosLosGrupos := [][]models.Cue{
-		Disponible, Exigible, Realisable, PropPlanEqui,
+		Disponible, Exigible, Realisable, ActivoNoCorr, PropPlanEqui,
 		GtoIntan, GtoDiferidos, PasivoCorr, PasivoNoCorr,
 		PatriNeto, Ingresos, InveIni, Compras,
 		InveFin, GtoVentas, GtoAdmin, IngrFina,

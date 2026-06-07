@@ -206,45 +206,38 @@ func evaluarIndiceEndeudamiento(v float64) string {
 	return "text-success"
 }
 
-func GenerarDashboardIndustrial(costos ResumenCostos, ventas float64) []models.IndiceFinanciero {
-	var dashboard []models.IndiceFinanciero
+func GenerarDashboardIndustrial(d models.DatosDashboard, costos ResumenCostos) ([]models.IndiceFinanciero, models.IndicesTotales) {
+	// 1. Llamamos a la base financiera (Liquidez, Solvencia, ROE, ROA, PE)
+	dashboard, totales := GenerarDashboard(d)
 
-	// 1. COSTO PRIMO (Eficiencia de Inversión Directa)
-	dashboard = append(dashboard, models.IndiceFinanciero{
-		Nombre:         "Costo Primo",
-		Valor:          config.FCont(costos.CostoPrimo),
-		Interpretacion: "Inversión directa en materiales y mano de obra.",
-		Clase:          "text-primary",
-		DetalleCuenta:  "MP Consumida + Mano de Obra Directa",
-	})
-
-	// 2. ABSORCIÓN DE COSTOS INDIRECTOS (CIF)
-	// Idealmente el CIF no debe superar el 30-40% del costo total
-	porcentajeCIF := 0.0
-	if costos.CostoProduccion > 0 {
-		porcentajeCIF = (costos.CIF / costos.CostoProduccion) * 100
+	// 2. Agregamos los KPIs específicos de Fábrica al inicio del slice
+	indicesFabrica := []models.IndiceFinanciero{
+		{
+			Nombre:         "Costo Primo",
+			Valor:          config.FCont(costos.CostoPrimo),
+			Interpretacion: "Inversión directa en materiales y mano de obra.",
+			Clase:          "text-primary fw-bold",
+			DetalleCuenta:  fmt.Sprintf("MP Consumida (%s) + MOD (%s)", config.FCont(costos.MPConsumida), config.FCont(costos.MOD)),
+		},
+		{
+			Nombre:         "Carga Fabril (CIF)",
+			Valor:          fmt.Sprintf("%.2f%%", (costos.CIF/costos.CostoProduccion)*100),
+			Interpretacion: "Impacto de los costos indirectos en la producción.",
+			Clase:          evaluarIndice((costos.CIF/costos.CostoProduccion)*100, 0, 35),
+			DetalleCuenta:  fmt.Sprintf("CIF (%s) / Costo Prod (%s)", config.FCont(costos.CIF), config.FCont(costos.CostoProduccion)),
+		},
+		{
+			Nombre: "Margen Industrial",
+			// Multiplicamos por 100 para que formatee correctamente (ej: 45.15%)
+			Valor:          fmt.Sprintf("%.2f%%", ((d.Ventas-costos.CostoProduccion)/d.Ventas)*100),
+			Interpretacion: "Rentabilidad de la planta antes de gastos operativos.",
+			Clase:          "text-success fw-bold",
+			DetalleCuenta:  fmt.Sprintf("(Ventas (%s) - Costo Prod (%s)) / Ventas", config.FCont(d.Ventas), config.FCont(costos.CostoProduccion)),
+		},
 	}
-	dashboard = append(dashboard, models.IndiceFinanciero{
-		Nombre:         "Impacto de Carga Fabril (CIF)",
-		Valor:          fmt.Sprintf("%.2f%%", porcentajeCIF),
-		Interpretacion: "Qué tanto pesan los gastos indirectos en la producción.",
-		Clase:          evaluarIndice(porcentajeCIF, 0, 35), // Rojo si supera el 35%
-		DetalleCuenta:  "(CIF / Costo Producción) * 100",
-	})
 
-	// 3. MARGEN INDUSTRIAL
-	// ¿Cuánto nos queda después de fabricar antes de los gastos de admin?
-	margenInd := 0.0
-	if ventas > 0 {
-		margenInd = ((ventas - costos.CostoProduccion) / ventas) * 100
-	}
-	dashboard = append(dashboard, models.IndiceFinanciero{
-		Nombre:         "Margen Industrial",
-		Valor:          fmt.Sprintf("%.2f%%", margenInd),
-		Interpretacion: "Rentabilidad de la planta antes de gastos operativos.",
-		Clase:          "text-success",
-		DetalleCuenta:  "(Ventas - Costo Prod) / Ventas",
-	})
+	// Unimos ambos mundos: Los de fábrica primero para que resalten
+	dashboard = append(indicesFabrica, dashboard...)
 
-	return dashboard
+	return dashboard, totales
 }

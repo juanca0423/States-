@@ -45,6 +45,7 @@ func GenEstados(c *fiber.Ctx) error {
 	Balan := config.DividirCuentas(Balance)
 
 	DBHojadetravajo := help.HojaDeTrabajo(Balance)
+
 	DBResultados, TotResu := help.Resultados(Balance, 0) // 0 indica que es comercial
 	DBBalance, TotBalance := help.GenerarTodoElBalance(Balan, TotResu.UtilidadNeta)
 	// ... después de obtener TotResu y TotBalance
@@ -154,10 +155,20 @@ func GenCostoProduccion(c *fiber.Ctx) error {
 		GastosVariables:   TotResu.GastosVariables,
 		GastosNoEfectivo:  TotResu.GastosNoEfectivo,
 	}
-	// Llamada limpia
+
 	dbIndustrial, indicesTotales := help.GenerarDashboard(d)
 
-	// 5. Empaquetar (Agregamos los campos para las 3 columnas del HBS)
+	// 1. Marshalling a JSON para JS (Igual que en GenEstados)
+	keysJSON, _ := json.Marshal(hoja9Cols)
+	resultadosJSON, _ := json.Marshal(DBResultados)
+	balanceJSON, _ := json.Marshal(DBBalnce)
+	indicesJSON, _ := json.Marshal(dbIndustrial)
+
+	// 2. Cálculo del porcentaje de margen real
+	porcentajeMargen := 0.0
+	if TotResu.Ventas > 0 {
+		porcentajeMargen = (indicesTotales.MargenContribucion / TotResu.Ventas) * 100
+	}
 	resCalculados := map[string]string{
 		"InvInicialMP":    config.FCont(costos.InvInicialMP),
 		"ComprasMP":       config.FCont(costos.ComprasMP),
@@ -178,18 +189,24 @@ func GenCostoProduccion(c *fiber.Ctx) error {
 		"InvFinalPT":      config.FCont(costos.InvFinalPT),
 		"CostoVentas":     config.FCont(costos.CostoVentas),
 	}
-	// ... debajo de donde calculas 'costos'
-	// ventas := balanceRaw["210001"] // Código de tu nomenclatura
-	//	dbIndustrial := help.GenerarDashboardIndustrial(costos, ventas)
-
+	// 3. Renderizado con nombres unificados para reutilizar HBS
 	return c.Render("costos", fiber.Map{
-		"Title":               "Auditoría Industrial - Costos",
-		"filasHoja":           hoja9Cols,
-		"Resultados":          DBResultados,
-		"balanceRaw":          DBBalnce,
-		"res":                 resCalculados,
-		"dashboardIndustrial": dbIndustrial, // <--- Nueva variable para el HBS
-		"PuntoE":              indicesTotales.PuntoEContable,
-		"PuntoEfe":            indicesTotales.PuntoECaja,
+		"Title":              "Auditoría Industrial - Costos",
+		"keys":               hoja9Cols,     // Unificado
+		"resultados":         DBResultados,  // Unificado
+		"BalanceRows":        DBBalnce,      // Unificado
+		"indices":            dbIndustrial,  // Unificado
+		"res":                resCalculados, // Específico industrial
+		"MontoMP":            costos.MPConsumida,
+		"MontoMOD":           costos.MOD,
+		"MontoCIF":           costos.CIF,
+		"keysjson":           string(keysJSON),
+		"resultadosjson":     string(resultadosJSON),
+		"BalanceRowsjson":    string(balanceJSON),
+		"indicesjson":        string(indicesJSON),
+		"VentasNetas":        TotResu.VentasNetas,
+		"MargenContribucion": fmt.Sprintf("%.2f", porcentajeMargen),
+		"PuntoE":             indicesTotales.PuntoEContable,
+		"PuntoEfe":           indicesTotales.PuntoECaja,
 	})
 }

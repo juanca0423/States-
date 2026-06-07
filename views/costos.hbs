@@ -1,122 +1,7 @@
 {{> 'partials/header'}}
-{{> 'partials/nav'}}
-<div class="card border-primary mb-3">
-  <div class="card-header bg-primary text-white text-center">
-    <h3>ESTADO DE COSTO DE PRODUCCIÓN Y VENTAS</h3>
-  </div>
-  <div class="card-body">
-    <div class="table-responsive">
-      <table class="table table-hover table-sm">
-        <thead class="table-dark">
-          <tr>
-            <th>CONCEPTO</th>
-            <th class="text-end">DETALLE</th>
-            <th class="text-end">SUBTOTAL</th>
-            <th class="text-end">TOTAL</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="table-active"><th colspan="4">MATERIALES DIRECTOS</th></tr>
-          <tr>
-            <td>Inventario Inicial de Materia Prima</td>
-            <td></td>
-            <td class="text-end text-decoration-underline">{{res.InvInicialMP}}</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>Compras Brutas + Gastos</td>
-            <td class="text-end">{{res.ComprasMP}} + {{res.GastosMP}}</td>
-            <td></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>(-) Devoluciones y Rebajas s/Compras</td>
-            <td class="text-end text-danger">({{res.DevMP}})</td>
-            <td class="text-end text-decoration-underline">{{res.ComprasNetasMP}}</td>
-            <td></td>
-          </tr>
-          <tr class="fst-italic text-muted">
-            <td>Materia Prima Disponible</td>
-            <td></td>
-            <td class="text-end">{{res.MPDisponible}}</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>(-) Inventario Final Materia Prima</td>
-            <td></td>
-            <td class="text-end text-danger text-decoration-underline">({{res.InvFinalMP}})</td>
-            <td class="text-end fw-bold">{{res.MPConsumida}}</td>
-          </tr>
+{{>'partials/nav'}}
 
-          <tr>
-            <td class="fw-bold">(+) MANO DE OBRA DIRECTA</td>
-            <td></td>
-            <td></td>
-            <td class="text-end text-decoration-underline">{{res.MOD}}</td>
-          </tr>
-          <tr class="table-info fw-bold">
-            <td>(=) COSTO PRIMO (MP + MOD)</td>
-            <td></td>
-            <td></td>
-            <td class="text-end">{{res.CostoPrimo}}</td>
-          </tr>
-
-          <tr>
-            <td class="fw-bold">(+) GASTOS INDIRECTOS (CIF)</td>
-            <td></td>
-            <td></td>
-            <td class="text-end text-decoration-underline">{{res.CIF}}</td>
-          </tr>
-          <tr class="table-success fw-bold">
-            <td>(=) COSTO DE PRODUCCIÓN DEL PERIODO</td>
-            <td></td>
-            <td></td>
-            <td class="text-end">{{res.CostoProduccion}}</td>
-          </tr>
-
-          <tr>
-            <td>(+) Inventario Inicial Productos en Proceso</td>
-            <td></td>
-            <td></td>
-            <td class="text-end">{{res.InvInicialProc}}</td>
-          </tr>
-          <tr>
-            <td>(-) Inventario Final Productos en Proceso</td>
-            <td></td>
-            <td></td>
-            <td class="text-end text-danger text-decoration-underline">({{res.InvFinalProc}})</td>
-          </tr>
-          <tr class="fw-bold">
-            <td>(=) COSTO DE ARTÍCULOS TERMINADOS</td>
-            <td></td>
-            <td></td>
-            <td class="text-end border-bottom border-primary">{{res.CostoArtTerm}}</td>
-          </tr>
-
-          <tr>
-            <td>(+) Inventario Inicial Artículos Terminados</td>
-            <td></td>
-            <td></td>
-            <td class="text-end">{{res.InvInicialPT}}</td>
-          </tr>
-          <tr>
-            <td>(-) Inventario Final Artículos Terminados</td>
-            <td></td>
-            <td></td>
-            <td class="text-end text-danger text-decoration-underline">({{res.InvFinalPT}})</td>
-          </tr>
-          <tr class="table-dark fw-bold">
-            <td>(=) COSTO DE VENTAS</td>
-            <td></td>
-            <td></td>
-            <td class="text-end">{{res.CostoVentas}}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
+<h1>{{Title}}</h1>
 <section>
   <hr>
   <div class="table-container tabla-contable">
@@ -130,7 +15,7 @@
           <th scope="col" colspan="2" class="col-3 border-top text-center">Balance</th>
         </tr>
         <tr class="col-12">
-          <th scope="row" class="col-3 border-bottom  text-center">Nombre</th>
+          <th scope="row" class="col-3 border-bottom text-center">Nombre</th>
           <th scope="col" class="col-1.5 border-bottom text-center">Debe</th>
           <th scope="col" class="col-1.5 border-bottom text-center">Haber</th>
           <th scope="col" class="col-1.5 border-bottom text-center">Perdidas</th>
@@ -154,14 +39,13 @@
       </tbody>
     </table>
   </div>
-  <div class="tabla-contable">
+
+  <div class="tabla-contable mt-4">
     <table id="resultados" class="table table-dark table-hover table-bordered">
       <caption>Estado de Resultados</caption>
       <thead>
         <tr>
-          <th colspan="4" style="text-align: center;">
-            Estado de Resultados
-          </th>
+          <th colspan="4" style="text-align: center;">Estado de Resultados</th>
         </tr>
       </thead>
       <tbody>
@@ -171,7 +55,8 @@
           <td style="text-align: right;" class="{{this.value.Cla1}}">{{this.value.Col1}}</td>
           <td style="text-align: right;" class="{{this.value.Cla2}}">{{this.value.Col2}}</td>
           <td style="text-align: right;" class="{{this.value.Cla3}}" {{#if this.value.EsResultado}}id="baseContable"
-            {{/if}}>{{this.value.Col3}}
+            {{/if}}>
+            {{this.value.Col3}}
           </td>
         </tr>
         {{/each}}
@@ -180,33 +65,44 @@
   </div>
 
   <div id="contenedorSimulador" class="table table-dark table-hover table-bordered container mt-4 p-4 d-print-none">
-    <h4 id="tituloSimulador" class="">Simulador Fiscal Internacional</h4>
-    </p>
+    <h4 id="tituloSimulador">Simulador Fiscal Internacional</h4>
     <div id="camposCalculo">
       <div class="row g-3">
         <div class="col-md-4">
-          <label class="form-label text-dark">ISR (%)</label>
-          <input type="number" id="inputISR" class="form-control" value="25">
+          <label class="form-label text-white">ISR (%)</label>
+          <input type="number" id="inputISR" class="form-control bg-dark text-white border-secondary" min="0" max="100" step="0.01" value="25">
         </div>
         <div class="col-md-4">
-          <label class="form-label text-dark">Reserva Legal (%)</label>
-          <input type="number" id="inputReserva" class="form-control" value="5">
+          <label class="form-label text-white">Reserva Legal (%)</label>
+          <input type="number" id="inputReserva" class="form-control bg-dark text-white border-secondary" min="0" max="100" step="0.01" value="5">
         </div>
         <div class="col-md-4 d-flex align-items-end">
           <button class="btn btn-success w-100" onclick="calcularFiscal(event)">Calcular</button>
         </div>
       </div>
     </div>
+
+    <div class="mt-4 p-4 border border-secondary rounded-3 shadow-sm" style="background-color: rgba(0,0,0,0.2);">
+      <div class="d-flex justify-content-between mb-2">
+        <span class="text-white-50">Impuesto (ISR):</span>
+        <strong id="txtISR" class="text-info font-monospace fs-5">0.00</strong>
+      </div>
+      <div class="d-flex justify-content-between mb-2">
+        <span class="text-white-50">Reserva Legal:</span>
+        <strong id="txtReserva" class="text-info font-monospace fs-5">0.00</strong>
+      </div>
+
+      <hr class="border-secondary my-3">
+
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="text-white fw-bold">Utilidad Neta Disponible:</span>
+        <span class="badge fs-4 p-2 shadow utilidad-glow" id="txtNeto">0.00</span>
+      </div>
+    </div>
   </div>
-  <div class="table table-dark table-hover table-bordered mt-3 p-3 border ">
-    <p>Impuesto: <strong id="txtISR">0.00</strong></p>
-    <p>Reserva: <strong id="txtReserva">0.00</strong></p>
-    <hr>
-    <p><strong>Utilidad Neta Disponible: <span id="txtNeto">0.00</span></strong></p>
-  </div>
-  </div>
-  <div>
-    <table id="balance" class="table table-dark table-bordered table-sm table-borderless">
+
+  <div class="mt-5">
+    <table id="balance" class="table table-dark table-bordered table-sm">
       <thead>
         <tr class="border-bottom">
           <th style="width: 40%;">Descripción</th>
@@ -229,6 +125,7 @@
       </tbody>
     </table>
   </div>
+
   <div class="container-fluid table table-dark table-hover table-bordered mt-5 mb-5 p-4 border rounded shadow-sm">
     <div class="row border-bottom mb-4">
       <div class="col-12">
@@ -240,7 +137,7 @@
     <div class="row g-4">
       {{#each indices}}
       <div class="col-md-3">
-        <div class="card h-100 border-0 shadow-sm">
+        <div class="card h-100 border-0 shadow-sm bg-dark text-white border border-secondary">
           <div class="card-body text-center">
             <h6 class="card-subtitle mb-2 text-muted fw-bold text-uppercase" style="font-size: 0.75rem;">
               {{this.Nombre}}
@@ -248,13 +145,13 @@
             <h2 class="card-title my-3 {{this.Clase}}">
               {{this.Valor}}
             </h2>
-            <hr>
+            <hr class="border-secondary">
             <p class="card-text small text-secondary italic">
               {{this.Interpretacion}}
             </p>
           </div>
-          <div class="card-body text-center">
-            <button type="button" class="btn btn-sm btn-outline-secondary mt-2"
+          <div class="card-footer bg-transparent border-0 text-center pb-3">
+            <button type="button" class="btn btn-sm btn-outline-info"
               onclick="verAuditoria('{{this.Nombre}}', '{{this.DetalleCuenta}}', '{{this.Interpretacion}}')">
               <i class="bi bi-search"></i> Ver Auditoría
             </button>
@@ -263,39 +160,153 @@
       </div>
       {{/each}}
     </div>
-  </div>
-</section>
-<div class="text-center mt-4">
-  <button class="btn btn-success px-5 shadow-sm d-flex align-items-center justify-content-center mx-auto" id="botonpdf" onclick="generarReportePDF()">
-    <span id="pdfSpinner" class="spinner-border spinner-border-sm d-none me-2" role="status">
-    </span>
-    <i class="fas fa-file-pdf me-2" id="pdfIcon"></i>
-    <span id="pdfBtnText">Descargar Los Estados PDF</span>
-  </button>
-</div>
-<div class="modal fade" id="modalAuditoria" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header bg-dark text-white">
-        <h5 class="modal-title" id="tituloAuditoria">Detalle de Cálculo</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+    <div class="row mt-4">
+      <div id="datos-financieros"
+        data-ventas="{{VentasNetas}}"
+        data-fijos="{{CostosFijos}}"
+        data-variables="{{CostosVar}}"
+        data-punto-e="{{PuntoE}}"
+        data-punto-efe="{{PuntoEfe}}"
+        data-mp="{{MontoMP}}"
+        data-mod="{{MontoMOD}}"
+        data-cif="{{MontoCIF}}">
       </div>
-      <div class="modal-body">
-        <p id="descAuditoria" class="fw-bold"></p>
-        <div class="alert alert-info border-0">
-          <small>Fórmula aplicada:</small>
-          <div id="formulaAuditoria" class="font-monospace mt-1"></div>
+      
+      <div class="col-12 mb-4">
+        <div class="card shadow border-0 bg-light text-dark">
+          <div class="card-header bg-dark text-white">
+            <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Análisis del Punto de Equilibrio</h5>
+          </div>
+          <div class="card-body">
+            <div style="height: 400px;">
+              <canvas id="graficoEquilibrio"></canvas>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
 
+    <div class="row g-4 mb-4">
+      <div class="col-md-4">
+        <div class="card shadow border-0 bg-light text-dark h-100">
+          <div class="card-header bg-dark text-white text-center">
+            <h5 class="mb-0"><i class="fas fa-microchip me-2"></i>Análisis de Costos</h5>
+          </div>
+          <div class="card-body">
+            <div style="height: 250px;">
+              <canvas id="graficoDona"></canvas>
+            </div>
+            <table id="tablaPuntoEquilibrioPDF" class="table table-sm table-borderless mt-3">
+              <tbody>
+                <tr>
+                  <td><i class="fas fa-circle text-danger me-2"></i><strong>Fijos:</strong></td>
+                  <td class="text-end formatear-numero">{{CostosFijos}}</td>
+                </tr>
+                <tr>
+                  <td><i class="fas fa-circle text-primary me-2"></i><strong>Variables:</strong></td>
+                  <td class="text-end formatear-numero"> {{CostosVar}}</td>
+                </tr>
+                <tr class="border-top">
+                  <td><strong>Total:</strong></td>
+                  <td class="text-end formatear-numero"><strong>{{CostosTotales}}</strong></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="alert alert-secondary p-2 mt-2" style="font-size: 0.85rem;">
+              <strong>Margen de Contribución:</strong>
+              <span class="float-end">{{MargenContribucion}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card shadow border-0 bg-light text-dark h-100">
+          <div class="card-header bg-dark text-white text-center">
+            <h5 class="mb-0"><i class="fas fa-industry me-2"></i>Distribución de Producción</h5>
+          </div>
+          <div class="card-body">
+            <div style="height: 250px;">
+              <canvas id="graficoElementosCosto"></canvas>
+            </div>
+            <table class="table table-sm table-borderless mt-3">
+              <tbody>
+                <tr>
+                  <td><i class="fas fa-circle text-info me-2"></i><strong>Materia Prima:</strong></td>
+                  <td class="text-end formatear-numero">{{MontoMP}}</td>
+                </tr>
+                <tr>
+                  <td><i class="fas fa-circle text-warning me-2"></i><strong>Mano de Obra:</strong></td>
+                  <td class="text-end formatear-numero">{{MontoMOD}}</td>
+                </tr>
+                <tr>
+                  <td><i class="fas fa-circle text-purple me-2"></i><strong>Carga Fabril (CIF):</strong></td>
+                  <td class="text-end formatear-numero">{{MontoCIF}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card shadow border-0 bg-light text-dark h-100">
+          <div class="card-header bg-dark text-white text-center">
+            <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Puntos de Equilibrio</h5>
+          </div>
+          <div class="card-body d-flex flex-column justify-content-between">
+            <div style="width: 80%; margin: 0 auto; max-width: 180px; height: 150px;">
+              <canvas id="graficoEstructura"></canvas>
+            </div>
+            <div class="mt-3">
+              <table id="tablaEquilibrioResumen" class="table table-sm table-hover table-bordered border-light shadow-sm mb-0">
+                <thead class="table-dark text-center">
+                  <tr>
+                    <th>Concepto</th>
+                    <th>Monto Requerido</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Contable</strong><br><small class="text-muted">Utilidad cero</small></td>
+                    <td id="puntoE" class="text-end fw-bold formatear-numero">{{PuntoE}}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Caja (Efectivo)</strong><br><small class="text-muted">Mínimo vital</small></td>
+                    <td id="puntoEfe" class="text-end fw-bold text-success formatear-numero">{{PuntoEfe}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+    // 3. SE EXPANDIÓ EL OBJETO DATAREPORTES CON LOS CAMPOS INDUSTRIALES NUEVOS
+    const dataReporte = {
+        hojaTrabajo: {{{keysjson}}},
+        resultados: {{{resultadosjson}}},
+        balance: {{{BalanceRowsjson}}},
+        indices: {{{indicesjson}}},
+        config: {
+            ventas: {{{VentasNetas}}},
+            pE: {{{PuntoE}}},
+            costosFijos: {{{CostosFijos}}},
+            costosVar: {{{CostosVar}}},
+            // Inyección segura al objeto global JS
+            materiaPrima: {{{MontoMP}}},
+            manoObraDirecta: {{{MontoMOD}}},
+            cargaFabril: {{{MontoCIF}}}
+        }
+    };
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="/static/js/exel.js"></script>
 <script src="/static/js/estados.js?v=0.01"></script>
-
-
-
-{{> 'partials/footer'}}
+{{>'partials/footer'}}
