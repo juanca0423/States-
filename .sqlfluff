@@ -1,0 +1,22 @@
+[sqlfluff]
+# Indicamos el dialecto de base de datos que usas (ej. postgres)
+dialect = postgres
+# Elevamos el límite de caracteres por línea para que coincida con tu formateador
+max_line_length = 500
+
+[sqlfluff:indentation]
+# Ajustamos las tabulaciones a 2 espacios para que coincida con Neovim y tu format.lua
+tab_space_size = 2
+indent_unit = space
+
+[sqlfluff:rules:layout.long_lines]
+# Ignora la advertencia de líneas demasiado largas (clave para tus INSERTS contables)
+ignore_words = all
+
+[sqlfluff:rules:structure.column_order]
+# Evita que se queje por el orden si usas subconsultas o inserts masivos
+disabled = True
+
+[sqlfluff:rules:aliasing.expression]
+# Permite alias implícitos o explícitos según prefieras sin mandar warnings
+allow_implicit = True

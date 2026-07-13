@@ -1,0 +1,35 @@
+{{>'partials/header'}} {{>'partials/nav'}}
+<hr />
+{{> 'partials/shortcuts'}}
+<hr />
+{{#if Error}}
+<div class="container mt-4">
+  <div class="alert alert-danger" role="alert">{{Error}}</div>
+</div>
+{{/if}}
+<section class="container mt-4">
+  <form
+    class="card bg-dark p-4 border-success shadow-lg"
+    id="balanceForm"
+    method="POST"
+    enctype="multipart/form-data"
+    action="/estados"
+  >
+    <div class="table-responsive">
+      <div id="react-formulario-root"></div>
+
+      <script>
+        window.CATALOGO_CUENTAS = {{{Cuentas}}};
+      </script>
+
+      <script src="/static/js/bundle-formulario.js"></script>
+    </div>
+
+    <div class="text-center mt-4">
+      <button type="submit" class="btn btn-success btn-lg px-5 shadow">
+        <i class="fas fa-save me-2"></i>Generar Estados Financieros
+      </button>
+    </div>
+  </form>
+</section>
+{{> 'partials/calculadora'}} {{>'partials/footer'}}

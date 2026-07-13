@@ -1,0 +1,16 @@
+services:
+  go_web_app:
+    build:  
+      context: .
+      dockerfile: Dockerfile # <-- Usamos el de desarrollo (con Air)
+    container_name: go_web_app_dev
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    env_file: 
+      - .env
+    ports:
+      - "3000:3000" # <-- Mapeo directo para entrar por localhost:3000
+    volumes:
+      - .:/app # <-- Importante: sincroniza tu código local con el contenedor
+    # En local no solemos necesitar Nginx ni Healthchecks complejos

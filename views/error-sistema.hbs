@@ -1,0 +1,21 @@
+{{> "partials/header" }}
+{{> "partials/nav" }}
+
+<section class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card border-danger shadow-lg">
+        <div class="card-body p-5">
+          <h1 class="display-6 text-danger mb-3">Error del sistema</h1>
+          <p class="lead">{{Mensaje}}</p>
+          <div class="mt-4">
+            <a href="/" class="btn btn-secondary">Volver al inicio</a>
+            <a href="/soport" class="btn btn-outline-primary">Contactar soporte</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{{> "partials/footer"}}

@@ -1,0 +1,145 @@
+/* --- VARIABLES GLOBALES (paleta, tipografía y capas) --- */
+:root {
+  /* Paleta de marca */
+  --color-exito: #28a745;          /* Verde principal de acentos y bordes */
+  --color-exito-rgb: 40, 167, 69;  /* Base RGB para transparencias rgba() */
+  --color-oscuro: #1a1a1a;         /* Fondo de cabeceras de tabla */
+  --color-panel: #2d2d2d;          /* Fondo del cuadre flotante */
+  --color-neon: #00ff00;           /* Texto verde brillante del cuadre */
+  --color-claro: #f8f9fa;          /* Fondo claro (cinta, inputs) */
+  --color-claro-2: #e9ecef;        /* Fondo del display de la calculadora */
+
+  /* Transparencias derivadas de la paleta */
+  --borde-suave: rgba(var(--color-exito-rgb), 0.15);
+  --fondo-hover: rgba(var(--color-exito-rgb), 0.05);
+
+  /* Tipografía monoespaciada para montos */
+  --fuente-mono: 'Courier New', monospace;
+
+  /* Capas (z-index) */
+  --z-tabla: 1000;
+  --z-calculadora: 9999;
+  --z-boton: 10000;
+}
+
+/* --- OPTIMIZACIÓN DE RENDIMIENTO --- */
+
+.table thead th {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-tabla);
+  background-color: var(--color-oscuro) !important;
+  /* Evita transparencias al hacer scroll */
+  border-bottom: 2px solid var(--color-exito) !important;
+  will-change: transform;
+}
+
+.cuadre-flotante {
+  position: fixed !important;
+  bottom: 20px !important;
+  left: 10px !important;
+  right: auto !important;
+  width: 180px !important;
+  height: 100px !important;
+  z-index: var(--z-calculadora) !important;
+  background-color: var(--color-panel) !important;
+  color: var(--color-neon) !important;
+  border: 2px solid var(--color-exito) !important;
+  border-radius: 15px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Corrección del punto faltante */
+.cuadre-monto {
+  font-size: 1.6rem !important;
+  /* Ajustado para pantallas medianas */
+  font-family: var(--fuente-mono) !important;
+  font-weight: 800 !important;
+  white-space: nowrap !important;
+  line-height: 1.2 !important;
+}
+
+/* --- LIMPIEZA DE INPUTS --- */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  appearance: textfield;
+  /* Soporte para Firefox */
+}
+
+/* --- MEJORA DE LECTURA --- */
+.monto-contable {
+  text-align: right !important;
+  font-family: var(--fuente-mono) !important;
+  letter-spacing: 0.5px;
+}
+
+/* Filas con hover sutil para no cansar la vista */
+#balanceForm .row.g-3>div {
+  border-bottom: 1px solid var(--borde-suave);
+  transition: background-color 0.2s;
+}
+
+#balanceForm .row.g-3:hover {
+  background-color: var(--fondo-hover);
+}
+
+#icono {
+  content: url('/static/images/logoP.svg');
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+}
+
+/* --- CALCULADORA CONTABLE (widget) --- */
+#btnSumadora {
+  position: fixed;
+  bottom: 20px;
+  left: 10px;
+  width: 60px;
+  height: 60px;
+  z-index: var(--z-boton);
+}
+
+#calculadoraContable {
+  position: fixed;
+  top: 100px;
+  left: 20px;
+  width: 260px;
+  z-index: var(--z-calculadora);
+  border: 2px solid var(--color-exito);
+  background: white;
+}
+
+#cintaContable {
+  height: 100px;
+  overflow-y: auto;
+  font-family: var(--fuente-mono);
+  font-size: 0.85rem;
+  text-align: right;
+  background-color: var(--color-claro);
+}
+
+#displayCalc {
+  background-color: var(--color-claro-2);
+  font-size: 1.4rem;
+}
+
+#calcHeader span {
+  font-size: 0.85rem;
+}
+
+#calculadoraContable .btn-close {
+  font-size: 0.7rem;
+}
+
+.toast-container {
+  z-index: var(--z-boton);
+}

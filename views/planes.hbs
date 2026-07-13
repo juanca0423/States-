@@ -1,0 +1,48 @@
+{{> "partials/header" }}
+{{> "partials/nav" }}
+
+<section class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow-sm border-secondary">
+        <div class="card-body p-5">
+          <h1 class="mb-4">Suscripción requerida</h1>
+
+          {{#if Mensaje}}
+          <div class="alert alert-warning" role="alert">
+            {{Mensaje}}
+          </div>
+          {{/if}}
+
+          {{#if EsSuscrito}}
+          <div class="alert alert-success" role="alert">
+            Tu suscripción está activa. Gracias por confiar en States.
+          </div>
+          {{else}}
+          <p class="mb-4">
+            Para continuar usando las funciones de la plataforma necesitas activar tu suscripción.
+            Si ya realizaste un pago, por favor espera unos minutos y recarga esta página.
+          </p>
+
+          <div class="mb-4">
+            <h5>Plan único</h5>
+            <p class="mb-1"><strong>Q 300.00</strong> por año</p>
+            <p class="text-muted">Acceso completo a estados financieros, costos industriales y soporte.</p>
+          </div>
+
+          <div class="d-grid gap-2 mb-4">
+            <a href="/soport" class="btn btn-primary btn-lg">Contactar soporte para activar tu plan</a>
+            <a href="/" class="btn btn-outline-secondary">Volver al inicio</a>
+          </div>
+          {{/if}}
+
+          {{#if TextoDias}}
+          <p class="text-muted small">{{TextoDias}}</p>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{{> "partials/footer"}}

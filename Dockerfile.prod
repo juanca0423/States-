@@ -1,0 +1,18 @@
+FROM golang:1.26-alpine AS builder
+RUN apk add --no-cache git
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags="-s -w" -o eeff_app .
+FROM alpine:latest
+RUN apk add --no-cache curl ca-certificates tzdata
+ENV PORT=3000
+WORKDIR /root/
+COPY --from=builder /app/eeff_app .
+COPY --from=builder /app/views ./views
+COPY --from=builder /app/estaticos ./estaticos
+COPY --from=builder /app/.env . 
+EXPOSE 3000
+# Ejecución
+CMD ["./eeff_app"]

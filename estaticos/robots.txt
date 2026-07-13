@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /loguin
+Disallow: /db
+Disallow: /config
+
+# Permitir lo demás
+Allow: /

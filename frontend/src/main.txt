@@ -1,0 +1,144 @@
+import React, { useState } from 'react';
+import { createRoot } from 'react-dom/client';
+
+function FormularioContable() {
+  // Leemos las cuentas inyectadas desde Go
+  const catalogoCompleto = window.CATALOGO_CUENTAS || [];
+
+  const [cuentasSeleccionadas, setCuentasSeleccionadas] = useState([]);
+  const [busqueda, setBusqueda] = useState('');
+
+  const agregarCuenta = (cuenta) => {
+    const codigo = cuenta.Codigo || cuenta.codigo;
+    if (!cuentasSeleccionadas.some(c => (c.Codigo || c.codigo) === codigo)) {
+      setCuentasSeleccionadas([...cuentasSeleccionadas, { ...cuenta, Monto: '' }]);
+    }
+    setBusqueda('');
+  };
+
+  const manejarMontoChange = (codigo, valor) => {
+    setCuentasSeleccionadas(cuentasSeleccionadas.map(c => {
+      const cCodigo = c.Codigo || c.codigo;
+      return cCodigo === codigo ? { ...c, Monto: valor } : c;
+    }));
+  };
+
+  const eliminarCuenta = (codigo) => {
+    setCuentasSeleccionadas(cuentasSeleccionadas.filter(c => (c.Codigo || c.codigo) !== codigo));
+  };
+
+  // Filtrado interactivo seguro
+  const cuentasFiltradas = busqueda ? catalogoCompleto.filter(c => {
+    const nombreCuenta = c.Nombre || c.nombre || "";
+    const codigoCuenta = c.Codigo || c.codigo || "";
+    return (
+      nombreCuenta.toLowerCase().includes(busqueda.toLowerCase()) ||
+      codigoCuenta.toString().includes(busqueda)
+    );
+  }).slice(0, 8) : [];
+
+  return (
+    <div>
+      {/* SECTOR DE BÚSQUEDA DINÁMICA */}
+      <div className="mb-4 position-relative">
+        <label className="text-success fw-bold mb-2">🔍 Buscar y Añadir Cuenta al Formulario:</label>
+        <input
+          type="text"
+          className="form-control bg-dark text-white border-success"
+          placeholder="Escribe el nombre o código de la cuenta... (ej: Caja, 111101)"
+          value={busqueda}
+          onChange={(e) => setBusqueda(e.target.value)}
+        />
+
+        {cuentasFiltradas.length > 0 && (
+          <div className="list-group position-absolute w-100 shadow-lg" style={{ zIndex: 1050 }}>
+            {cuentasFiltradas.map(c => {
+              // Variables defensivas para el buscador
+              const nombre = c.Nombre || c.nombre || "Sin Nombre";
+              const codigo = c.Codigo || c.codigo || "000000";
+              const saldo = c.Saldo || c.saldo || "";
+
+              return (
+                <button
+                  key={codigo}
+                  type="button"
+                  className="list-group-item list-group-item-action list-group-item-dark d-flex justify-content-between align-items-center text-start"
+                  onClick={() => agregarCuenta(c)}
+                >
+                  <span><strong>{codigo}</strong> - {nombre}</span>
+                  <span className="badge bg-success">{saldo}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* TABLA DINÁMICA DE CUENTAS EN USO */}
+      <div className="table-responsive">
+        <table className="table table-dark table-hover mb-0">
+          <thead className="text-success">
+            <tr>
+              <th style={{ width: "50%" }}>Cuenta Contable</th>
+              <th style={{ width: "40%" }} className="text-center">Monto</th>
+              <th style={{ width: "10%" }} className="text-center">Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            {cuentasSeleccionadas.length === 0 ? (
+              <tr>
+                <td colSpan="3" className="text-center text-muted py-4">
+                  El formulario está vacío. Utiliza el buscador de arriba para añadir las cuentas del ejercicio.
+                </td>
+              </tr>
+            ) : (
+              cuentasSeleccionadas.map(c => {
+                // Variables defensivas para la tabla
+                const nombre = c.Nombre || c.nombre || "Sin Nombre";
+                const codigo = c.Codigo || c.codigo || "000000";
+                const saldo = c.Saldo || c.saldo || "";
+                const categoria = c.Categoria || c.categoria || "";
+
+                return (
+                  <tr key={codigo}>
+                    <td className="align-middle text-start ps-3">
+                      <span className="text-white fw-bold">{nombre}</span>
+                      <small className="text-muted d-block">{codigo} {categoria && `(${categoria})`}</small>
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        name={codigo}
+                        id={`input-${codigo}`}
+                        data-saldo={saldo}
+                        value={c.Monto}
+                        onChange={(e) => manejarMontoChange(codigo, e.target.value)}
+                        className="form-control monto-contable input-contable w-100 bg-transparent text-white border-info text-end"
+                        placeholder="0.00"
+                      />
+                    </td>
+                    <td className="text-center align-middle">
+                      <button
+                        type="button"
+                        className="btn btn-outline-danger btn-sm"
+                        onClick={() => eliminarCuenta(codigo)}
+                      >
+                        <i className="fas fa-trash-alt"></i>
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+const container = document.getElementById('react-formulario-root');
+if (container) {
+  const root = createRoot(container);
+  root.render(<FormularioContable />);
+}

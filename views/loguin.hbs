@@ -1,0 +1,55 @@
+{{> "partials/header" }} {{> "partials/nav"}}
+
+<h1>Inicio de Sesión</h1>
+
+{{#if Error}}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>¡Error!</strong> {{Error}}
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{{/if}}
+
+<form class="p-4 border rounded shadow-sm" method="POST" action="/loguin">
+  <div class="form-floating mb-3">
+    <input type="email" value="{{Email}}" class="form-control" name="email" id="email" placeholder="email@ejemplo.com" required />
+    <label for="email">Email</label>
+  </div>
+
+  <div class="mb-3">
+    <label for="pase" class="form-label">Contraseña</label>
+    <div class="input-group">
+      <input type="password" id="pase" name="pase" class="form-control" required />
+      <button class="btn btn-outline-secondary" type="button" id="togglePase1">
+        <i class="fa-solid fa-eye"></i>
+      </button>
+    </div>
+  </div>
+
+  <hr />
+
+  <div class="d-grid">
+    <button type="submit" class="btn btn-primary mb-3">Confirme identidad</button>
+  </div>
+</form>
+
+<script>
+  function setupToggle(btnId, inputId) {
+    const btn = document.querySelector(btnId);
+    const input = document.querySelector(inputId);
+    if (btn && input) {
+      btn.addEventListener("click", function () {
+        const type = input.getAttribute("type") === "password" ? "text" : "password";
+        input.setAttribute("type", type);
+
+        const icon = this.querySelector("i");
+        icon.classList.toggle("fa-eye");
+        icon.classList.toggle("fa-eye-slash");
+      });
+    }
+  }
+
+  // Ahora sí coinciden los IDs
+  setupToggle("#togglePase1", "#pase");
+</script>
+
+{{> "partials/footer"}}

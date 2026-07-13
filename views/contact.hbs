@@ -1,0 +1,42 @@
+{{>'partials/header'}}
+{{>'partials/nav'}}
+
+<div class="container mt-4">
+  <div class="card bg-dark shadow-lg">
+    <div class="card-header border-success" style="background-color: #2e3b32;">
+      <h3 class="text-success font-monospace mb-0 text-center">INGRESO DE SALDOS CONTABLES</h3>
+    </div>
+    <div class="card-body">
+      <form id="balance" method="POST" action="/estados">
+        <table class="table table-dark table-hover align-middle border-success">
+          <thead class="text-success italic">
+            <tr>
+              <th>Código</th>
+              <th>Cuenta Contable</th>
+              <th class="text-end">Saldo Actual (Q/$)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each datos}}
+            <tr>
+              <td class="text-muted small">{{this.codigo}}</td>
+              <td><label for="{{this.codigo}}" class="fw-bold">{{this.nombre}}</label></td>
+              <td>
+                <input type="number" step="0.01" name="{{this.codigo}}"
+                  class="form-control bg-transparent text-white border-secondary text-end" placeholder="0.00">
+              </td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+        <div class="sticky-bottom bg-dark p-3 border-top border-success text-center">
+          <button type="submit" class="btn btn-success btn-lg px-5 font-monospace shadow">
+            <i class="bi bi-calculator"></i> GENERAR ESTADOS FINANCIEROS
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{{>'partials/footer'}}

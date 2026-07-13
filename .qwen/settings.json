@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(C:/Users/Usuario/Desktop/pruebas/States/ctrl/**)"
+    ]
+  },
+  "$version": 4
+}
