@@ -273,8 +273,15 @@ document.addEventListener('keydown', (e) => {
     return;
   }
 
-  // Teclas calculadora
-  if (estaVisible && !enInputTabla) {
+  // Alt + P (pegar resultado en la celda seleccionada)
+  if (e.altKey && key === 'p') {
+    e.preventDefault();
+    window.pegarResultado();
+    return;
+  }
+
+  // Teclas calculadora (permitimos 'p' incluso dentro de una celda para pegar)
+  if (estaVisible && (!enInputTabla || key === 'p')) {
     if (/[0-9]/.test(key)) {
       e.preventDefault();
       window.addNum(key);
