@@ -71,7 +71,6 @@ func PostResponder(c *fiber.Ctx) error {
 		return c.Redirect("/api/admin/soporte?error=vacio")
 	}
 
-<<<<<<< HEAD
 	if err := responderConsulta(id, respuesta); err != nil {
 		return c.Status(500).SendString("No se pudo responder")
 	}

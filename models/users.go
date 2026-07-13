@@ -22,6 +22,7 @@ type User struct {
 type Mensaje struct {
 	gorm.Model
 	UserID    uint   `json:"user_id"`
+	User      User `gorm:"foreignKey:UserID" json:"-"`
 	Consulta  string `json:"consulta" gorm:"type:text" form:"consulta"`
 	Respuesta string `json:"respuesta" gorm:"type:text"`
 	Estado    string `json:"estado" gorm:"default:'pendiente'"`
