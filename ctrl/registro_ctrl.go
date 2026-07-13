@@ -2,6 +2,8 @@ package ctrl
 
 import (
 	"crypto/rand"
+	"ef/db"
+	"ef/models"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -15,8 +17,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"golang.org/x/crypto/bcrypt"
 
-	"ef/db"
-	"ef/models"
 	"ef/servicios" // Asegúrate de que el path a tu carpeta servicios sea correcto
 )
 

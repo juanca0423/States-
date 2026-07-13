@@ -1,9 +1,8 @@
 package ctrl
 
 import (
-	"encoding/json"
-
 	"ef/config"
+	"encoding/json"
 
 	"github.com/gofiber/fiber/v2"
 )

@@ -214,7 +214,3 @@ Para que el CI y el despliegue funcionen correctamente (y para mantener seguros 
 - `RESEND_API_KEY` — API key para Resend (envío de correos)
 - `EEFFS_APP` — Clave de reCAPTCHA (o `RECAPTCHA_SECRET` si prefieres renombrar)
 
-Consejo: no guardes `.env` con valores reales en el repositorio; usa GitHub Secrets y carga variables en los workflows o en tu entorno de despliegue.
-
-Si quieres, puedo actualizar el badge con el valor real de tu repo o añadir instrucciones para desplegar con Docker Compose en GitHub Actions.
-

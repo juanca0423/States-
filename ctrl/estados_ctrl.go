@@ -2,15 +2,15 @@
 package ctrl
 
 import (
+	"ef/config"
+	"ef/help"
+	"ef/models"
 	"encoding/json"
 	"fmt"
 	"mime/multipart"
 	"strconv"
 	"strings"
 
-	"ef/config"
-	"ef/help"
-	"ef/models"
 	_ "image/jpeg" // Esto registra el de JPEG por si acaso
 	_ "image/png"  // Esto registra el decodificador para PNG
 

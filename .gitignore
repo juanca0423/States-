@@ -4,7 +4,6 @@
 ./tmp/build-errors.log
 .env
 texto.md
-./estaticos/js/@popper*.*
 tmp/
 node_modules/
 frontend/node_modules/

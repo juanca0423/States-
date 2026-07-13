@@ -57,9 +57,8 @@ func RegistrarHelpers(engine *handlebars.Engine) {
 
 // max returns the greater of two ordered values.
 func max[T constraints.Ordered](a, b T) T {
-    if a > b {
-        return a
-    }
-    return b
+	if a > b {
+		return a
+	}
+	return b
 }
-

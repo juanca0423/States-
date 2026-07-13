@@ -1,0 +1,424 @@
+var Disponible = []models.Cue{
+	{
+		Codigo: 111101,
+		Nombre: "Efectivo",
+		Saldo:  "activo",
+	},
+	{
+		Codigo: 111102,
+		Nombre: "Bancos",
+		Saldo:  "activo",
+	},
+}
+
+var Exigible = []models.Cue{
+	{
+		Codigo: 111201,
+		Nombre: "Deu. no Comerciales",
+		Saldo:  "activo",
+	},
+	{
+		Codigo: 111202,
+		Nombre: "Doc. por Cobrar",
+		Saldo:  "activo",
+	},
+	{
+		Codigo: 111203,
+		Nombre: "Clientes",
+		Saldo:  "activo",
+	},
+	{
+		Codigo: 111204,
+		Nombre: "(-)Res. para Cuen Inco.",
+		Saldo:  "pasivo",
+	},
+}
+
+var Realisable = []models.Cue{
+	{
+		Codigo: 111301,
+		Nombre: "Mercaderías",
+		Saldo:  "activo",
+	},
+	{
+		Codigo: 111302,
+		Nombre: "Papelería y útiles",
+		Saldo:  "activo",
+	},
+}
+
+var RealisableCo = []models.Cue{
+	{
+		Codigo: 111301,
+		Nombre: "Mercaderías",
+		Saldo:  "activo",
+	}, {
+		Codigo: 111302,
+		Nombre: "Papelería y útiles",
+		Saldo:  "activo",
+	}, {
+		Codigo: 111303,
+		Nombre: "Inv. Final Materia Prima",
+		Saldo:  "activo",
+	}, {
+		Codigo: 111304,
+		Nombre: "Inv. Final Productos en Proceso",
+		Saldo:  "activo",
+	}, {
+		Codigo: 111305,
+		Nombre: "Inv. Final Productos Terminados",
+		Saldo:  "activo",
+	},
+}
+
+var PropPlanEqui = []models.Cue{
+	{
+		Codigo: 112101,
+		Nombre: "Mobiliario y Equipo",
+		Saldo:  "activo",
+	},
+	{
+		Codigo: 112102,
+		Nombre: "(-) Dep. Acu. Mob y Equipo",
+		Saldo:  "pasivo",
+	},
+	{
+		Codigo: 112103,
+		Nombre: "Equipo de Computo",
+		Saldo:  "activo",
+	},
+	{
+		Codigo: 112104,
+		Nombre: "Dep. Acu. de Equi de Compu",
+		Saldo:  "pasivo",
+	},
+}
+
+var GtoIntan = []models.Cue{
+	{
+		Codigo: 112201,
+		Nombre: "Gastos de Organización",
+		Saldo:  "activo",
+	},
+	{
+		Codigo: 112202,
+		Nombre: "Amor. Acu. de Gtos de Organ",
+		Saldo:  "pasivo",
+	},
+}
+
+var GtoDiferidos = []models.Cue{
+	{
+		Codigo: 112301,
+		Nombre: "Inve. en Valores a L P",
+		Saldo:  "activo",
+	},
+}
+
+var PasivoCorr = []models.Cue{
+	{
+		Codigo: 121001,
+		Nombre: "Proveedores",
+		Saldo:  "pasivo",
+	},
+	{
+		Codigo: 121002,
+		Nombre: "IVA",
+		Saldo:  "pasivo",
+	},
+	{
+		Codigo: 121003,
+		Nombre: "Doc. por Pagar a C/Plazo",
+		Saldo:  "pasivo",
+	},
+	{
+		Codigo: 121004,
+		Nombre: "Préstamos Banc C/Plazo",
+		Saldo:  "pasivo",
+	},
+	{
+		Codigo: 121005,
+		Nombre: "IGSS por Pagar",
+		Saldo:  "pasivo",
+	},
+	{
+		Codigo: 121006,
+		Nombre: "Comi. Percibi no Deven",
+		Saldo:  "pasivo",
+	},
+	{
+		Codigo: 121007,
+		Nombre: "ISR por Pagar",
+		Saldo:  "pasivo",
+	},
+	{
+		Codigo: 121008,
+		Nombre: "(-) ISR Trimestral",
+		Saldo:  "activo",
+	},
+}
+
+var PasivoNoCorr = []models.Cue{
+	{
+		Codigo: 122001,
+		Nombre: "Doc. por Pagar a L P",
+		Saldo:  "pasivo",
+	},
+}
+
+var PatriNeto = []models.Cue{
+	{
+		Codigo: 131001,
+		Nombre: "Capital",
+		Saldo:  "pasivo",
+	},
+	{
+		Codigo: 131002,
+		Nombre: "Ganancia después del ISR",
+		Saldo:  "pasivo",
+	},
+	{
+		Codigo: 131003,
+		Nombre: "(-)Cuenta Personal",
+		Saldo:  "activo",
+	},
+}
+
+var Ingresos = []models.Cue{
+	{
+		Codigo: 210001,
+		Nombre: "Ventas",
+		Saldo:  "ganancia",
+	},
+	{
+		Codigo: 210002,
+		Nombre: "(-)Dev y Rebajas S/Ventas",
+		Saldo:  "perdida",
+	},
+}
+
+var InveIni = []models.Cue{
+	{
+		Codigo: 220001,
+		Nombre: "Inve. Ini de Mercaderías",
+		Saldo:  "perdida",
+	},
+}
+
+var InveIniCo = []models.Cue{
+	{
+		Codigo: 220001,
+		Nombre: "Inve. Ini de Mercaderías",
+		Saldo:  "perdida",
+	}, {
+		Codigo: 220002,
+		Nombre: "Inv. Inicial Productos Terminados",
+		Saldo:  "perdida",
+	},
+}
+
+var Compras = []models.Cue{
+	{
+		Codigo: 220101,
+		Nombre: "Compras",
+		Saldo:  "perdida",
+	},
+	{
+		Codigo: 220151,
+		Nombre: "Gastos sobre Compras",
+		Saldo:  "perdida",
+	},
+	{
+		Codigo: 220152,
+		Nombre: "Fletes sobre Compras",
+		Saldo:  "perdida",
+	},
+	{
+		Codigo: 220153,
+		Nombre: "Impuestos Aduaneros / Compras",
+		Saldo:  "perdida",
+	},
+	{
+		Codigo: 220154,
+		Nombre: "Comi. Banc. / Compras",
+		Saldo:  "perdida",
+	},
+	{
+		Codigo: 220201,
+		Nombre: "Dev. y Rev. / Compras",
+		Saldo:  "ganancia",
+	},
+}
+
+var InveFin = []models.Cue{
+	{
+		Codigo: 220005,
+		Nombre: "Inve. Final de Mercaderías",
+		Saldo:  "ganancia",
+	},
+}
+
+var GtoVentas = []models.Cue{
+	{
+		Codigo: 231001,
+		Nombre: "Sueldos Sala de Ventas",
+		Saldo:  "perdida",
+	},
+	{
+		Codigo: 231002,
+		Nombre: "Boni Incen Sala de Ventas",
+		Saldo:  "perdida",
+	},
+	{
+		Codigo: 231003,
+		Nombre: "Cuo. Patro S/Ventas",
+		Saldo:  "perdida",
+	},
+	{
+		Codigo: 231004,
+		Nombre: "Dep. Mob. y Equi S/Ventas",
+		Saldo:  "perdida",
+	},
+}
+
+var GtoAdmin = []models.Cue{
+	{
+		Codigo: 232001,
+		Nombre: "Sueldos de Admón.",
+		Saldo:  "perdida",
+	},
+	{
+		Codigo: 232002,
+		Nombre: "Boni Incentivo de Admon",
+		Saldo:  "perdida",
+	},
+	{
+		Codigo: 232003,
+		Nombre: "Cuo Pat de Admon",
+		Saldo:  "perdida",
+	},
+	{
+		Codigo: 232004,
+		Nombre: "Dep. Mob y Equi de Oficina",
+		Saldo:  "perdida",
+	},
+	{
+		Codigo: 232005,
+		Nombre: "Dep Equi de Computación",
+		Saldo:  "perdida",
+	},
+	{
+		Codigo: 232006,
+		Nombre: "Amor. Gtos de Organización",
+		Saldo:  "perdida",
+	},
+	{
+		Codigo: 232007,
+		Nombre: "Pap y Utiles Consumidos",
+		Saldo:  "perdida",
+	},
+	{
+		Codigo: 232008,
+		Nombre: "Cuentas Incobrables",
+		Saldo:  "perdida",
+	},
+}
+
+var IngrFina = []models.Cue{
+	{
+		Codigo: 240001,
+		Nombre: "Intereses Percibidos",
+		Saldo:  "ganancia",
+	},
+}
+
+var GastosFina = []models.Cue{
+	{
+		Codigo: 250001,
+		Nombre: "Intereses Gastos",
+		Saldo:  "perdida",
+	},
+}
+
+var OtrosGtoFina = []models.Cue{
+	{
+		Codigo: 260001,
+		Nombre: "Donativos",
+		Saldo:  "perdida",
+	},
+}
+
+var Otring = []models.Cue{
+	{
+		Codigo: 270001,
+		Nombre: "Comisiones Percibidas",
+		Saldo:  "ganancia",
+	},
+}
+
+var MateriaPrima = []models.Cue{
+	{
+		Codigo: 311001,
+		Nombre: "Inv. Inicial Materia Prima",
+		Saldo:  "costo_debe", // Correcto: Va a la columna 5 de la Hoja
+	},
+	{
+		Codigo: 311002,
+		Nombre: "Compras de Materia Prima",
+		Saldo:  "costo_debe",
+	},
+	{
+		Codigo: 311003,
+		Nombre: "Gastos s/Compras Materia Prima",
+		Saldo:  "costo_debe",
+	},
+	{
+		Codigo: 311004,
+		Nombre: "(-) Dev. y Reb. s/Materia Prima",
+		Saldo:  "costo_haber",
+	},
+}
+
+var ManoObra = []models.Cue{
+	{
+		Codigo: 312001,
+		Nombre: "Mano de Obra Directa",
+		Saldo:  "costo_debe",
+	},
+	{
+		Codigo: 312002,
+		Nombre: "Mano de Obra Indirecta",
+		Saldo:  "costo_debe",
+	},
+	{
+		Codigo: 312003,
+		Nombre: "Bonificación Incentivo Fábrica",
+		Saldo:  "costo_debe",
+	},
+}
+
+var GastosFabrica = []models.Cue{
+	{
+		Codigo: 313001,
+		Nombre: "Energía Eléctrica Fábrica",
+		Saldo:  "costo_debe",
+	},
+	{
+		Codigo: 313002,
+		Nombre: "Depreciación Maquinaria",
+		Saldo:  "costo_debe",
+	},
+	{
+		Codigo: 313003,
+		Nombre: "Seguros Fábrica Consumidos",
+		Saldo:  "costo_debe",
+	},
+}
+
+var ProductosProceso = []models.Cue{
+	{
+		Codigo: 314001,
+		Nombre: "Inv. Inicial Productos en Proceso",
+		Saldo:  "costo_debe",
+	},
+}

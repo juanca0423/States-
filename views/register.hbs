@@ -12,19 +12,43 @@
 <form class="needs-validation" id="registroForm" method="POST" action="/register" novalidate>
   <div class="col-8 mb-3">
     <label for="nombre" class="form-label">Nombre</label>
-    <input type="text" class="form-control" name="nombre" id="nombre" placeholder="Ingresa tu Nombre" value="{{Datos.Nombre}}" required />
+    <input
+      type="text"
+      class="form-control"
+      name="nombre"
+      id="nombre"
+      placeholder="Ingresa tu Nombre"
+      value="{{Datos.Nombre}}"
+      required
+    />
     <div class="invalid-feedback">El nombre es obligatorio.</div>
   </div>
 
   <div class="col-8 mb-3">
     <label for="apellido" class="form-label">Apellido</label>
-    <input type="text" class="form-control" name="apellido" id="apellido" placeholder="Ingresa tu Apellido" value="{{Datos.Apellido}}" required />
+    <input
+      type="text"
+      class="form-control"
+      name="apellido"
+      id="apellido"
+      placeholder="Ingresa tu Apellido"
+      value="{{Datos.Apellido}}"
+      required
+    />
     <div class="invalid-feedback">El apellido es obligatorio.</div>
   </div>
 
   <div class="col-8 mb-3">
     <label for="email" class="form-label">Email</label>
-    <input type="email" class="form-control" name="email" id="email" placeholder="nombre@algo.com" value="{{Datos.Email}}" required />
+    <input
+      type="email"
+      class="form-control"
+      name="email"
+      id="email"
+      placeholder="nombre@algo.com"
+      value="{{Datos.Email}}"
+      required
+    />
     <div class="invalid-feedback">Ingresa un correo válido.</div>
   </div>
 

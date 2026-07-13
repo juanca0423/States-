@@ -1,12 +1,11 @@
 package ctrl
 
 import (
-	"strings"
-	"time"
-
 	"ef/db"
 	"ef/middleware"
 	"ef/models"
+	"strings"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"golang.org/x/crypto/bcrypt"

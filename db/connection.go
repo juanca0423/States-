@@ -2,13 +2,12 @@
 package db
 
 import (
+	"ef/models"
 	"fmt"
 	"log"
 	"os"
 	"strings"
 	"time"
-
-	"ef/models"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -18,7 +17,8 @@ import (
 var DB *gorm.DB
 
 func DBConnection() {
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s",
+	dsn := fmt.Sprintf(
+		"host=%s user=%s password=%s dbname=%s port=%s sslmode=%s",
 		os.Getenv("DB_HOST"),
 		os.Getenv("DB_USER"),
 		os.Getenv("DB_PASSWORD"),

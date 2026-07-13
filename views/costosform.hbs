@@ -4,9 +4,7 @@
 <hr />
 {{#if Error}}
 <div class="container mt-4">
-  <div class="alert alert-danger" role="alert">
-    {{Error}}
-  </div>
+  <div class="alert alert-danger" role="alert">{{Error}}</div>
 </div>
 {{/if}}
 <section class="container mt-4">
@@ -14,6 +12,7 @@
     class="card bg-dark p-4 border-success shadow-lg"
     id="balanceForm"
     method="POST"
+    enctype="multipart/form-data"
     action="/costos"
   >
     <div class="table-responsive">
@@ -33,5 +32,4 @@
     </div>
   </form>
 </section>
-{{> 'partials/calculadora'}}
-{{>'partials/footer'}}
+{{> 'partials/calculadora'}} {{>'partials/footer'}}

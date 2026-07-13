@@ -630,12 +630,7 @@ async function agregarPestañaPartidasCierre(workbook, dataHoja) {
 }
 
 // En exel.js
-async function agregarPestañaDashboard(
-  workbook,
-  dataIndices,
-  logoId,
-  graficas,
-) {
+async function agregarPestañaDashboard(workbook, dataIndices, logoId) {
   const sheet = workbook.addWorksheet("Dashboard Financiero");
   sheet.views = [{ showGridLines: false }];
 

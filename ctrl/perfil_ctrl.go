@@ -2,11 +2,10 @@
 package ctrl
 
 import (
-	"fmt"
-	"time"
-
 	"ef/db"
 	"ef/models"
+	"fmt"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 )
