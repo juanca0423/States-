@@ -12,7 +12,7 @@ import (
 	"ef/help"
 	"ef/models"
 	_ "image/jpeg" // Esto registra el de JPEG por si acaso
-	_ "image/png"  // Esto registra el decodificador de PNG
+	_ "image/png"  // Esto registra el decodificador para PNG
 
 	"github.com/gofiber/fiber/v2"
 )
