@@ -9,4 +9,5 @@ tmp/
 node_modules/
 frontend/node_modules/
 *.log
+certbot/
 .aider*
