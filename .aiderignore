@@ -1,0 +1,30 @@
+# Depósitos de dependencias y binarios compilados
+vendor/
+tmp/
+bin/
+*.exe
+*.exe.stackdump
+*.test
+*.out
+
+# Archivos de base de datos local y datos persistentes
+postgres_data/
+*.sqlite
+*.db
+
+# Docker y configuraciones locales
+docker-compose.override.yml
+.env
+.env.*
+
+# Logs y trazas de ejecución
+*.log
+
+# Documentación masiva, artefactos de build y assets estáticos grandes
+dist/
+build/
+static/public/
+node_modules/
+
+# Archivos de habilidades o auto-prompts si no necesitas analizarlos constantemente
+.qwen/skills/

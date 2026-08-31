@@ -1,0 +1,5 @@
+read:
+  - .qwen/skills/auto-skill-gorm-error-chaining/SKILL.md
+  - .qwen/skills/auto-skill-minimalism-refactor/SKILL.md
+  - .qwen/skills/auto-skill-subscription-gating/SKILL.md
+  - .qwen/skills/auto-skill-unify-reccol/SKILL.md

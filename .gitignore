@@ -9,4 +9,17 @@ node_modules/
 frontend/node_modules/
 *.log
 certbot/
-.aider*
+# Archivos temporales y de caché generados por Aider
+.aider*history*
+.aider.tags.cache.*
+# Ignorar archivos temporales y cachés de Qwen / TencentDB Agent Memory
+.qwen/cache/
+.qwen/db/
+.qwen/index/
+.qwen/logs/
+.qwen/*.log
+.qwen/*.tmp
+
+# Si NO deseas compartir tus habilidades con otros desarrolladores,
+# descomenta la siguiente línea para ignorar la carpeta completa:
+# .qwen/
