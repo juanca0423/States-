@@ -1,4 +1,4 @@
-function activarSuscripcion(_, _, e) {
+function activarSuscripcion(userId, e) {
   if (!confirm("¿Deseas activar la suscripción Pro para este usuario?")) return;
 
   // Feedback visual: deshabilitamos el botón para evitar doble clic
@@ -12,17 +12,14 @@ function activarSuscripcion(_, _, e) {
     headers: { "Content-Type": "application/json" },
   })
     .then((response) => {
-      if (response.ok) {
-        // Usamos tu función mostrarAviso que ya tienes en el main js
-        if (typeof mostrarAviso === "function") {
-          mostrarAviso("¡Usuario activado exitosamente!");
-        } else {
-          alert("Usuario activado");
-        }
-        setTimeout(() => location.reload(), 1000);
+      if (!response.ok) throw new Error("Fallo en el servidor");
+      // Usamos tu función mostrarAviso que ya tienes en el main js
+      if (typeof mostrarAviso === "function") {
+        mostrarAviso("¡Usuario activado exitosamente!");
       } else {
-        throw new Error("Fallo en el servidor");
+        alert("Usuario activado");
       }
+      setTimeout(() => location.reload(), 1000);
     })
     .catch((error) => {
       alert("Error: " + error.message);
@@ -38,7 +35,10 @@ function verUsuario(userId) {
 
   // Pedimos los datos al servidor
   fetch(`/api/admin/usuario/${userId}`)
-    .then((res) => res.json())
+    .then((res) => {
+      if (!res.ok) throw new Error("Error al cargar datos");
+      return res.json();
+    })
     .then((data) => {
       const content = document.getElementById("modalContent");
       content.innerHTML = `
