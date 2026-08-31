@@ -100,6 +100,14 @@ func GetUsuarioDetalle(c *fiber.Ctx) error {
 		return c.Status(404).JSON(fiber.Map{"error": "No encontrado"})
 	}
 
-	// Retornamos el objeto completo como JSON
-	return c.Status(200).JSON(u)
+	// Retornamos un JSON estructurado explícitamente para evitar problemas de mayúsculas/minúsculas en JS
+	return c.Status(200).JSON(fiber.Map{
+		"ID":                 u.ID,
+		"Nombre":             u.Nombre,
+		"Apellido":           u.Apellido,
+		"Email":              u.Email,
+		"Role":               u.Role,
+		"FechaFinPrueba":     u.FechaFinPrueba,
+		"SuscripcionActiva":  u.SuscripcionActiva,
+	})
 }
