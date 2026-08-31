@@ -75,6 +75,7 @@ func SetUpRutas(app *fiber.App) {
 	admin.Post("/soporte/responder/:id", ctrl.PostResponder)
 	admin.Get("/dashboard", ctrl.GetAdmDash)
 	admin.Get("/usuario/:id", ctrl.GetUsuarioDetalle)
+	admin.Post("/activar-usuario/:id", ctrl.PostActivarUsuario)
 	admin.Get("/crearcuenta", ctrl.VerPanelCuentas)
 	admin.Post("/crearcuenta", ctrl.CrearCuenta)
 	admin.Get("/eliminar-cuenta/:codigo", ctrl.EliminarCuenta)

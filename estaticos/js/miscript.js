@@ -33,8 +33,8 @@ function verUsuario(userId) {
   const myModal = new bootstrap.Modal(document.getElementById("userModal"));
   myModal.show();
 
-  // Pedimos los datos al servidor
-  fetch(`/usuario/${userId}`)
+  // Pedimos los datos al servidor usando la ruta correcta del admin API
+  fetch(`/api/admin/usuario/${userId}`)
     .then((res) => {
       if (!res.ok) throw new Error("Error al cargar datos");
       return res.json();
