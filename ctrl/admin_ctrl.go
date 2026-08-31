@@ -100,14 +100,14 @@ func GetUsuarioDetalle(c *fiber.Ctx) error {
 		return c.Status(404).JSON(fiber.Map{"error": "No encontrado"})
 	}
 
-	// Retornamos un JSON estructurado explícitamente para evitar problemas de mayúsculas/minúsculas en JS
+	// Retornamos un JSON estructurado explícitamente con las claves exactas en mayúsculas que espera miscript.js
 	return c.Status(200).JSON(fiber.Map{
-		"ID":                 u.ID,
-		"Nombre":             u.Nombre,
-		"Apellido":           u.Apellido,
-		"Email":              u.Email,
-		"Role":               u.Role,
-		"FechaFinPrueba":     u.FechaFinPrueba,
-		"SuscripcionActiva":  u.SuscripcionActiva,
+		"ID":                u.ID,
+		"Nombre":            u.Nombre,
+		"Apellido":          u.Apellido,
+		"Email":             u.Email,
+		"Role":              u.Role,
+		"FechaFinPrueba":    u.FechaFinPrueba,
+		"SuscripcionActiva": u.SuscripcionActiva,
 	})
 }
