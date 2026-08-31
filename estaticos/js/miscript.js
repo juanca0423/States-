@@ -34,7 +34,7 @@ function verUsuario(userId) {
   myModal.show();
 
   // Pedimos los datos al servidor
-  fetch(`/api/admin/usuario/${userId}`)
+  fetch(`/usuario/${userId}`)
     .then((res) => {
       if (!res.ok) throw new Error("Error al cargar datos");
       return res.json();
