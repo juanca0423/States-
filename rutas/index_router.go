@@ -38,6 +38,13 @@ func SetUpRutas(app *fiber.App) {
 	app.Get("/register", ctrl.GetRejistro)
 	app.Post("/register", authLimiter, ctrl.RegisterHandler)
 	app.Get("/verificar", ctrl.VerificarCuenta)
+
+	// Rutas de recuperación de contraseña
+	app.Get("/forgot-password", ctrl.GetForgotPassword)
+	app.Post("/forgot-password", authLimiter, ctrl.PostForgotPassword)
+	app.Get("/reset-password", ctrl.GetResetPassword)
+	app.Post("/reset-password", ctrl.PostResetPassword)
+
 	app.Get("/about", ctrl.GetAbout)
 	app.Get("/manual", func(c *fiber.Ctx) error {
 		return c.Render("manual", fiber.Map{
