@@ -1,6 +1,7 @@
 package ctrl
 
 import (
+	"log"
 	"os"
 	"time"
 
@@ -45,6 +46,7 @@ func PostForgotPassword(c *fiber.Ctx) error {
 
 	err = servicios.EnviarCorreoRecuperacion(user.Email, user.Nombre, tokenString)
 	if err != nil {
+		log.Printf("❌ Error enviando correo recuperación a %s: %v", user.Email, err)
 		return c.Render("forgot-password", fiber.Map{
 			"Title": "Recuperar Contraseña",
 			"Error": "No se pudo enviar el correo de recuperación.",

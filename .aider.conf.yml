@@ -3,3 +3,5 @@ read:
   - .qwen/skills/auto-skill-minimalism-refactor/SKILL.md
   - .qwen/skills/auto-skill-subscription-gating/SKILL.md
   - .qwen/skills/auto-skill-unify-reccol/SKILL.md
+  - ~/.qwen/skills/Dev-Mode/SKILL.md
+  - ~/.qwen/skills/go-scaffold/SKILL.md

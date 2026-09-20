@@ -19,6 +19,7 @@ certbot/
 .qwen/logs/
 .qwen/*.log
 .qwen/*.tmp
+.opencode
 
 # Si NO deseas compartir tus habilidades con otros desarrolladores,
 # descomenta la siguiente línea para ignorar la carpeta completa:

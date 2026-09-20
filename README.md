@@ -130,23 +130,25 @@ docker compose -f docker-compose.prod.yml up --build
 
 - `GET /` - página de inicio.
 - `GET /loguin` - formulario de inicio de sesión.
-- `POST /loguin` - envío de credenciales.
+- `POST /loguin` - envío de credenciales (con rate limiting: 5 intentos/min por IP).
 - `GET /register` - formulario de registro.
-- `POST /register` - registro de usuario.
+- `POST /register` - registro de usuario (con rate limiting: 5 intentos/min por IP).
 - `GET /verificar` - verificación de cuenta por token.
 - `GET /about` - página de información.
 - `GET /manual` - manual de usuario.
+- `GET /logout` - cierre de sesión.
 
 ### Protegidas (requieren sesión)
 
 - `GET /eeff` - módulo de hoja de trabajo comercial.
 - `POST /estados` - generación de estados financieros.
 - `GET /perfil` - perfil de usuario y transacciones.
+- `GET /planes` - página de planes y suscripción.
+- `GET /pago/exito` - página de éxito tras el pago.
 - `GET /costosform` - módulo de costos industriales.
 - `POST /costos` - cálculo de costos de producción.
 - `GET /soport` - soporte técnico.
 - `POST /soporte/enviar` - envío de consulta técnica.
-- `GET /logout` - cierre de sesión.
 
 ### API / admin
 
@@ -155,6 +157,7 @@ docker compose -f docker-compose.prod.yml up --build
 - `POST /api/admin/soporte/responder/:id` - responder una consulta.
 - `GET /api/admin/dashboard` - dashboard administrativo.
 - `GET /api/admin/usuario/:id` - obtener detalles de un usuario.
+- `POST /api/admin/activar-usuario/:id` - activar un usuario manualmente.
 - `GET /api/admin/crearcuenta` - panel de creación de cuenta.
 - `POST /api/admin/crearcuenta` - crear una cuenta contable.
 - `GET /api/admin/eliminar-cuenta/:codigo` - eliminar cuenta contable.
@@ -186,10 +189,17 @@ También carga la nomenclatura contable desde la tabla `nomenclatura` para usarl
 
 ## Próximos pasos sugeridos
 
-- Añadir pruebas unitarias e integración.
-- Agregar un `README` de variables de configuración y desplegar en un entorno controlado.
 - Validar los endpoints de admin y el webhook de pagos en un entorno de pruebas.
 - Mejorar el error handling en los formularios y el flujo de suscripción.
+
+## Skills del proyecto
+
+Las skills del proyecto se encuentran en `.qwen/skills/` y cubren áreas específicas:
+
+- **`gorm-error-chaining`** — Evita el error de encadenado GORM `.Error` que hace que los checks siempre sean true y rompe `go vet`.
+- **`minimalism-refactor`** — Identifica y elimina código duplicado, simplifica flujos de error y limpia assets estáticos y plantillas Handlebars.
+- **`subscription-gating`** — Guía para conectar el middleware `CheckSubscription` y corregir la lógica de fechas de expiración del trial.
+- **`unify-reccol`** — Consolida las funciones duplicadas `RecCol*` en un único núcleo reutilizable con wrappers.
 
 ## CI / GitHub Actions
 
