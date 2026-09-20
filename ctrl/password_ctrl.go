@@ -76,7 +76,7 @@ func GetResetPassword(c *fiber.Ctx) error {
 		})
 	}
 
-	return c.Render("reset-password", fiber.Map{
+	return c.Render("reset_password", fiber.Map{
 		"Title": "Restablecer Contraseña",
 		"Token": tokenStr,
 	})
@@ -117,7 +117,7 @@ func PostResetPassword(c *fiber.Ctx) error {
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
 	if err != nil {
-		return c.Status(500).Render("reset-password", fiber.Map{
+		return c.Status(500).Render("reset_password", fiber.Map{
 			"Title": "Restablecer Contraseña",
 			"Token": tokenStr,
 			"Error": "Error al procesar la contraseña.",
@@ -126,7 +126,7 @@ func PostResetPassword(c *fiber.Ctx) error {
 
 	user.Pase = string(hashedPassword)
 	if err := db.DB.Save(&user).Error; err != nil {
-		return c.Status(500).Render("reset-password", fiber.Map{
+		return c.Status(500).Render("reset_password", fiber.Map{
 			"Title": "Restablecer Contraseña",
 			"Token": tokenStr,
 			"Error": "Error al actualizar la contraseña en la base de datos.",
